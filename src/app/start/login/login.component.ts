@@ -60,7 +60,7 @@ export class LoginComponent {
             .loginAsGuest()
             .then(() => {
                 console.log("Gast-Anmeldung erfolgreich");
-                // Navigiere zum entsprechenden Bereich der App
+                this.router.navigate(["/"]);
             })
             .catch((error) => {
                 console.error("Fehler bei der Gast-Anmeldung", error);
