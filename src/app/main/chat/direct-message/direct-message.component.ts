@@ -12,7 +12,7 @@ import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { serverTimestamp } from "@angular/fire/firestore";
 import { PofileInfoCardComponent } from "../../../pofile-info-card/pofile-info-card.component";
 import { DialogAddMemberToChnlComponent } from "../../../dialog-add-member-to-chnl/dialog-add-member-to-chnl.component";
-import { FormsModule, ReactiveFormsModule,FormControl } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { Message } from "../../../interfaces/message";
 import { DirectmessageService } from "./directmessage.service";
 import { MatMenuModule } from "@angular/material/menu";
@@ -22,6 +22,8 @@ import { ImageService } from "../../../image.service";
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { map, Observable, startWith } from "rxjs";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import { DialogEditMessageComponent } from "../../../dialog-edit-message/dialog-edit-message.component";
+
 @Component({
     selector: "app-direct-message",
     standalone: true,
@@ -39,7 +41,7 @@ import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
         MatMenuModule,
         ReactiveFormsModule,
         MatAutocompleteModule
-        
+
     ],
 
     templateUrl: "./direct-message.component.html",
@@ -67,7 +69,7 @@ export class DirectMessageComponent {
             map((value: string | null) => (value ? this._filter(value) : [])),
         );
     }
-    
+
     objectKeys(obj: any): string[] {
         return Object.keys(obj);
     }
@@ -98,14 +100,14 @@ export class DirectMessageComponent {
     }
     addReactionToMessage(messagePadnr: string, emoji: string) {
         this.chatService
-            .addReaction(this.chatService.selectedUser.id, emoji, 'DM',messagePadnr)
+            .addReaction(this.chatService.selectedUser.id, emoji, 'DM', messagePadnr)
             .then(() => console.log("Reaction added"))
             .catch((error) => console.error("Error adding reaction: ", error));
     }
 
-    addOrSubReaction(message: any, reaction: any, ) {
+    addOrSubReaction(message: any, reaction: any,) {
         debugger
-        this.chatService.addOrSubReaction(message, reaction, 'DM',this.chatService.selectedUser.id)
+        this.chatService.addOrSubReaction(message, reaction, 'DM', this.chatService.selectedUser.id)
     }
 
     openDialogChannelInfo() {
@@ -203,7 +205,7 @@ export class DirectMessageComponent {
             this.send(); // Nachricht senden
         }
     }
-    
+
     onInputChange(event: Event): void {
         const input = event.target as HTMLInputElement;
         this.currentInputValue = input.value;
@@ -244,4 +246,27 @@ export class DirectMessageComponent {
         }
         this.messageInput.nativeElement.focus();
     }
+
+    openDialogEditMessage(messageId: string, currentMessage: string, sendedUserID: string): void {
+        const dialogRef = this.dialog.open(DialogEditMessageComponent, {
+          width: '400px',
+          data: { message: currentMessage }
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            const newContent = result;  // Das ist der neue Inhalt, den der Benutzer eingegeben hat
+            console.log('Updated content:', newContent);
+            this.DMSerivce.updateMessage(sendedUserID, messageId, newContent)
+              .then(() => console.log('Message updated successfully'))
+              .catch(error => console.error('Error updating message:', error));
+          } else {
+            console.log('Dialog closed without saving');
+          }
+        });
+      }
+      
+      
+
+
 }

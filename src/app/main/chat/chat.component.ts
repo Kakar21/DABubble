@@ -38,7 +38,7 @@ import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { ImageService } from "../../image.service";
-
+import { DialogEditMessageChannelComponent } from "../../dialog-edit-message-channel/dialog-edit-message-channel.component";
 
 @Component({
     selector: "app-chat",
@@ -89,6 +89,8 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     showImageModal: "preview" | "chatImage" | string = '';
     modalSrc: string | ArrayBuffer = '';
     pickerPosition = { top: '0px', left: '0px' };
+    editMessageId: string | null = null;
+
     constructor(
         public dialog: MatDialog,
         public chatService: ChatService,
@@ -159,7 +161,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
 
     @HostListener('window:resize', ['$event'])
     onResize(event: Event) {
-        this.isPickerVisible = false; 
+        this.isPickerVisible = false;
     }
     togglePicker(context: string, padNr: any, event: MouseEvent) {
         this.isPickerVisible = !this.isPickerVisible;
@@ -227,15 +229,6 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
                 panelClass: "custom-dialog-br",
             });
         }
-    }
-
-    openDialogEditMessage(id: string) {
-        // const message = this.chatService.messages.find((message) => message.id === id);
-        // if (message === undefined) throw new Error(`Couldn't find message with id ${id}`);
-        // this.dialog.open(DialogEditMessageComponent, {
-        //   panelClass: 'custom-dialog-br',
-        //   data: { message: message.message }
-        // });
     }
 
     openDialogChannelInfo() {
@@ -485,5 +478,24 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     closeModal() {
         this.showModal = false;
     }
+
+    openDialogEditMessage(channelId: string, messageId: string, currentMessage: string): void {
+        const dialogRef = this.dialog.open(DialogEditMessageChannelComponent, {
+          width: '400px',
+          data: { message: currentMessage }
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            const newContent = result;  // Der bearbeitete Inhalt der Nachricht
+            this.chatService.updateMessage(channelId, messageId, newContent)
+              .then(() => console.log('Message updated successfully'))
+              .catch(error => console.error('Error updating message:', error));
+          } else {
+            console.log('Dialog closed without saving');
+          }
+        });
+      }
+      
 
 }
