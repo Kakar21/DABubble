@@ -449,3 +449,25 @@ mat-option {
         }
     }
 }
+.hoverMenu {
+    top: -1.125rem;
+    right: 10%;
+    padding: 0.1875rem 0.9375rem 0.1875rem 1.25rem;
+    align-items: flex-start;
+    gap: 0.3125rem;
+    border-radius: 1.5625rem 1.5625rem 0rem 1.5625rem;
+    border: 1px solid var(--light-purple-line);
+    background: var(--white);
+
+    > button {
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &:hover {
+        display: inline-flex;
+    }
+}

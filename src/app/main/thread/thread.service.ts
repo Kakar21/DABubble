@@ -9,6 +9,8 @@ import {
     orderBy,
     serverTimestamp,
     onSnapshot,
+    DocumentReference,
+    updateDoc,
 } from "@angular/fire/firestore";
 import { Message } from "../../interfaces/message";
 import { Observable } from "rxjs";
@@ -72,5 +74,19 @@ export class ThreadService {
         let s = num + "";
         while (s.length < size) s = "0" + s;
         return s;
+    }
+
+    async updateThreadMessage(channelId: string, messageId: string, threadId: string, newContent: string): Promise<void> {
+        const messageDocRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}/threads/${threadId}`) as DocumentReference;
+    
+        try {
+            await updateDoc(messageDocRef, {
+                message: newContent,
+                updatedAt: new Date().toISOString(),
+            });
+            console.log("Thread message updated successfully.");
+        } catch (error) {
+            console.error("Error updating thread message:", error);
+        }
     }
 }

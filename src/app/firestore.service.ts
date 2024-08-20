@@ -224,7 +224,7 @@ export class FirestoreService {
     }
 
     loginAsGuest() {
-        const guestEmail = "guest@guest.guests";
+        const guestEmail = "guest@guest.guest";
         const guestPassword = "guest1";
         return this.loginWithEmailAndPassword(guestEmail, guestPassword);
     }

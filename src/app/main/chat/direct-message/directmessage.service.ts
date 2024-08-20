@@ -1,19 +1,8 @@
 import { Injectable } from "@angular/core";
 import { CurrentuserService } from "../../../currentuser.service";
-import { FirestoreService } from "../../../firestore.service";
-import { serverTimestamp } from "@angular/fire/database";
-import {
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    onSnapshot,
-    orderBy,
-    query,
-    setDoc,
-} from "@angular/fire/firestore";
+import { Firestore, collection, doc, getDocs, onSnapshot, orderBy, query, setDoc, updateDoc, DocumentReference, getDoc } from "@angular/fire/firestore";
+import { serverTimestamp } from "@angular/fire/firestore";
 import { Message } from "../../../interfaces/message";
-import { timestamp } from "rxjs";
 import { ChatService } from "../chat.service";
 
 @Injectable({
@@ -26,7 +15,7 @@ export class DirectmessageService {
 
     constructor(
         public currentUser: CurrentuserService,
-        private firestore: FirestoreService,
+        private firestore: Firestore,
         private chat: ChatService,
     ) {
         console.log(this.messages)
@@ -35,7 +24,7 @@ export class DirectmessageService {
     async sendMessage(sendedUserID: string, message: Message) {
         this.sendedUserID = sendedUserID;
         const userRef = collection(
-            this.firestore.firestore,
+            this.firestore,
             `users/${this.currentUser.currentUser.id}/${sendedUserID}/`,
         );
         const messagesSnapshot = await getDocs(userRef);
@@ -69,7 +58,7 @@ export class DirectmessageService {
 
     getMessages(id: string) {
         const channelRef = collection(
-            this.firestore.firestore,
+            this.firestore,
             `users/${this.currentUser.currentUser.id}/${id}/`,
         );
         const newMessageRef = doc(channelRef);
@@ -91,7 +80,7 @@ export class DirectmessageService {
 
         this.chat.usersList.forEach((user) => {
             const potentialCollectionRef = collection(
-                this.firestore.firestore,
+                this.firestore,
                 `users/${this.currentUser.currentUser.id}/${user.id}`,
             );
             const messagesQuery = query(
@@ -116,5 +105,23 @@ export class DirectmessageService {
                 }
             });
         });
+    }
+
+    async updateMessage(sendedUserID: string, messageId: string, newContent: string): Promise<void> {
+        // Pfad zur spezifischen Nachricht in der Unterkollektion
+        const messageDocRef = doc(this.firestore, `users/${this.currentUser.currentUser.id}/${sendedUserID}/${messageId}`) as DocumentReference;
+    
+        console.log('Updating message at:', messageDocRef.path);  // Debugging: Überprüfe den Pfad
+        console.log('New content:', newContent);  // Debugging: Überprüfe den neuen Inhalt
+    
+        try {
+            await updateDoc(messageDocRef, {
+                message: newContent,
+                updatedAt: new Date().toISOString(),
+            });
+            console.log("Message updated successfully.");
+        } catch (error) {
+            console.error("Error updating message:", error);
+        }
     }
 }

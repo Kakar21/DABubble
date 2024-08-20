@@ -11,6 +11,7 @@ import {
     serverTimestamp,
     getDoc,
     updateDoc,
+    DocumentReference
 } from "@angular/fire/firestore";
 import { Channel } from "../../interfaces/channel";
 import { Message } from "../../interfaces/message";
@@ -353,4 +354,19 @@ export class ChatService {
         }
         await updateDoc(messageRef, { reactions: messageData["reactions"] });
     }
+
+    async updateMessage(channelId: string, messageId: string, newContent: string): Promise<void> {
+        const messageDocRef = doc(this.firestore.firestore, `channels/${channelId}/messages/${messageId}`) as DocumentReference;
+    
+        try {
+            await updateDoc(messageDocRef, {
+                message: newContent,
+                updatedAt: new Date().toISOString(),
+            });
+            console.log("Message updated successfully.");
+        } catch (error) {
+            console.error("Error updating message:", error);
+        }
+    }
+    
 }
