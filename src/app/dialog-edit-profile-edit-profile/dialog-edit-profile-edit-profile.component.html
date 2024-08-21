@@ -14,13 +14,14 @@
             <img src="../../../assets/img/icons/close.svg" />
         </button>
     </div>
-    <div class="image-section">
+    <div class="image-section" (click)="onAvatarClick()">
+        <input type="file" #avatarInput style="display: none;" (change)="onFileSelected($event)" accept="image/*" />
         @if (currentUser.avatar.length > 1) {
             <img src="{{ currentUser.avatar }}" />
         } @else {
             <img src="./../../assets/img/avatar/{{ currentUser.avatar }}.svg" />
         }
-    </div>
+    </div>    
     @if (!editing) {
         <div class="profile-name-container">
             <div class="profile-name-section">

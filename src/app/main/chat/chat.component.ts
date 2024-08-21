@@ -284,37 +284,29 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     }
 
     async send() {
-        let imageUrl = '';
-
-        if (this.previewUrl) {
-            const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
-            imageUrl = await this.imageService.uploadFile(fileInput);
-            console.log(imageUrl)
-            this.clearPreview();
-
-        }
         if (this.messageText.trim() !== "") {
             const message: Message = {
                 id: "",
-                avatar: "",
-                name: "",
+                avatar: this.currentUser.currentUser.avatar || '', // Beispiel für das Hinzufügen eines Avatars
+                name: this.currentUser.currentUser.name,
                 time: new Date().toISOString(),
                 message: this.messageText,
                 createdAt: serverTimestamp(),
                 reactions: {},
                 padNumber: "",
                 btnReactions: [],
-                imageUrl: imageUrl
+                imageUrl: '' // Dies könnte genutzt werden, wenn Sie eine separate Feld für das Bild in Ihrer Datenbank haben
             };
-
+    
             await this.chatService.sendMessage(
                 this.chatService.currentChannelID,
                 message,
             );
-            await this.scrollToBottom();
-            this.messageText = "";
+            this.messageText = ""; // Leert das Textfeld nach dem Senden der Nachricht
+            this.scrollToBottom(); // Scrollt das Chatfenster nach unten
         }
     }
+    
 
     onKeydown(event: KeyboardEvent) {
         if (event.key === "Enter" && !event.shiftKey) {
@@ -449,17 +441,20 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         this.chatService.addOrSubReaction(message, reaction, 'chat', message.key)
     }
 
-    onFileSelected(event: Event) {
-        const input = event.target as HTMLInputElement;
-        if (input.files) {
-            const file = input.files[0];
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.previewUrl = reader.result;
-            };
-            reader.readAsDataURL(file);
-        }
 
+    onFileSelected(event: any) {
+        const input = event.target as HTMLInputElement;
+        if (input && input.files && input.files.length > 0) {
+            this.imageService.uploadFile(input).then((url: string) => {
+                if (url) {
+                    this.messageText += `<img src="${url}" alt="Uploaded Image"/>`;
+                } else {
+                    console.error('File upload returned an empty URL.');
+                }
+            }).catch((error) => {
+                console.error('Error uploading file:', error);
+            });
+        }
     }
 
     uploadFile(input: HTMLInputElement) {
@@ -481,21 +476,21 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
 
     openDialogEditMessage(channelId: string, messageId: string, currentMessage: string): void {
         const dialogRef = this.dialog.open(DialogEditMessageChannelComponent, {
-          width: '400px',
-          data: { message: currentMessage }
+            width: '400px',
+            data: { message: currentMessage }
         });
-      
+
         dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            const newContent = result;  // Der bearbeitete Inhalt der Nachricht
-            this.chatService.updateMessage(channelId, messageId, newContent)
-              .then(() => console.log('Message updated successfully'))
-              .catch(error => console.error('Error updating message:', error));
-          } else {
-            console.log('Dialog closed without saving');
-          }
+            if (result) {
+                const newContent = result;  // Der bearbeitete Inhalt der Nachricht
+                this.chatService.updateMessage(channelId, messageId, newContent)
+                    .then(() => console.log('Message updated successfully'))
+                    .catch(error => console.error('Error updating message:', error));
+            } else {
+                console.log('Dialog closed without saving');
+            }
         });
-      }
-      
+    }
+
 
 }

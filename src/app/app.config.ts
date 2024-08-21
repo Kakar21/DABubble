@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from "@angular/core";
+import { ApplicationConfig } from "@angular/core";
 import { provideRouter } from "@angular/router";
 
 import { routes } from "./app.routes";
@@ -17,18 +17,16 @@ const firebaseConfig = {
     messagingSenderId: "274484134544",
     appId: "1:274484134544:web:330557e6aa3cbe735a0e15"
 };
+
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(routes),
         provideAnimationsAsync(),
-        importProvidersFrom(
-            provideFirebaseApp(() =>
-                initializeApp(firebaseConfig),
-            ), provideAuth(() => getAuth()), 
-            provideFirestore(() => getFirestore()), 
-            provideDatabase(() => getDatabase()), 
-            provideStorage(() => getStorage())
-        ),
+        provideFirebaseApp(() => initializeApp(firebaseConfig)),
+        provideAuth(() => getAuth()),
+        provideFirestore(() => getFirestore()),
+        provideDatabase(() => getDatabase()),
+        provideStorage(() => getStorage()),
     ],
 };
 
