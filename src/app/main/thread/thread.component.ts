@@ -28,6 +28,7 @@ import { ThreadService } from "./thread.service";
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ImageService } from "../../image.service";
 
 @Component({
     selector: "app-thread",
@@ -64,7 +65,8 @@ export class ThreadComponent implements OnInit, OnChanges {
         private chatService: ChatService,
         public currentUser: CurrentuserService,
         public dialog: MatDialog,  // MatDialog injizieren
-        private threadService: ThreadService
+        private threadService: ThreadService,
+        private imageService: ImageService
     ) {
         this.filteredMembers = this.formCtrl.valueChanges.pipe(
             startWith(""),
@@ -316,4 +318,23 @@ export class ThreadComponent implements OnInit, OnChanges {
         });
     }
     
+    onFileSelected(event: any) {
+        const input = event.target as HTMLInputElement;
+        if (input && input.files && input.files.length > 0) {
+            this.imageService.uploadFile(input).then((url: string) => {
+                if (url) {
+                    // Hier wird das Bild als <img> Tag in die Nachricht eingefügt
+                    this.messageText += `<img src="${url}" alt="Uploaded Image" style="max-width: 100%; height: auto;" />`;
+                } else {
+                    console.error('File upload returned an empty URL.');
+                }
+            }).catch((error) => {
+                console.error('Error uploading file:', error);
+            });
+        }
+    }
+    
+   
+   
+
 }

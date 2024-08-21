@@ -1,6 +1,6 @@
 import { Dialog, DialogModule, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import {
@@ -15,6 +15,7 @@ import { UsersList } from "../interfaces/users-list";
 import { User } from "../interfaces/user";
 import { HeaderComponent } from "../main/header/header.component";
 import { DocumentData, doc, onSnapshot } from "@angular/fire/firestore";
+import { ImageService } from "../image.service";
 
 @Component({
     selector: "app-dialog-edit-profile-edit-profile",
@@ -32,6 +33,8 @@ import { DocumentData, doc, onSnapshot } from "@angular/fire/firestore";
     styleUrl: "./dialog-edit-profile-edit-profile.component.scss",
 })
 export class DialogEditProfileEditProfileComponent {
+    @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
+
     currentUserUid: string | null = "";
     currentUser: UsersList = {
         id: "",
@@ -51,6 +54,7 @@ export class DialogEditProfileEditProfileComponent {
         public dialogRef: MatDialogRef<DialogEditProfileEditProfileComponent>,
         public dialog: MatDialog,
         private firestore: FirestoreService,
+        private imageService: ImageService
     ) {
         this.firestore.currentUser$.subscribe((uid) => {
             this.currentUserUid = uid;
@@ -141,5 +145,37 @@ export class DialogEditProfileEditProfileComponent {
             email: obj.email || "",
             online: obj.online || false,
         };
+    }
+
+    onAvatarClick() {
+        this.avatarInput.nativeElement.click();
+    }
+
+    onFileSelected(event: any) {
+        const input = event.target as HTMLInputElement;
+        if (input && input.files && input.files.length > 0) {
+            this.imageService.uploadFile(input).then((url: string) => {
+                if (url) {
+                    this.currentUser.avatar = url;
+                    this.saveAvatarUrl(url);
+                } else {
+                    console.error('File upload returned an empty URL.');
+                }
+            }).catch((error) => {
+                console.error('Error uploading file:', error);
+            });
+        }
+    }
+
+    saveAvatarUrl(url: string) {
+        this.firestore.updateUser(
+            this.currentUser.name,
+            this.currentUser.email,
+            url // Update the avatar URL in the user's profile
+        ).then(() => {
+            console.log("Avatar updated successfully");
+        }).catch((error) => {
+            console.error('Error updating avatar in Firestore:', error);
+        });
     }
 }

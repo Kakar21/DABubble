@@ -87,8 +87,8 @@
                         <span>{{ dayTime(message.value.time) }} Uhr</span>
                     </div>
                     <div #message class="message-text" [ngClass]="{'current-user-text': message.value.name === currentUser.currentUser.name}"  (click)="onMessageClick($event)"
-                        [innerHTML]="message.value.message | highlightMentions"  ></div>
-
+                        [innerHTML]="message.value.message | highlightMentions"  >
+                    </div>
                     <div>
                         <div class="reaction">
                             @if (message.value.reactions) {
@@ -171,9 +171,10 @@
                     }}"></textarea>
                 <div class="action-buttons">
                     <div class="button-wrapper">
-                        <button mat-icon-button>
+                        <button mat-icon-button (click)="fileInput.click()">
                             <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                         </button>
+                        <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept="image/*"/>
                         <div class="vector"></div>
                         <button mat-icon-button (click)="
                                 togglePicker('input', '', $event);
