@@ -23,13 +23,12 @@
         "@angular/router": "^17.3.0",
         "@ctrl/ngx-emoji-mart": "^9.2.0",
         "algoliasearch": "^4.24.0",
-        "angular-instantsearch": "^4.4.2",
         "rxjs": "~7.8.0",
         "zone.js": "~0.14.3"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^17.3.2",
-        "@angular/cli": "^17.3.2",
+        "@angular/cli": "^17.3.8",
         "@angular/compiler-cli": "^17.3.0",
         "@types/jasmine": "~5.1.0",
         "@types/uuid": "^9.0.8",
