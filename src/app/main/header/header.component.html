@@ -33,31 +33,26 @@
             [formControl]="formCtrl"
             [matAutocomplete]="auto"
         />
-        <!-- (matChipInputTokenEnd)="add($event)" -->
-        <mat-autocomplete
-            #auto="matAutocomplete"
-            (optionSelected)="selected($event)"
-        >
-            @for (option of filteredResults | async; track option) {
-                @if (option.type === "user") {
-                    <mat-option [value]="option.id">
-                        <!-- @if (option.avatar && option.avatar.length > 1) {
-                      <img src="{{ option.avatar }}">
-                  } @else {
-                      <img src="../../assets/img/avatar/{{ option.avatar}}.svg">
-                  } -->
-                        <h3>{{ option.name }}</h3>
-                    </mat-option>
-                } @else {
-                    <mat-option [value]="option.id">
-                        <!-- <img src="../../../assets/img/icons/tag.svg"> -->
-                        <h3>{{ option.name }}</h3>
-                    </mat-option>
-                }
-            }
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayOption">
+            <mat-option *ngIf="(filteredResults | async)?.length === 0" disabled>
+                Keine Ergebnisse gefunden
+            </mat-option>
+            <ng-container *ngFor="let option of filteredResults | async">
+                <mat-option *ngIf="option.type === 'user'" [value]="option">
+                    <h3>{{ option.name }}</h3>
+                    <p>{{ option.message }}</p>
+                </mat-option>
+                <mat-option *ngIf="option.type === 'channel'" [value]="option">
+                    <h3>{{ option.name }}</h3>
+                    <p>{{ option.message }}</p>
+                </mat-option>
+            </ng-container>
         </mat-autocomplete>
+        
+        
         <span class="material-icons">search</span>
     </div>
+    
     <div
         class="profile-info"
         (click)="mobileMenu()"

@@ -492,5 +492,14 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         });
     }
 
-
+    scrollToMessage(messageId: string) {
+        const element = document.getElementById(messageId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Optional: Nachricht hervorheben
+            element.classList.add('highlight');
+            setTimeout(() => element.classList.remove('highlight'), 2000); // Entfernt die Hervorhebung nach 2 Sekunden
+        }
+    }
+    
 }

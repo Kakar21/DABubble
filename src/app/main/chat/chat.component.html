@@ -46,6 +46,7 @@
             </div>
             }
             <div [ngClass]="{'current-user-message': message.value.name === currentUser.currentUser.name}"
+                [id]="message.key"
                 class="message">
                 <div class="hoverMenu">
                     <button mat-icon-button>

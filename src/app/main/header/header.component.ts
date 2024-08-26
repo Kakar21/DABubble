@@ -34,6 +34,9 @@ import { NewMessageOption } from "../../interfaces/new-message-option";
 import { MatInputModule } from "@angular/material/input";
 import { DirectmessageService } from "../chat/direct-message/directmessage.service";
 import { SearchResult } from "../../interfaces/search-result";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { of } from 'rxjs';
+import { ChatComponent } from "../chat/chat.component";
 
 @Component({
     selector: "app-header",
@@ -59,6 +62,7 @@ import { SearchResult } from "../../interfaces/search-result";
 export class HeaderComponent {
     formCtrl = new FormControl("");
     filteredResults: Observable<SearchResult[]>;
+    @ViewChild(ChatComponent) chatComponentInstance!: ChatComponent;
 
     @ViewChild("searchInput")
     searchInput!: ElementRef<HTMLInputElement>;
@@ -70,13 +74,18 @@ export class HeaderComponent {
         private _bottomSheet: MatBottomSheet,
         public DMService: DirectmessageService,
     ) {
+        // Hier wird der SearchResult-Stream initialisiert
+
         this.filteredResults = this.formCtrl.valueChanges.pipe(
-            startWith(""),
-            switchMap((value) =>
-                value
-                    ? this._filter(value)
-                    : this.getAvailableMessages().then((messages) => messages),
-            ),
+            debounceTime(300),  // Vermeidet sofortige Sucheingaben zu verarbeiten
+            distinctUntilChanged(),  // Ignoriert gleiche Eingaben hintereinander
+            switchMap((query) => {
+                if (typeof query === 'string' && query.trim() !== '') {
+                    return of(this.chatService.searchMessagesAndChannels(query));
+                } else {
+                    return of([]);
+                }
+            })
         );
     }
 
@@ -224,38 +233,43 @@ export class HeaderComponent {
     }
 
     selected(event: MatAutocompleteSelectedEvent): void {
-        // const value = (event.option.value || '').trim();
-        // const selectedOption = this.getAvailableMessages().find(option => option.id === value);
-        // if (selectedOption) {
-        //   if (selectedOption.type === 'user') {
-        //     // this.openDirectMessage(selectedOption.id);
-        //     this.chatService.setComponent('directMessage');
-        //   } else if (selectedOption.type === 'channel') {
-        //     // this.openChannel(selectedOption.id);
-        //     this.chatService.setComponent('chat');
-        //   }
-        // }
-        // this.searchInput.nativeElement.value = '';
-        // this.formCtrl.setValue(null);
+        const selectedOption = event.option.value;
+    
+        if (selectedOption) {
+            if (selectedOption.type === 'user' && selectedOption.userID) {
+                this.chatService.selectDirectMessage(selectedOption.userID);
+            } else if (selectedOption.type === 'channel' && selectedOption.channelID) {
+                this.chatService.selectChannel(selectedOption.channelID);
+            }
+        }
+    
+        // Leere das Eingabefeld und setze den FormControl-Wert zurück
+        this.searchInput.nativeElement.value = '';
+        this.formCtrl.setValue(''); // Setzt das Eingabefeld auf leer zurück
+    }
+    
+    displayOption(option: SearchResult): string {
+        // Wenn eine Option vorhanden ist, gib die Nachricht zurück.
+        // Wenn keine Option vorhanden ist, gib einen leeren String zurück.
+        return option && option.message ? option.message : '';
+    }
+    
+    getChatComponentInstance(): ChatComponent {
+        // Hier müsstest du einen Weg finden, die Instanz der ChatComponent zu erhalten
+        // Beispiel: falls ChatComponent ein Child von HeaderComponent ist
+        return this.chatComponentInstance;
     }
 
     private async _filter(value: string): Promise<SearchResult[]> {
         const filterValue = value.toLowerCase();
 
-        const allCategorys = await this.getAvailableMessages();
+        const allMessages = await this.getAvailableMessages();
 
-        const filteredUsers = allCategorys.filter(
-            (option) =>
-                option.type === "user" &&
-                option.name.toLowerCase().includes(filterValue),
+        return allMessages.filter(option =>
+            option.name.toLowerCase().includes(filterValue) ||
+            option.message.toLowerCase().includes(filterValue)
         );
-
-        const filteredChannels = allCategorys.filter(
-            (option) =>
-                option.type === "channel" &&
-                option.name.toLowerCase().includes(filterValue),
-        );
-
-        return [...filteredUsers, ...filteredChannels];
     }
+
+
 }
