@@ -1,39 +1,26 @@
 <div class="chat-input">
-    <textarea
-        type="text"
-        value="{{ data.message }}"
-    ></textarea>
+    <mat-form-field appearance="fill">
+      <textarea matInput [formControl]="messageControl"></textarea>
+    </mat-form-field>
     <div class="action-buttons">
-        <div class="button-wrapper">
-            <button
-                mat-icon-button
-                (click)="togglePicker()"
-            >
-                <img
-                    src="../../../assets/img/icons/sentiment_satisfied.svg"
-                    alt="Add emoji"
-                />
-            </button>
-
-            <div
-                class="emoji-picker"
-                *ngIf="isPickerVisible"
-            >
-                <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
-            </div>
-            <div class="save-cancel">
-                <mat-dialog-actions class="cancel">
-                    <button mat-flat-button>Abbrechen</button>
-                </mat-dialog-actions>
-                <mat-dialog-actions class="save">
-                    <button
-                        mat-flat-button
-                        color="primary"
-                    >
-                        Speichern
-                    </button>
-                </mat-dialog-actions>
-            </div>
+      <div class="button-wrapper">
+        <button mat-icon-button (click)="togglePicker()">
+          <img src="../../../assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
+        </button>
+  
+        <div class="emoji-picker" *ngIf="isPickerVisible">
+          <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
         </div>
+  
+        <div class="save-cancel">
+          <mat-dialog-actions class="cancel">
+            <button mat-flat-button (click)="onCancel()">Abbrechen</button>
+          </mat-dialog-actions>
+          <mat-dialog-actions class="save">
+            <button mat-flat-button color="primary" (click)="onSave()">Speichern</button>
+          </mat-dialog-actions>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  

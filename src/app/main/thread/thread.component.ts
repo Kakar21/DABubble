@@ -15,13 +15,20 @@ import { MatButtonModule } from "@angular/material/button";
 import { RouterModule } from "@angular/router";
 import { ChatService } from "../chat/chat.service";
 import { Message } from "../../interfaces/message";
-import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";;
+import { FormControl, FormsModule, ReactiveFormsModule,} from "@angular/forms";;
 import { CurrentuserService } from "../../currentuser.service";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { map, Observable, startWith } from "rxjs";
 import { UsersList } from "../../interfaces/users-list";
+import { DialogEditMessageThreadComponent } from "../../dialog-edit-message-thread/dialog-edit-message-thread.component";
+import { MatDialog } from '@angular/material/dialog';
+import { ThreadService } from "./thread.service";
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ImageService } from "../../image.service";
 
 @Component({
     selector: "app-thread",
@@ -32,7 +39,11 @@ import { UsersList } from "../../interfaces/users-list";
     PickerComponent,
     EmojiModule,
     MatAutocompleteModule,
-    ReactiveFormsModule],
+    ReactiveFormsModule,
+    MatMenuModule,
+    MatIconModule,
+    MatDialogModule  
+],  
     templateUrl: "./thread.component.html",
     styleUrls: ["./thread.component.scss"],
 })
@@ -53,6 +64,9 @@ export class ThreadComponent implements OnInit, OnChanges {
     constructor(
         private chatService: ChatService,
         public currentUser: CurrentuserService,
+        public dialog: MatDialog,  // MatDialog injizieren
+        private threadService: ThreadService,
+        private imageService: ImageService
     ) {
         this.filteredMembers = this.formCtrl.valueChanges.pipe(
             startWith(""),
@@ -285,4 +299,42 @@ export class ThreadComponent implements OnInit, OnChanges {
         };
         return date.toLocaleTimeString("de-DE", options);
     }
+
+    openDialogEditMessageThread(threadId: string, currentMessage: string): void {
+        const dialogRef = this.dialog.open(DialogEditMessageThreadComponent, {
+            width: '400px',
+            data: { message: currentMessage }
+        });
+    
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const newContent = result;
+                this.threadService.updateThreadMessage(this.channelId, this.messageId, threadId, newContent)
+                    .then(() => console.log('Thread message updated successfully'))
+                    .catch(error => console.error('Error updating thread message:', error));
+            } else {
+                console.log('Dialog closed without saving');
+            }
+        });
+    }
+    
+    onFileSelected(event: any) {
+        const input = event.target as HTMLInputElement;
+        if (input && input.files && input.files.length > 0) {
+            this.imageService.uploadFile(input).then((url: string) => {
+                if (url) {
+                    // Hier wird das Bild als <img> Tag in die Nachricht eingefügt
+                    this.messageText += `<img src="${url}" alt="Uploaded Image" style="max-width: 100%; height: auto;" />`;
+                } else {
+                    console.error('File upload returned an empty URL.');
+                }
+            }).catch((error) => {
+                console.error('Error uploading file:', error);
+            });
+        }
+    }
+    
+   
+   
+
 }

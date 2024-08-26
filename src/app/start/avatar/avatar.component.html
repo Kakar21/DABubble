@@ -1,11 +1,15 @@
 <main>
     <h1>Wähle deinen Avatar</h1>
     <div class="content-container">
-        @if (this.avatar) {
+        @if (avatarPreviewUrl) {
+            <div class="profilePic">
+                <img [src]="avatarPreviewUrl" alt="User Avatar" />
+            </div>
+        } @else if (this.avatar){
             <div class="profilePic">
                 <img src="../../../assets/img/avatar/{{ this.avatar }}.svg" />
             </div>
-        } @else {
+        } @else  {
             <div class="noAvatar">
                 <img src="../../../assets/img/icons/person.svg" />
             </div>
@@ -44,12 +48,8 @@
         </div>
         <div>
             <p>eigenes Bild verwenden</p>
-            <button
-                mat-stroked-button
-                class="uploadPic"
-            >
-                Datei hochladen
-            </button>
+            <button mat-stroked-button class="uploadPic" (click)="fileInput.click()">Datei hochladen</button>
+            <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept="image/*" />
         </div>
     </div>
     <div class="submit-wrapper">
