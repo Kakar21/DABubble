@@ -55,6 +55,7 @@ import { ChatComponent } from "../chat/chat.component";
         MatAutocompleteModule,
         MatInputModule,
         ReactiveFormsModule,
+        SearchComponent
     ],
     templateUrl: "./header.component.html",
     styleUrl: "./header.component.scss",

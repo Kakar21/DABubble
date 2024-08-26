@@ -1,29 +1,25 @@
 <section class="header-content">
-    @if (
-        isMobileOpen("chat") ||
-        isMobileOpen("thread") ||
-        isMobileOpen("directmessage") ||
-        isMobileOpen("newMessage")
-    ) {
-        <div
-            class="mobile-header-open"
-            (click)="mobileGoBack()"
-        >
-            <img src="../../../assets/img/icons/keyboard_arrow_left.svg" />
-            <div class="devspace">
-                <img src="../../../assets/img/devspace/background.png" />
-                <img src="../../../assets/img/devspace/devspace.svg" />
-            </div>
-            <img src="../../../assets/img/devspace/name.svg" />
+    @if ( isMobileOpen("chat") || isMobileOpen("thread") ||
+    isMobileOpen("directmessage") || isMobileOpen("newMessage") ) {
+    <div
+        class="mobile-header-open"
+        (click)="mobileGoBack()"
+    >
+        <img src="../../../assets/img/icons/keyboard_arrow_left.svg" />
+        <div class="devspace">
+            <img src="../../../assets/img/devspace/background.png" />
+            <img src="../../../assets/img/devspace/devspace.svg" />
         </div>
+        <img src="../../../assets/img/devspace/name.svg" />
+    </div>
     } @else {
-        <div
-            class="logo"
-            (click)="log()"
-        >
-            <img src="../../../assets/img/logo/icon.svg" />
-            <img src="../../../assets/img/logo/name.svg" />
-        </div>
+    <div
+        class="logo"
+        (click)="log()"
+    >
+        <img src="../../../assets/img/logo/icon.svg" />
+        <img src="../../../assets/img/logo/name.svg" />
+    </div>
     }
     <div class="searchbar-wrapper">
         <input
@@ -63,13 +59,13 @@
                 <img src="../../../assets/img/icons/is-online.svg" />
             </span>
             @if (currentuser.currentUser.avatar.length > 1) {
-                <img src="{{ currentuser.currentUser.avatar }}" />
+            <img src="{{ currentuser.currentUser.avatar }}" />
             } @else {
-                <img
-                    src="../../../assets/img/avatar/{{
-                        currentuser.currentUser.avatar
-                    }}.svg"
-                />
+            <img
+                src="../../../assets/img/avatar/{{
+                    currentuser.currentUser.avatar
+                }}.svg"
+            />
             }
         </div>
         <button
