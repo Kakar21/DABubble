@@ -34,6 +34,7 @@ import { NewMessageOption } from "../../interfaces/new-message-option";
 import { MatInputModule } from "@angular/material/input";
 import { DirectmessageService } from "../chat/direct-message/directmessage.service";
 import { SearchResult } from "../../interfaces/search-result";
+import { SearchComponent } from "../../search/search.component";
 
 @Component({
     selector: "app-header",
@@ -52,6 +53,7 @@ import { SearchResult } from "../../interfaces/search-result";
         MatAutocompleteModule,
         MatInputModule,
         ReactiveFormsModule,
+        SearchComponent
     ],
     templateUrl: "./header.component.html",
     styleUrl: "./header.component.scss",

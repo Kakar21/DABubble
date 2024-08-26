@@ -1,0 +1,24 @@
+<ais-instantsearch
+    [config]="config"
+    class="ais-InstantSearch"
+>
+    <ais-configure [searchParameters]="{ hitsPerPage: 5 }"></ais-configure>
+    <ais-search-box></ais-search-box>
+    <ais-hits>
+        <ng-template let-hits="hits">
+            <ol class="ais-Hits-list">
+                <li
+                    *ngFor="let hit of hits"
+                    class="ais-Hits-item"
+                >
+                    <div class="hit-name">
+                        <ais-highlight
+                            attribute="name"
+                            [hit]="hit"
+                        ></ais-highlight>
+                    </div>
+                </li>
+            </ol>
+        </ng-template>
+    </ais-hits>
+</ais-instantsearch>
