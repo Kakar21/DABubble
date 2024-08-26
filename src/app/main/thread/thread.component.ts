@@ -324,7 +324,7 @@ export class ThreadComponent implements OnInit, OnChanges {
             this.imageService.uploadFile(input).then((url: string) => {
                 if (url) {
                     // Hier wird das Bild als <img> Tag in die Nachricht eingefügt
-                    this.messageText += `<img src="${url}" alt="Uploaded Image" style="max-width: 100%; height: auto;" />`;
+                    this.messageText += `<img src="${url}" alt="Uploaded Image" style="max-width: 400px; height: auto;" />`;
                 } else {
                     console.error('File upload returned an empty URL.');
                 }
