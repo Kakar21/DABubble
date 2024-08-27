@@ -198,6 +198,7 @@
         width: 4.375rem;
         height: 4.375rem;
         border-radius: 50%;
+        object-fit: cover;
     }
 
     > div:not(.message-info, .hoverMenu) {
@@ -743,6 +744,7 @@ mat-option {
         width: 3.125rem;
         height: 3.125rem;
         border-radius: 50%;
+        object-fit: cover;
     }
 
     ::ng-deep::ng-deep .mat-ripple {
