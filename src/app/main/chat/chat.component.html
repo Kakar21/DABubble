@@ -8,7 +8,7 @@
         <div class="participants-wrapper">
             <button mat-icon-button (click)="openDialog($event)">
                 <div>
-                    @for (i of [0, 1, 2]; track i) {
+                    @for (i of chatService.numberOfMembers(); track i) {
                     @if (
                     chatService.currentChannel.members[i].avatar
                     .length > 1

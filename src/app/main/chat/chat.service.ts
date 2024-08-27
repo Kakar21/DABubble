@@ -233,6 +233,16 @@ export class ChatService {
         await setDoc(newMessageRef, messageData);
     }
 
+    numberOfMembers() {
+        let number = [];
+
+        for (let index = 0; index < this.currentChannel.members.length && index < 3; index++) {
+            number.push(index);
+        }
+        
+        return number;
+    }
+
     padNumber(num: number, size: number) {
         let s = num + "";
         while (s.length < size) s = "0" + s;
