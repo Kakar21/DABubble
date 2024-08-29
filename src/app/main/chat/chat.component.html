@@ -89,7 +89,7 @@
                     </div>
                     <div #message class="message-text" [ngClass]="{'current-user-text': message.value.name === currentUser.currentUser.name}"  (click)="onMessageClick($event)"
                         [innerHTML]="message.value.message | highlightMentions"  >
-                    </div>
+                    </div>     
                     <div>
                         <div class="reaction">
                             @if (message.value.reactions) {
@@ -132,6 +132,14 @@
                                             $event.stopPropagation()
                                         " />
                         </div>
+                    </div>
+                    <div *ngIf="chatService.threadInfoMap.get(message.key)?.count as threadCount">
+                        @if (threadCount > 1) {
+                            <span>{{ chatService.threadInfoMap.get(message.key)?.count }} Antworten</span>
+                        } @else {
+                            <span>1 Antwort</span>
+                        }
+                        <p *ngIf="chatService.threadInfoMap.get(message.key)?.lastMessageTime as lastMessageTime">Letzte Antwort {{ threadDateTime(lastMessageTime) }}</p>
                     </div>
                 </div>
             </div>

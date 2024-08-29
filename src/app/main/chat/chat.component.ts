@@ -105,8 +105,13 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     }
 
     ngAfterViewInit() {
-        if (this.chatService.currentChannel.messages)
-            this.messagesArrayLength = this.chatService.currentChannel.messages.size
+        if (this.chatService.currentChannel.messages) {
+            this.messagesArrayLength = this.chatService.currentChannel.messages.size;
+    
+            this.chatService.currentChannel.messages.forEach((_, messageId) => {
+                this.chatService.loadThreadInfo(this.chatService.currentChannelID, messageId);
+            });
+        }
         this.scrollToBottom();
     }
 
@@ -114,6 +119,8 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         if (this.messagesArrayLength !== this.chatService.currentChannel.messages?.size)
             this.scrollToBottom();
     }
+
+
 
     toggleThread(channelId: string, messageId: string) {
         this.threadOpen.emit({ channelId, messageId });
@@ -391,6 +398,41 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         };
         return date.toLocaleTimeString("de-DE", options);
     }
+
+    threadDateTime(timestamp: string): string {
+        const date = new Date(timestamp);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Setze die Uhrzeit auf Mitternacht für den heutigen Tag
+    
+        const dateToCompare = new Date(date);
+        dateToCompare.setHours(0, 0, 0, 0); // Setze die Uhrzeit auf Mitternacht für das Datum, das verglichen wird
+    
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1); // Gestern ist ein Tag vor heute
+    
+        const timeOptions: Intl.DateTimeFormatOptions = {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        };
+        const timeString = date.toLocaleTimeString("de-DE", timeOptions); // Formatiere die Uhrzeit
+    
+        if (dateToCompare.getTime() === today.getTime()) {
+            // Wenn das Datum heute ist, gib nur die Uhrzeit zurück
+            return `${timeString} Uhr`;
+        } else if (dateToCompare.getTime() === yesterday.getTime()) {
+            // Wenn das Datum gestern ist, gib "Gestern" und die Uhrzeit zurück
+            return `Gestern, ${timeString} Uhr`;
+        } else {
+            // Wenn das Datum älter als gestern ist, gib das Datum und die Uhrzeit zurück
+            const day = String(date.getDate()).padStart(2, '0'); // Erhalte den Tag mit führender Null
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Erhalte den Monat mit führender Null
+            const dateString = `${day}.${month}`; // Formatiere das Datum ohne Punkt am Ende
+            return `${dateString}, ${timeString} Uhr`;
+        }
+    }
+    
+    
 
     openProfile(username: string): void {
         console.log("Clicked mention:", username);

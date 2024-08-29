@@ -51,6 +51,7 @@ export class ChatService {
     collectionPath = '';
     pathNr = '';
     allMessages: Record<string, Message[]> = {};  // Hinzugefügt
+    threadInfoMap: Map<string, { count: number; lastMessageTime: string | null }> = new Map();
 
 
     constructor(
@@ -120,6 +121,7 @@ export class ChatService {
                 const messageData = doc.data() as Message;
                 this.channels[id].messages?.set(doc.id, messageData);
                 messages.push(messageData);  // Hier sammeln wir die Nachrichten
+                this.loadThreadInfo(id, doc.id);
             });
     
             this.allMessages[id] = messages;  // Speichere die Nachrichten für den Kanal
@@ -178,6 +180,29 @@ export class ChatService {
                 observer.next(messages);
             });
         });
+    }
+
+    async getThreadInfo(channelId: string, messageId: string): Promise<{ count: number; lastMessageTime: string | null }> {
+        const threadRef = collection(this.firestore.firestore, `channels/${channelId}/messages/${messageId}/threads`);
+        const threadSnapshot = await getDocs(threadRef);
+        
+        let count = 0;
+        let lastMessageTime = '';
+    
+        threadSnapshot.forEach((doc) => {
+            count++;
+            const messageData = doc.data() as Message;
+            if (!lastMessageTime || (messageData.time > lastMessageTime)) {
+                lastMessageTime = messageData.time;
+            }
+        });
+    
+        return { count, lastMessageTime };
+    }
+
+    async loadThreadInfo(channelId: string, messageId: string) {
+        const threadInfo = await this.getThreadInfo(channelId, messageId);
+        this.threadInfoMap.set(messageId, threadInfo);
     }
 
     async sendMessage(channelId: string, message: Message) {
@@ -394,6 +419,7 @@ export class ChatService {
         }
         this.selectedChannel = channelID;
         this.selectedDirectmessage = "";
+        this.threadInfoMap.clear();
         this.loadChannel(channelID);
         if (window.matchMedia("(max-width: 768px)").matches) {
             this.mobileOpen = "chat";

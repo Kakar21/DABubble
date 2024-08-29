@@ -97,6 +97,7 @@ export class ThreadComponent implements OnInit, OnChanges {
             .subscribe((messages) => {
                 this.messages = messages;
             });
+            this.chatService.loadChannel(this.channelId);
     }
 
     async send() {
@@ -119,6 +120,7 @@ export class ThreadComponent implements OnInit, OnChanges {
                 message,
             );
             this.messageText = "";
+            this.chatService.threadInfoMap.clear();
             this.loadMessages();
         }
     }
