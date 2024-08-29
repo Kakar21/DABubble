@@ -38,7 +38,7 @@
                     <app-thread
                         [channelId]="chatService.currentChannelID"
                         [messageId]="selectedMessageId"
-                        (threadClose)="closeThread()"
+                        (threadClose)="closeThread()" [initialMessage]="initialMessage"
                     ></app-thread>
                 </mat-drawer>
             </mat-drawer-container>

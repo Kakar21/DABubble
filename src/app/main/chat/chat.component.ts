@@ -101,7 +101,6 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
             startWith(""),
             map((value: string | null) => (value ? this._filter(value) : [])),
         );
-
     }
 
     ngAfterViewInit() {
@@ -127,6 +126,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         if (window.matchMedia("(max-width: 431px)").matches) {
             this.chatService.mobileOpen = "thread";
         }
+
     }
 
     onMessageClick(event: MouseEvent) {
@@ -138,6 +138,19 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
             } else {
                 console.error("Kein Benutzername definiert für dieses Element");
             }
+        }
+    }
+
+    openProfileById(userId: string) {
+        const user = this.chatService.usersList.find(
+            (u) => u.id === userId,
+        );
+        if (user) {
+            this.dialog.open(PofileInfoCardComponent, {
+                data: user,
+            });
+        } else {
+            console.log("Benutzer nicht gefunden");
         }
     }
 
@@ -165,6 +178,10 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
             );
         }
     }
+
+    noReactions(message: Message): boolean {
+        return !message.reactions || Object.keys(message.reactions).length === 0;
+    }    
 
     @HostListener('window:resize', ['$event'])
     onResize(event: Event) {
@@ -438,11 +455,6 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
                 return `vor ${fullYears} ${fullYears === 1 ? 'Jahr' : 'Jahren'}`;
             }
         }
-    }
-    
-
-    openProfile(username: string): void {
-        console.log("Clicked mention:", username);
     }
 
     onInputChange(event: Event): void {

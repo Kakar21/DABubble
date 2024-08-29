@@ -161,6 +161,27 @@ export class ChatService {
         });
     }
 
+    observeMessage(channelId: string, messageId: string): Observable<Message | undefined> {
+        const messageDocRef = doc(
+            this.firestore.firestore,
+            `channels/${channelId}/messages/${messageId}`
+        );
+    
+        return new Observable((observer) => {
+            return onSnapshot(messageDocRef, (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    // Wenn das Dokument existiert, übergebe die Nachrichtendaten an den Observer
+                    observer.next(docSnapshot.data() as Message);
+                } else {
+                    // Wenn das Dokument nicht existiert, übergebe undefined
+                    observer.next(undefined);
+                }
+            });
+        });
+    }
+    
+    
+
     loadThreadMessages(
         channelId: string,
         messageId: string,

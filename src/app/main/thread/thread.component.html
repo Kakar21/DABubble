@@ -13,6 +13,82 @@
     </header>
     <div class="chat-body">
         <div class="chat">
+            <div class="message" [ngClass]="{
+                        'my-message': initialMessage.id === currentUser.currentUser.id,
+                    }">
+                    <img *ngIf="initialMessage.avatar.length > 1; else defaultAvatar" [src]="initialMessage.avatar" />
+                    <ng-template #defaultAvatar>
+                        <img src="../../../assets/img/avatar/{{
+                                initialMessage.avatar
+                            }}.svg" />
+                    </ng-template>
+                    <div>
+                        <div class="message-info">
+                            <h5>{{ initialMessage.name }}</h5>
+                            <span>{{ dayTime(initialMessage.time) }} Uhr</span>
+                        </div>
+                        <div class="message-text"
+                            [ngClass]="{'current-user-text': initialMessage.name === currentUser.currentUser.name}"
+                            [innerHTML]="initialMessage.message">
+                        
+                        <div class="hoverMenu">
+                            <button mat-icon-button>
+                                <img src="../../../assets/img/icons/emoji-check.svg" alt="React" />
+                            </button>
+                            <button mat-icon-button>
+                                <img src="../../../assets/img/icons/emoji-hands-up.svg" alt="React" />
+                            </button>
+                            <ng-container *ngIf="initialMessage.id === currentUser.currentUser.id">
+                                <button mat-icon-button class="moreButton" [matMenuTriggerFor]="menu">
+                                    <img src="../../../assets/img/icons/3-dots.svg" alt="More" />
+                                </button>
+                                <mat-menu class="moreMenu" #menu="matMenu">
+                                    <button mat-menu-item
+                                        (click)="openDialogEditMessageThread(initialMessage.padNumber.toString(), initialMessage.message)">
+                                        Nachricht bearbeiten
+                                    </button>
+                                </mat-menu>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="reaction">
+                            @if (initialMessage.reactions) {
+                            @for (reaction of initialMessage.reactions| keyvalue;track reaction;let i = $index) {
+                            <div class="reaction-wrapper">
+                                <div class="reaction-tooltip">
+                                    <ngx-emoji [emoji]="reaction.key"></ngx-emoji>
+                                    <span>{{reaction.key}}</span>
+                                    @for (user of reaction.value.users; track $index) {
+                                    <p>{{user}}@if (reaction.value.users.length > 1) {
+                                        ,
+                                        }</p>
+                                    }
+                                    @if (reaction.value.users.length > 1) {
+                                    <span>haben reagiert</span>
+                                    }@else {
+                                    <span>hat reagiert</span>
+                                    }
+                                </div>
+                                <button mat-raised-button (click)="addOrSubReaction(initialMessage, reaction.key)">
+                                    <ngx-emoji [emoji]="reaction.key"></ngx-emoji>
+                                    <span>
+                                        {{reaction.key}}
+                                        {{reaction.value.count}}</span></button>
+                            </div>
+                            }
+                            }
+                            <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"
+                                (click)="togglePicker('reaction',initialMessage.padNumber,$event); $event.stopPropagation()" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="answers-info" *ngIf="getNumberOfAnswers()">
+                <p>{{ getNumberOfAnswers() }}</p>
+                <div></div>
+            </div>
             <div *ngFor="let message of messages; let i = index">
                 <div *ngIf="
                         i === 0 || isLater(message.time, messages[i - 1]?.time)
@@ -94,8 +170,8 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
-    </div>
     <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'">
         <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
     </div>

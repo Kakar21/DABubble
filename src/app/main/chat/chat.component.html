@@ -33,7 +33,6 @@
     <div class="chat-content">
         @if (!emptyChannel()) {
         <div class="chat" #chatContainer>
-            <!-- TODO: Add answers to thread amount -->
             @for (
             message of chatService.currentChannel.messages | keyvalue;
             track message;
@@ -54,6 +53,9 @@
                     </button>
                     <button mat-icon-button>
                         <img src="../../../assets/img/icons/emoji-hands-up.svg" alt="React" />
+                    </button>
+                    <button mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
+                        <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                     </button>
                     <button (click)="
                                     toggleThread(
@@ -84,13 +86,13 @@
                 }
                 <div>
                     <div class="message-info">
-                        <h5>{{ message.value.name}}</h5>
+                        <h5 (click)="openProfileById(message.value.id)">{{ message.value.name}}</h5>
                         <span>{{ dayTime(message.value.time) }} Uhr</span>
                     </div>
                     <div #message class="message-text" [ngClass]="{'current-user-text': message.value.name === currentUser.currentUser.name}"  (click)="onMessageClick($event)"
                         [innerHTML]="message.value.message | highlightMentions"  >
                     </div>     
-                    <div>
+                    <div *ngIf="!noReactions(message.value)">
                         <div class="reaction">
                             @if (message.value.reactions) {
                             @for (

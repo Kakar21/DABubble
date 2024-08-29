@@ -14,7 +14,7 @@ import {
 import { MatButtonModule } from "@angular/material/button";
 import { RouterModule } from "@angular/router";
 import { ChatService } from "../chat/chat.service";
-import { Message } from "../../interfaces/message";
+import { EMPTY_MESSAGE, Message } from "../../interfaces/message";
 import { FormControl, FormsModule, ReactiveFormsModule,} from "@angular/forms";;
 import { CurrentuserService } from "../../currentuser.service";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
@@ -29,6 +29,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ImageService } from "../../image.service";
+import { initializeApp } from "@angular/fire/app";
 
 @Component({
     selector: "app-thread",
@@ -50,6 +51,7 @@ import { ImageService } from "../../image.service";
 export class ThreadComponent implements OnInit, OnChanges {
     @Input() channelId!: string;
     @Input() messageId!: string;
+    @Input() initialMessage!: Message;
     @Output() threadClose = new EventEmitter<boolean>();
     @ViewChild("messageInput") messageInput!: ElementRef<HTMLInputElement>;
     messages: Message[] = [];
@@ -62,7 +64,7 @@ export class ThreadComponent implements OnInit, OnChanges {
     filteredMembers: Observable<UsersList[]>;
 
     constructor(
-        private chatService: ChatService,
+        public chatService: ChatService,
         public currentUser: CurrentuserService,
         public dialog: MatDialog,  // MatDialog injizieren
         private threadService: ThreadService,
@@ -88,6 +90,18 @@ export class ThreadComponent implements OnInit, OnChanges {
         this.threadClose.emit(false);
         if (window.matchMedia("(max-width: 768px)").matches) {
             this.chatService.mobileOpen = "chat";
+        }
+    }
+
+    getNumberOfAnswers() {
+        if (this.messages.length > 1 ) {
+            return this.messages.length + ' Antworten';
+
+        } else if (this.messages.length === 1){
+            return '1 Antwort';
+
+        } else {
+            return false;
         }
     }
 

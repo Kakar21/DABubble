@@ -84,6 +84,7 @@ header {
         width: 4.375rem;
         height: 4.375rem;
         border-radius: 50%;
+        object-fit: cover;
     }
 
     > div:not(.message-info) {
@@ -411,6 +412,25 @@ mat-option {
 
     &:hover {
         font-weight: 700;
+    }
+}
+
+.answers-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.5rem 2rem 0 2rem;
+
+    >p {
+        color: var(--light-purple-line);
+        font-size: 1.125rem;
+        white-space: nowrap;
+    }
+
+    >div {
+        height: 1px;
+        background-color: var(--light-purple-line);
+        width: 100%;
     }
 }
 
