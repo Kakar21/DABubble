@@ -133,11 +133,11 @@
                                         " />
                         </div>
                     </div>
-                    <div *ngIf="chatService.threadInfoMap.get(message.key)?.count as threadCount">
+                    <div class="thread-info" *ngIf="chatService.threadInfoMap.get(message.key)?.count as threadCount">
                         @if (threadCount > 1) {
-                            <span>{{ chatService.threadInfoMap.get(message.key)?.count }} Antworten</span>
+                            <span (click)="toggleThread(chatService.currentChannelID,message.key)">{{ chatService.threadInfoMap.get(message.key)?.count }} Antworten</span>
                         } @else {
-                            <span>1 Antwort</span>
+                            <span (click)="toggleThread(chatService.currentChannelID,message.key)">1 Antwort</span>
                         }
                         <p *ngIf="chatService.threadInfoMap.get(message.key)?.lastMessageTime as lastMessageTime">Letzte Antwort {{ threadDateTime(lastMessageTime) }}</p>
                     </div>

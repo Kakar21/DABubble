@@ -401,37 +401,44 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
 
     threadDateTime(timestamp: string): string {
         const date = new Date(timestamp);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Setze die Uhrzeit auf Mitternacht für den heutigen Tag
+        const now = new Date();
+        
+        if (date.toDateString() === now.toDateString()) {
+            const timeOptions: Intl.DateTimeFormatOptions = {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            };
+            const timeString = date.toLocaleTimeString("de-DE", timeOptions);
+            return `um ${timeString} Uhr`;
+        }
     
-        const dateToCompare = new Date(date);
-        dateToCompare.setHours(0, 0, 0, 0); // Setze die Uhrzeit auf Mitternacht für das Datum, das verglichen wird
+        const yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        if (date.toDateString() === yesterday.toDateString()) {
+            return `vor 1 Tag`;
+        }
     
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1); // Gestern ist ein Tag vor heute
+        const diffInMs = now.getTime() - date.getTime();
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)); 
     
-        const timeOptions: Intl.DateTimeFormatOptions = {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-        };
-        const timeString = date.toLocaleTimeString("de-DE", timeOptions); // Formatiere die Uhrzeit
-    
-        if (dateToCompare.getTime() === today.getTime()) {
-            // Wenn das Datum heute ist, gib nur die Uhrzeit zurück
-            return `${timeString} Uhr`;
-        } else if (dateToCompare.getTime() === yesterday.getTime()) {
-            // Wenn das Datum gestern ist, gib "Gestern" und die Uhrzeit zurück
-            return `Gestern, ${timeString} Uhr`;
+        if (diffInDays < 7) {
+            return `vor ${diffInDays} ${diffInDays === 1 ? 'Tag' : 'Tagen'}`;
+        } else if (diffInDays < 30) {
+            const weeks = Math.floor(diffInDays / 7);
+            return `vor ${weeks} ${weeks === 1 ? 'Woche' : 'Wochen'}`;
         } else {
-            // Wenn das Datum älter als gestern ist, gib das Datum und die Uhrzeit zurück
-            const day = String(date.getDate()).padStart(2, '0'); // Erhalte den Tag mit führender Null
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Erhalte den Monat mit führender Null
-            const dateString = `${day}.${month}`; // Formatiere das Datum ohne Punkt am Ende
-            return `${dateString}, ${timeString} Uhr`;
+            const years = now.getFullYear() - date.getFullYear();
+            const months = now.getMonth() - date.getMonth() + (years * 12);
+            
+            if (months < 12) {
+                return `vor ${months} ${months === 1 ? 'Monat' : 'Monaten'}`;
+            } else {
+                const fullYears = Math.floor(months / 12);
+                return `vor ${fullYears} ${fullYears === 1 ? 'Jahr' : 'Jahren'}`;
+            }
         }
     }
-    
     
 
     openProfile(username: string): void {

@@ -239,6 +239,7 @@
     border-radius: 0rem 1.875rem 1.875rem 1.875rem;
     background: var(--bg-color);
     transition: 80ms ease-in;
+    font-size: 1.125rem;
 }
 
 .my-message {
@@ -764,6 +765,29 @@ mat-option {
 
     &:hover {
         font-weight: 700;
+    }
+}
+
+.thread-info {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+
+    >span {
+        color: var(--purple-3);
+        font-size: 1.125rem;
+        transition: 80ms linear;
+
+        &:hover {
+            color: var(--purple-1);
+            font-weight: 700;
+            cursor: pointer;
+        }
+    }
+
+    >p {
+        color: var(--text-gray);
+        font-size: 0.875rem;
     }
 }
 
