@@ -88,19 +88,25 @@
                             @for (reaction of message.value.reactions| keyvalue;track reaction;let i = $index) {
                             <div class="reaction-wrapper">
                                 <div class="reaction-tooltip">
-                                    <ngx-emoji [emoji]="reaction.key"></ngx-emoji>
                                     <span>{{reaction.key}}</span>
-
-                                    @for (user of reaction.value.users; track $index) {
-                                    <p>{{user}}@if (reaction.value.users.length > 1) {
-                                        ,
-                                        }</p>
-                                    }
-                                    @if (reaction.value.users.length > 1) {
-                                    <span>haben reagiert</span>
-                                    }@else {
-                                    <span>hat reagiert</span>
-                                    }
+                                    <div>
+                                        @for (user of reaction.value.users; track $index) {
+                                            @if (($index + 1) != reaction.value.users.length) {
+                                                @if (($index + 2) == reaction.value.users.length) {
+                                                <span>{{user}} und </span>
+                                                } @else {
+                                                <span>{{user}}, </span>
+                                                }
+                                            } @else {
+                                                <span>{{user}}</span>
+                                            }
+                                            }
+                                            @if (reaction.value.users.length > 1) {
+                                            <p>haben reagiert</p>
+                                            }@else {
+                                            <p>hat reagiert</p>
+                                            }
+                                    </div>
                                 </div>
                                 <button mat-raised-button (click)="addOrSubReaction(message.key, reaction.key)">
                                     <ngx-emoji [emoji]="reaction.key"></ngx-emoji>

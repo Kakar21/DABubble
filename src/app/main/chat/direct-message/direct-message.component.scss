@@ -223,32 +223,37 @@
 .reaction-tooltip {
     display: none;
     position: absolute;
-    width: 8rem;
-    padding: 1rem;
+    width: 8.625rem;
+    padding: 0.9375rem 0.625rem;
     left: 2.25rem;
     bottom: 2.25rem;
-    background-color: #444df2;
+    background-color: var(--purple-1);
     border-radius: 1.875rem 1.875rem 1.875rem 0rem;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.3125rem;
 
-    > span {
-        font-size: 1rem;
-        font-weight: 700;
-        color: white;
+    >span {
+        font-size: 1.875rem;
+        margin: -0.3125rem;
     }
 
-    > p {
-        font-size: 1rem;
-        font-weight: 400;
-        color: white;
-    }
+    >div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
-    > img {
-        width: 1.875rem;
-        height: 1.875rem;
+        >span {
+            color: var(--white);
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-align: center;
+        }
+    
+        >p {
+            color: var(--white);
+        }
     }
 }
 

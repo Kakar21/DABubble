@@ -200,6 +200,10 @@ export class ThreadComponent implements OnInit, OnChanges {
         return charAfterAt !== " ";
     }
 
+    noReactions(message: Message): boolean {
+        return !message.reactions || Object.keys(message.reactions).length === 0;
+    }
+
     addAtSymbol() {
         if (this.messageText.slice(-1) !== "@") {
             this.messageText += "@";
