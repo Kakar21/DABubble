@@ -63,15 +63,8 @@ header {
     }
 }
 
-.chat-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: calc(100% - 5.9375rem);
-
-    .message:first-child {
-        margin-top: 1.5rem;
-    }
+.initialMessage {
+    margin-top: 1.5rem;
 }
 
 .message {
@@ -108,9 +101,6 @@ header {
     }
 }
 
-.message:first-child {
-    margin-top: 1.5rem;
-}
 .emoji-picker {
     position: absolute;
     z-index: 500;
@@ -123,6 +113,12 @@ header {
 
     > h5 {
         font-size: 1.125rem;
+        transition: 100ms ease-in;
+
+        &:hover {
+            color: var(--purple-1);
+            cursor: pointer;
+        }
     }
 
     > span {
@@ -134,7 +130,7 @@ header {
 .message-text {
     padding: 0.9375rem;
     align-self: stretch;
-    border-radius: 0rem 1.875rem 1.875rem 1.875rem;
+    border-radius: 0rem 1.25rem 1.25rem 1.25rem;
     background: var(--bg-color);
     font-size: 1.125rem;
 }
@@ -147,7 +143,7 @@ header {
     }
 
     .message-text {
-        border-radius: 1.875rem 0rem 1.875rem 1.875rem;
+        border-radius: 1.25rem 0rem 1.25rem 1.25rem;
         background-color: var(--purple-2);
         color: var(--white);
 
@@ -202,12 +198,14 @@ header {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .reaction-wrapper {
     position: relative;
 
-    > button {
+
+    >button {
         padding: 0.3125rem 0.625rem;
         border-radius: 1.25rem;
         border: 1px solid var(--light-purple-line);
@@ -219,24 +217,32 @@ header {
             align-items: center;
             gap: 0.625rem;
 
-            > img {
-                width: 1.5rem;
-                height: 1.5rem;
+            >span {
+                font-size: 1.5rem;
+                margin: -0.275rem;
             }
 
-            > span {
+            >p {
                 font-size: 1rem;
             }
         }
+
+        ::ng-deep::ng-deep .mat-ripple {
+            background-color: white !important;
+        }
+
+        &:hover {
+            border-color: var(--purple-2);
+        }
     }
 
-    > img {
+    >img {
         padding: 0.3125rem;
         width: 1.5rem;
         height: 1.5rem;
     }
 
-    &:hover > div {
+    &:hover>div {
         display: flex;
     }
 }

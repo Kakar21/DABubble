@@ -52,7 +52,8 @@
                         <mat-button-toggle
                             (click)="
                                 chatService.openChannel(channel.id);
-                                chatService.setComponent('chat')
+                                chatService.setComponent('chat');
+                                closeThread()
                             "
                             [value]="channel.id"
                             class="channel"

@@ -301,10 +301,12 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .reaction-wrapper {
     position: relative;
+
 
     >button {
         padding: 0.3125rem 0.625rem;
@@ -320,11 +322,20 @@
 
             >span {
                 font-size: 1.5rem;
+                margin: -0.275rem;
             }
 
             >p {
                 font-size: 1rem;
             }
+        }
+
+        ::ng-deep::ng-deep .mat-ripple {
+            background-color: white !important;
+        }
+
+        &:hover {
+            border-color: var(--purple-2);
         }
     }
 

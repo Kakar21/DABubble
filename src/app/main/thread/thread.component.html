@@ -4,7 +4,7 @@
             <h1>Thread</h1>
             <div>
                 <img src="../../../assets/img/icons/tag-purple.svg" />
-                <span>Entwicklerteam</span>
+                <span>{{ chatService.currentChannel.name }}</span>
             </div>
         </div>
         <button class="closeButton" (click)="closeThread()" mat-icon-button>
@@ -36,7 +36,7 @@
                 </ng-template>
                 <div>
                     <div class="message-info">
-                        <h5>{{ initialMessage.name }}</h5>
+                        <h5 (click)="openProfileById(initialMessage.id)">{{ initialMessage.name }}</h5>
                         <span>{{ dayTime(initialMessage.time) }} Uhr</span>
                     </div>
                     <div class="message-text"
@@ -73,9 +73,9 @@
                                 </div>
                                 <button mat-raised-button (click)="addOrSubReaction(initialMessage, reaction.key)">
                                     <ngx-emoji [emoji]="reaction.key"></ngx-emoji>
-                                    <span>
-                                        {{reaction.key}}
-                                        {{reaction.value.count}}</span></button>
+                                    <span>{{reaction.key}}</span>
+                                    <p>{{reaction.value.count}}</p>
+                                </button>
                             </div>
                             }
                             }
@@ -91,14 +91,14 @@
                 <div></div>
             </div>
             <div *ngFor="let message of messages; let i = index">
-                <div *ngIf="
+                <!-- <div *ngIf="
                         i === 0 || isLater(message.time, messages[i - 1]?.time)
                     ">
                     <div class="day-date">
                         <h2>{{ dayDate(message.time) }}</h2>
                         <div class="vector"></div>
                     </div>
-                </div>
+                </div> -->
                 <div class="message" [ngClass]="{ 'my-message': message.id === currentUser.currentUser.id }">
                     <div class="hoverMenu">
                         <button mat-icon-button (click)="togglePicker('reaction', message.padNumber, $event); $event.stopPropagation()">
@@ -124,7 +124,7 @@
                     </ng-template>
                     <div>
                         <div class="message-info">
-                            <h5>{{ message.name }}</h5>
+                            <h5 (click)="openProfileById(message.id)">{{ message.name }}</h5>
                             <span>{{ dayTime(message.time) }} Uhr</span>
                         </div>
                         <div class="message-text"
@@ -160,10 +160,9 @@
                                     </div>
                                 </div>
                                 <button mat-raised-button (click)="addOrSubReaction(message, reaction.key)">
-                                    <ngx-emoji [emoji]="reaction.key"></ngx-emoji>
-                                    <span>
-                                        {{reaction.key}}
-                                        {{reaction.value.count}}</span></button>
+                                    <span>{{reaction.key}}</span>
+                                    <p>{{reaction.value.count}}</p>
+                                </button>
                             </div>
                             }
                             }

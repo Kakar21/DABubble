@@ -50,9 +50,9 @@
                     <button mat-icon-button>
                         <img src="../../../assets/img/icons/emoji-hands-up.svg" alt="React" />
                     </button>
-                    <!-- <button (click)="navigateToThread()" mat-icon-button>
-                            <img src="../../../assets/img/icons/comment.svg" alt="Comment">
-                        </button> -->
+                    <button mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
+                        <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
+                    </button>
                         <ng-container *ngIf="message.value.id === chatService.currentUser.currentUser.id">
                             <button mat-icon-button class="moreButton" [matMenuTriggerFor]="menu">
                               <img src="../../../assets/img/icons/3-dots.svg" alt="More" />
@@ -76,13 +76,13 @@
 
                 <div>
                     <div class="message-info">
-                        <h5>{{ message.value.name }}</h5>
+                        <h5 (click)="openProfileById(message.value.id)">{{ message.value.name }}</h5>
                         <span>{{ dayTime(message.value.time) }} Uhr</span>
                     </div>
                     <div class="message-text">
                         {{ message.value.message }}
                     </div>
-                    <div>
+                    <div *ngIf="!noReactions(message.value)">
                         <div class="reaction">
                             @if (message.value.reactions) {
                             @for (reaction of message.value.reactions| keyvalue;track reaction;let i = $index) {
@@ -109,15 +109,14 @@
                                     </div>
                                 </div>
                                 <button mat-raised-button (click)="addOrSubReaction(message.key, reaction.key)">
-                                    <ngx-emoji [emoji]="reaction.key"></ngx-emoji>
-                                    <span>
-                                        {{reaction.key}}
-                                        {{reaction.value.count}}</span></button>
+                                    <span>{{reaction.key}}</span>
+                                    <p>{{reaction.value.count}}</p>
+                                </button>
                             </div>
                             }
                             }
                             <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"
-                                (click)="togglePicker('reaction',message.key,$event); $event.stopPropagation()" />
+                                (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()" />
 
                         </div>
                     </div>

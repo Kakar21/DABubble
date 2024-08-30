@@ -116,11 +116,29 @@ export class DirectMessageComponent {
         });
     }
 
+    openProfileById(userId: string) {
+        const user = this.chatService.usersList.find(
+            (u) => u.id === userId,
+        );
+        if (user) {
+            this.dialog.open(PofileInfoCardComponent, {
+                data: user,
+            });
+        } else {
+            console.log("Benutzer nicht gefunden");
+        }
+    }
+
     openProfileCard() {
         this.dialog.open(PofileInfoCardComponent, {
             data: this.chatService.selectedUser,
         });
     }
+
+    noReactions(message: Message): boolean {
+        return !message.reactions || Object.keys(message.reactions).length === 0;
+    }    
+
     async send() {
         if (this.messageText.trim() !== "") {
             const message: Message = {

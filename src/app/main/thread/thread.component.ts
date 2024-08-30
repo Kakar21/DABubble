@@ -30,6 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ImageService } from "../../image.service";
 import { initializeApp } from "@angular/fire/app";
+import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
 
 @Component({
     selector: "app-thread",
@@ -198,6 +199,19 @@ export class ThreadComponent implements OnInit, OnChanges {
         if (atIndex === -1) return false;
         const charAfterAt = value.charAt(atIndex + 1);
         return charAfterAt !== " ";
+    }
+
+    openProfileById(userId: string) {
+        const user = this.chatService.usersList.find(
+            (u) => u.id === userId,
+        );
+        if (user) {
+            this.dialog.open(PofileInfoCardComponent, {
+                data: user,
+            });
+        } else {
+            console.log("Benutzer nicht gefunden");
+        }
     }
 
     noReactions(message: Message): boolean {

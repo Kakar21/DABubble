@@ -6,7 +6,7 @@
             opened="true"
             mode="side"
         >
-            <app-conversations></app-conversations>
+            <app-conversations (threadClose)="closeThread()"></app-conversations>
         </mat-drawer>
     </mat-drawer-container>
     <button

@@ -101,6 +101,12 @@
 
     > h5 {
         font-size: 1.125rem;
+        transition: 100ms ease-in;
+
+        &:hover {
+            color: var(--purple-1);
+            cursor: pointer;
+        }
     }
 
     > span {
@@ -136,7 +142,7 @@
     }
 
     .hoverMenu {
-        left: 10%;
+        left: 5%;
         right: unset;
 
         > .moreButton {
@@ -181,12 +187,14 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .reaction-wrapper {
     position: relative;
 
-    > button {
+
+    >button {
         padding: 0.3125rem 0.625rem;
         border-radius: 1.25rem;
         border: 1px solid var(--light-purple-line);
@@ -198,24 +206,32 @@
             align-items: center;
             gap: 0.625rem;
 
-            > img {
-                width: 1.5rem;
-                height: 1.5rem;
+            >span {
+                font-size: 1.5rem;
+                margin: -0.275rem;
             }
 
-            > span {
+            >p {
                 font-size: 1rem;
             }
         }
+
+        ::ng-deep::ng-deep .mat-ripple {
+            background-color: white !important;
+        }
+
+        &:hover {
+            border-color: var(--purple-2);
+        }
     }
 
-    > img {
+    >img {
         padding: 0.3125rem;
         width: 1.5rem;
         height: 1.5rem;
     }
 
-    &:hover > div {
+    &:hover>div {
         display: flex;
     }
 }
@@ -400,7 +416,7 @@
 
 .hoverMenu {
     top: -1.125rem;
-    right: 10%;
+    right: 5%;
     position: absolute;
     display: none;
     padding: 0.1875rem 0.9375rem 0.1875rem 1.25rem;

@@ -46,6 +46,7 @@ import { CurrentuserService } from "../../currentuser.service";
     styleUrl: "./conversations.component.scss",
 })
 export class ConversationsComponent {
+    @Output() threadClose = new EventEmitter<boolean>();
     channelsList: ChannelsList[] = [];
     usersList: UsersList[] = [];
 
@@ -90,5 +91,12 @@ export class ConversationsComponent {
         this.dialog.open(DialogAddChannelComponent, {
             panelClass: "custom-dialog",
         });
+    }
+
+    closeThread() {
+        this.threadClose.emit(false);
+        if (window.matchMedia("(max-width: 768px)").matches) {
+            this.chatService.mobileOpen = "chat";
+        }
     }
 }
