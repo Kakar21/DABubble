@@ -187,12 +187,12 @@
                     }}"></textarea>
                 <div class="action-buttons">
                     <div class="button-wrapper">
-                        <button mat-icon-button (click)="fileInput.click()">
+                        <button class="input-image" mat-icon-button (click)="fileInput.click()">
                             <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                         </button>
                         <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept="image/*"/>
                         <div class="vector"></div>
-                        <button mat-icon-button (click)="
+                        <button class="input-emoji" mat-icon-button (click)="
                                 togglePicker('input', '', $event);
                                 $event.stopPropagation()
                             ">
@@ -202,11 +202,11 @@
                         <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'input'">
                             <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
                         </div>
-                        <button mat-icon-button (click)="addAtSymbol()">
+                        <button class="input-at" mat-icon-button (click)="addAtSymbol()">
                             <img src="../../../assets/img/icons/alternate_email.svg" alt="Tag someone" />
                         </button>
                     </div>
-                    <button (click)="send()" mat-icon-button>
+                    <button class="input-send" (click)="send()" mat-icon-button>
                         <img src="../../../assets/img/icons/send-button.svg" alt="Send message" />
                     </button>
                 </div>

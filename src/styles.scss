@@ -152,6 +152,85 @@ button.closeButton {
     }
 }
 
+button.input-image {
+    padding: 0.5rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    transition: 80ms ease-in;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple,
+    ::ng-deep::ng-deep .mat-mdc-button-touch-target,
+    ::ng-deep::ng-deep .mat-mdc-focus-indicator,
+    ::ng-deep::ng-deep .mat-ripple {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+
+    &:hover {
+        background-color: var(--bg-color) !important;
+
+        > img {
+            content: url(./assets/img/icons/add-purple.svg) !important;
+        }
+    }
+}
+
+button.input-emoji {
+    padding: 0.5rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    transition: 80ms ease-in;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple,
+    ::ng-deep::ng-deep .mat-mdc-button-touch-target,
+    ::ng-deep::ng-deep .mat-mdc-focus-indicator,
+    ::ng-deep::ng-deep .mat-ripple {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+
+    &:hover {
+        background-color: var(--bg-color) !important;
+
+        > img {
+            content: url(./assets/img/icons/emoji-purple.svg) !important;
+        }
+    }
+}
+
+button.input-at {
+    padding: 0.5rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    transition: 80ms ease-in;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple,
+    ::ng-deep::ng-deep .mat-mdc-button-touch-target,
+    ::ng-deep::ng-deep .mat-mdc-focus-indicator,
+    ::ng-deep::ng-deep .mat-ripple {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+
+    }
+
+    &:hover {
+        background-color: var(--bg-color) !important;
+
+        > img {
+            content: url(./assets/img/icons/alternate_email-purple.svg) !important;
+        }
+    }
+}
+
+button.input-send {
+    &:hover {
+
+        > img {
+            content: url(./assets/img/icons/send-button-purple.svg) !important;
+        }
+    }
+}
+
 .mat-bottom-sheet-container {
     padding: 0 !important;
     border-radius: 1.875rem 1.875rem 0rem 0rem;

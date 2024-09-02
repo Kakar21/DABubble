@@ -156,11 +156,11 @@
                     [formControl]="formCtrl"></textarea>
                 <div class="action-buttons">
                     <div class="button-wrapper">
-                        <button mat-icon-button>
+                        <button class="input-image" mat-icon-button>
                             <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                         </button>
                         <div class="vector"></div>
-                        <button mat-icon-button (click)="togglePicker('input', '',$event);$event.stopPropagation()">
+                        <button class="input-emoji"  mat-icon-button (click)="togglePicker('input', '',$event);$event.stopPropagation()">
                             <img src="../../../assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
                         </button>
 
@@ -168,11 +168,11 @@
                             style="bottom: 1rem; left: 3.5rem;">
                             <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
                         </div>
-                        <button mat-icon-button (click)="addAtSymbol()">
+                        <button class="input-at" mat-icon-button (click)="addAtSymbol()">
                             <img src="../../../assets/img/icons/alternate_email.svg" alt="Tag someone" />
                         </button>
                     </div>
-                    <button (click)="send()" mat-icon-button>
+                    <button class="input-send" (click)="send()" mat-icon-button>
                         <img src="../../../assets/img/icons/send-button.svg" alt="Send message" />
                     </button>
                 </div>

@@ -290,9 +290,10 @@ header {
     flex-direction: column;
     justify-content: space-between;
     // height: 10%;
-    border: 2px solid var(--bg-color);
+    border: 1px solid var(--bg-color);
     border-radius: 2rem;
     padding: 1.25rem;
+    transition: 80ms ease-in;
 
     textarea {
         border: none;
@@ -301,8 +302,13 @@ header {
         resize: none;
         flex: 1;
 
+        &:hover {
+            cursor: pointer;
+        }
+
         &:focus {
             outline: none;
+            cursor: text;
         }
 
         &::placeholder {
@@ -310,23 +316,60 @@ header {
         }
     }
 
-    .action-buttons {
+    
+    &:hover {
+        border-color: var(--purple-2);
+        cursor: pointer;
+    }
+
+    &:focus-within {
+        border-color: var(--purple-1);
+        cursor: unset;
+    }
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+
+    > button {
         display: flex;
-        justify-content: space-between;
-        margin-top: 0.5rem;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
+
+        > img {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple,
+        ::ng-deep::ng-deep .mat-mdc-button-touch-target,
+        ::ng-deep::ng-deep .mat-mdc-focus-indicator,
+        ::ng-deep::ng-deep .mat-ripple {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    }
+
+    .button-wrapper {
+        display: flex;
+        gap: 0.3125rem;
+        position: relative;
+
+        .vector {
+            width: 0rem;
+            height: calc(2.5rem - 2px);
+            border: 1px solid var(--light-purple-line);
+        }
 
         > button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 0.5rem;
             width: 2.5rem;
             height: 2.5rem;
-
-            > img {
-                width: 2.5rem;
-                height: 2.5rem;
-            }
 
             ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple,
             ::ng-deep::ng-deep .mat-mdc-button-touch-target,
@@ -336,37 +379,11 @@ header {
                 height: 2.5rem;
             }
         }
+    }
 
-        .button-wrapper {
-            display: flex;
-            gap: 0.3125rem;
-            position: relative;
-
-            .vector {
-                width: 0rem;
-                height: calc(2.5rem - 2px);
-                border: 1px solid var(--light-purple-line);
-            }
-
-            > button {
-                padding: 0.5rem;
-                width: 2.5rem;
-                height: 2.5rem;
-
-                ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple,
-                ::ng-deep::ng-deep .mat-mdc-button-touch-target,
-                ::ng-deep::ng-deep .mat-mdc-focus-indicator,
-                ::ng-deep::ng-deep .mat-ripple {
-                    width: 2.5rem;
-                    height: 2.5rem;
-                }
-            }
-        }
-
-        img {
-            height: 1.5rem;
-            width: 1.5rem;
-        }
+    img {
+        height: 1.5rem;
+        width: 1.5rem;
     }
 }
 
