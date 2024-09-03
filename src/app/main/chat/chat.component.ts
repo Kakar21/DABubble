@@ -341,12 +341,21 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
 
     async scrollToBottom(): Promise<void> {
         try {
-            this.chatContainer.nativeElement.scrollTop =
-                this.chatContainer.nativeElement.scrollHeight;
+            if (this.chatContainer && this.chatService.currentChannel.messages) {
+                const chatContainerEl = this.chatContainer.nativeElement;
+    
+                if (
+                    this.chatService.currentChannel.messages.size > 0 &&
+                    chatContainerEl.scrollHeight > chatContainerEl.clientHeight
+                ) {
+                    chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
+                }
+            }
         } catch (err) {
             console.error("Error scrolling to bottom:", err);
         }
-    }
+    }      
+    
 
     emptyChannel() {
         if (this.chatService.currentChannel.messages) {

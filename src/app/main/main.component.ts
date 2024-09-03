@@ -76,6 +76,8 @@ export class MainComponent {
     }
 
     closeThread() {
-        this.threadDrawer.close();
+        if (this.threadDrawer) {
+            this.threadDrawer.close();
+        }
     }
 }

@@ -49,7 +49,7 @@ import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card
     templateUrl: "./thread.component.html",
     styleUrls: ["./thread.component.scss"],
 })
-export class ThreadComponent implements OnInit, OnChanges {
+export class ThreadComponent implements OnChanges {
     @Input() channelId!: string;
     @Input() messageId!: string;
     @Input() initialMessage!: Message;
@@ -77,15 +77,12 @@ export class ThreadComponent implements OnInit, OnChanges {
         );
     }
 
-    ngOnInit() {
-        this.loadMessages();
-    }
-
     ngOnChanges(changes: SimpleChanges) {
-        if (changes["channelId"] || changes["messageId"]) {
+        if (changes["channelId"] && changes["channelId"].currentValue && changes["messageId"] && changes["messageId"].currentValue) {
             this.loadMessages();
         }
     }
+    
 
     closeThread() {
         this.threadClose.emit(false);

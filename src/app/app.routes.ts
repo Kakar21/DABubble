@@ -17,20 +17,4 @@ export const routes: Routes = [
     { path: "reset-password", component: ResetPasswordComponent },
     { path: "legal-notice", component: LegalNoticeComponent },
     { path: "privacy-policy", component: PrivacyPolicyComponent },
-
-    // { path: '', component: LoginComponent },
-    // { path: 'signup', component: SignupComponent },
-    // { path: 'recovery', component: RecoveryComponent },
-    // { path: 'reset-password', component: ResetPasswordComponent },
-    // { path: 'legal-notice', component: LegalNoticeComponent },
-    // { path: 'privacy-policy', component: PrivacyPolicyComponent },
-    // {
-    //   path: 'main',
-    //   component: MainComponent,
-    //   children: [
-    //     { path: '', redirectTo: 'chat', outlet: 'chatOutlet', pathMatch: 'full' },
-    //     { path: 'chat', outlet: 'chatOutlet', component: ChatComponent },
-    //     { path: 'thread', outlet: 'threadOutlet', component: ThreadComponent }
-    //   ],
-    // },
 ];
