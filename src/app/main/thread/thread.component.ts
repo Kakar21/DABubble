@@ -31,21 +31,21 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ImageService } from "../../image.service";
 import { initializeApp } from "@angular/fire/app";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
+import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
 
 @Component({
     selector: "app-thread",
     standalone: true,
-    imports: [MatButtonModule, CommonModule, 
-    RouterModule, 
-    FormsModule, 
+    imports: [MatButtonModule, CommonModule,
+    RouterModule,
+    FormsModule,
     PickerComponent,
     EmojiModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
     MatMenuModule,
     MatIconModule,
-    MatDialogModule  
-],  
+    MatDialogModule, HighlightMentionsPipe],  
     templateUrl: "./thread.component.html",
     styleUrls: ["./thread.component.scss"],
 })
@@ -77,11 +77,20 @@ export class ThreadComponent implements OnChanges {
         );
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes["channelId"] && changes["channelId"].currentValue && changes["messageId"] && changes["messageId"].currentValue) {
+    ngOnInit() {
+        if (this.channelId && this.messageId) {
             this.loadMessages();
         }
+    }    
+
+    ngOnChanges(changes: SimpleChanges) {
+        if ((changes["channelId"] && changes["channelId"].currentValue) || (changes["messageId"] && changes["messageId"].currentValue)) {
+            if (this.channelId && this.messageId) {
+                this.loadMessages();
+            }
+        }
     }
+    
     
 
     closeThread() {
@@ -196,6 +205,31 @@ export class ThreadComponent implements OnChanges {
         if (atIndex === -1) return false;
         const charAfterAt = value.charAt(atIndex + 1);
         return charAfterAt !== " ";
+    }
+
+    onMessageClick(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        if (target.classList.contains("highlight-mention")) {
+            const username = target.getAttribute("data-username");
+            if (username) {
+                this.openProfileCard(username);
+            } else {
+                console.error("Kein Benutzername definiert für dieses Element");
+            }
+        }
+    }
+
+    openProfileCard(username: string) {
+        const user = this.chatService.usersList.find(
+            (u) => u.name === username,
+        );
+        if (user) {
+            this.dialog.open(PofileInfoCardComponent, {
+                data: user,
+            });
+        } else {
+            console.log("Benutzer nicht gefunden");
+        }
     }
 
     openProfileById(userId: string) {

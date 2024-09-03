@@ -192,6 +192,10 @@
         .message-text {
             background-color: var(--white);
         }
+
+        .thread-info > p {
+            color: var(--black);
+        }
     }
 
     >img {
@@ -231,7 +235,7 @@
 
 .message-text {
     padding: 0.9375rem;
-    align-self: stretch;
+    align-self: flex-start;
     border-radius: 0rem 1.875rem 1.875rem 1.875rem;
     background: var(--bg-color);
     transition: 80ms ease-in;
@@ -249,6 +253,7 @@
         border-radius: 1.875rem 0rem 1.875rem 1.875rem;
         background-color: var(--purple-2);
         color: var(--white);
+        align-self: flex-end;
 
         ::ng-deep .highlight-mention {
             color: var(--white);
@@ -351,6 +356,7 @@
 }
 
 .reaction-tooltip {
+    z-index: 9;
     display: none;
     position: absolute;
     width: 8.625rem;
@@ -680,6 +686,15 @@
                 font-size: 1.25rem !important;
                 font-weight: 500 !important;
             }
+
+            &:hover {
+                background-color: var(--bg-color) !important;
+
+                >span {
+                    font-weight: 700 !important;
+                    color: var(--purple-3);
+                }
+            }
         }
     }
 }
@@ -735,7 +750,7 @@
 
 ::ng-deep::ng-deep div.mat-mdc-autocomplete-panel {
     width: unset !important;
-    display: flex !important;
+    display: flex;
     padding: 1.25rem 1.3125rem !important;
     flex-direction: column !important;
     align-items: flex-start !important;

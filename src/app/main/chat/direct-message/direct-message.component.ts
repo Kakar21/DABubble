@@ -23,26 +23,27 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/ma
 import { map, Observable, startWith } from "rxjs";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { DialogEditMessageComponent } from "../../../dialog-edit-message/dialog-edit-message.component";
+import { HighlightMentionsPipe } from "../../../pipes/highlist-mentions.pipe";
 
 @Component({
     selector: "app-direct-message",
     standalone: true,
     imports: [
-        ChatComponent,
-        PickerComponent,
-        EmojiModule,
-        MatButtonModule,
-        MatIconModule,
-        CommonModule,
-        MatDialogModule,
-        ConversationsComponent,
-        MatButtonToggleModule,
-        FormsModule,
-        MatMenuModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule
-
-    ],
+    ChatComponent,
+    PickerComponent,
+    EmojiModule,
+    MatButtonModule,
+    MatIconModule,
+    CommonModule,
+    MatDialogModule,
+    ConversationsComponent,
+    MatButtonToggleModule,
+    FormsModule,
+    MatMenuModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    HighlightMentionsPipe
+],
 
     templateUrl: "./direct-message.component.html",
     styleUrl: "./direct-message.component.scss",
@@ -129,10 +130,17 @@ export class DirectMessageComponent {
         }
     }
 
-    openProfileCard() {
-        this.dialog.open(PofileInfoCardComponent, {
-            data: this.chatService.selectedUser,
-        });
+    openProfileCard(username: string) {
+        const user = this.chatService.usersList.find(
+            (u) => u.name === username,
+        );
+        if (user) {
+            this.dialog.open(PofileInfoCardComponent, {
+                data: user,
+            });
+        } else {
+            console.log("Benutzer nicht gefunden");
+        }
     }
 
     noReactions(message: Message): boolean {
@@ -255,6 +263,18 @@ export class DirectMessageComponent {
         if (atIndex === -1) return false;
         const charAfterAt = value.charAt(atIndex + 1);
         return charAfterAt !== " ";
+    }
+
+    onMessageClick(event: MouseEvent) {
+        const target = event.target as HTMLElement;
+        if (target.classList.contains("highlight-mention")) {
+            const username = target.getAttribute("data-username");
+            if (username) {
+                this.openProfileCard(username);
+            } else {
+                console.error("Kein Benutzername definiert für dieses Element");
+            }
+        }
     }
 
     addAtSymbol() {

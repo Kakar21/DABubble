@@ -95,8 +95,8 @@ a {
     background-color: unset !important;
 }
 
-.cdk-overlay-pane:not(.mat-mdc-autocomplete-panel-above)
-    div.mat-mdc-autocomplete-panel {
+.cdk-overlay-pane:not(.mat-mdc-autocomplete-panel-above):not(.mat-mdc-autocomplete-hidden) 
+    .mat-mdc-autocomplete-panel {
     border-radius: 0 0.8rem 0.8rem 0.8rem !important;
     display: flex;
     justify-content: center;
@@ -105,6 +105,16 @@ a {
     width: auto;
     padding: 1rem;
 }
+
+.mat-mdc-autocomplete-panel:not(.mat-mdc-autocomplete-hidden) {
+    display: flex !important; /* Deine gewünschten Stile */
+}
+
+/* Verstecke das Panel standardmäßig oder wenn es die `hidden` Klasse enthält */
+.mat-mdc-autocomplete-panel.mat-mdc-autocomplete-hidden {
+    display: none !important;
+}
+
 
 .d-none {
     display: none;
@@ -223,12 +233,50 @@ button.input-at {
 }
 
 button.input-send {
+
+    ::ng-deep::ng-deep .mat-mdc-menu-item-text {
+        color: var(--purple-3);
+        font-weight: 700;
+    }
+
     &:hover {
 
         > img {
             content: url(./assets/img/icons/send-button-purple.svg) !important;
         }
     }
+}
+
+button.emoji-button, button.thread-button, button.moreButton, button.random-emoji-button  {
+    padding: 0.5rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    background-color: var(--white);
+    transition: 80ms ease-in;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple,
+    ::ng-deep::ng-deep .mat-mdc-button-touch-target,
+    ::ng-deep::ng-deep .mat-mdc-focus-indicator,
+    ::ng-deep::ng-deep .mat-ripple {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+
+    &:hover {
+        background-color: var(--bg-color) !important;
+    }
+}
+
+button.emoji-button:hover > img {
+    content: url(./assets/img/icons/add_reaction-purple.svg) !important;
+}
+
+button.thread-button:hover > img {
+    content: url(./assets/img/icons/comment-purple.svg) !important;
+}
+
+button.moreButton:hover > img {
+    content: url(./assets/img/icons/3-dots-purple.svg) !important;
 }
 
 .mat-bottom-sheet-container {

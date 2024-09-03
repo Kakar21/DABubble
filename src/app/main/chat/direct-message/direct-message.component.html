@@ -1,6 +1,6 @@
 <section class="chat-body" (click)="closePicker($event)">
     <div class="chat-header">
-        <mat-button-toggle-group class="contact-list" (click)="openProfileCard()" vertical="true"
+        <mat-button-toggle-group class="contact-list" (click)="openProfileCard(chatService.selectedUser.name)" vertical="true"
             hideSingleSelectionIndicator="true">
             <mat-button-toggle class="contact">
                 <div>
@@ -44,13 +44,13 @@
                                 this.currentUser.currentUser.id,
                         }">
                 <div class="hoverMenu">
-                    <button mat-icon-button>
+                    <button class="random-emoji-button" mat-icon-button>
                         <img src="../../../assets/img/icons/emoji-check.svg" alt="React" />
                     </button>
-                    <button mat-icon-button>
+                    <button class="random-emoji-button" mat-icon-button>
                         <img src="../../../assets/img/icons/emoji-hands-up.svg" alt="React" />
                     </button>
-                    <button mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
+                    <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
                         <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                     </button>
                         <ng-container *ngIf="message.value.id === chatService.currentUser.currentUser.id">
@@ -79,8 +79,7 @@
                         <h5 (click)="openProfileById(message.value.id)">{{ message.value.name }}</h5>
                         <span>{{ dayTime(message.value.time) }} Uhr</span>
                     </div>
-                    <div class="message-text">
-                        {{ message.value.message }}
+                    <div class="message-text" [innerHTML]="message.value.message | highlightMentions" (click)="onMessageClick($event)">
                     </div>
                     <div *ngIf="!noReactions(message.value)">
                         <div class="reaction">
@@ -115,9 +114,11 @@
                             </div>
                             }
                             }
-                            <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"
-                                (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()" />
-
+                            <button class="emoji-button" mat-icon-button (click)="
+                            togglePicker('reaction', message.value.padNumber, $event);
+                            $event.stopPropagation()">
+                                <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -141,7 +142,7 @@
                     <h1>{{ chatService.selectedUser.name }}</h1>
                 </div>
                 <span>Diese Unterhaltung findet nur zwischen
-                    <button (click)="openProfileCard()">
+                    <button (click)="openProfileCard(chatService.selectedUser.name)">
                         &#64;{{ chatService.selectedUser.name }}
                     </button>
                     und dir statt.</span>

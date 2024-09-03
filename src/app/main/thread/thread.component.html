@@ -15,7 +15,7 @@
         <div class="chat">
             <div class="message initialMessage" [ngClass]="{ 'my-message': initialMessage.id === currentUser.currentUser.id }">
                 <div class="hoverMenu">
-                    <button mat-icon-button (click)="togglePicker('reaction', initialMessage.padNumber, $event); $event.stopPropagation()">
+                    <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', initialMessage.padNumber, $event); $event.stopPropagation()">
                         <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                     </button>
                     <ng-container *ngIf="initialMessage.id === currentUser.currentUser.id">
@@ -40,8 +40,8 @@
                         <span>{{ dayTime(initialMessage.time) }} Uhr</span>
                     </div>
                     <div class="message-text"
-                            [ngClass]="{'current-user-text': initialMessage.name === currentUser.currentUser.name}"
-                            [innerHTML]="initialMessage.message">
+                            [ngClass]="{'current-user-text': initialMessage.name === currentUser.currentUser.name}" (click)="onMessageClick($event)"
+                            [innerHTML]="initialMessage.message | highlightMentions">
                         
 
                     </div>
@@ -79,9 +79,11 @@
                             </div>
                             }
                             }
-                            <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"
-                                (click)="togglePicker('reaction',initialMessage.padNumber,$event); $event.stopPropagation()" />
-
+                            <button class="emoji-button" mat-icon-button (click)="
+                            togglePicker('reaction', initialMessage.padNumber, $event);
+                            $event.stopPropagation()">
+                                <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -93,7 +95,7 @@
             <div *ngFor="let message of messages; let i = index">
                 <div class="message" [ngClass]="{ 'my-message': message.id === currentUser.currentUser.id }">
                     <div class="hoverMenu">
-                        <button mat-icon-button (click)="togglePicker('reaction', message.padNumber, $event); $event.stopPropagation()">
+                        <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.padNumber, $event); $event.stopPropagation()">
                             <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                         </button>
                         <ng-container *ngIf="message.id === currentUser.currentUser.id">
@@ -120,8 +122,8 @@
                             <span>{{ dayTime(message.time) }} Uhr</span>
                         </div>
                         <div class="message-text"
-                            [ngClass]="{'current-user-text': message.name === currentUser.currentUser.name}"
-                            [innerHTML]="message.message">
+                            [ngClass]="{'current-user-text': message.name === currentUser.currentUser.name}" (click)="onMessageClick($event)"
+                            [innerHTML]="message.message | highlightMentions">
                         
 
                     </div>
@@ -158,9 +160,11 @@
                             </div>
                             }
                             }
-                            <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"
-                                (click)="togglePicker('reaction',message.padNumber,$event); $event.stopPropagation()" />
-
+                            <button class="emoji-button" mat-icon-button (click)="
+                            togglePicker('reaction', message.padNumber, $event);
+                            $event.stopPropagation()">
+                                <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
+                            </button>
                         </div>
                     </div>
                 </div>

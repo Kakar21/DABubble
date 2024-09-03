@@ -48,16 +48,16 @@
                 [id]="message.key"
                 class="message">
                 <div class="hoverMenu">
-                    <button mat-icon-button>
+                    <button class="random-emoji-button" mat-icon-button>
                         <img src="../../../assets/img/icons/emoji-check.svg" alt="React" />
                     </button>
-                    <button mat-icon-button>
+                    <button class="random-emoji-button" mat-icon-button>
                         <img src="../../../assets/img/icons/emoji-hands-up.svg" alt="React" />
                     </button>
-                    <button mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
+                    <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
                         <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                     </button>
-                    <button (click)="
+                    <button class="thread-button" (click)="
                                     toggleThread(
                                         chatService.currentChannelID,
                                         message.key
@@ -130,14 +130,12 @@
                             </div>
                             }
                             }
-                            <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" (click)="
-                                            togglePicker(
-                                                'reaction',
-                                                message.value.padNumber,
-                                                $event
-                                            );
-                                            $event.stopPropagation()
-                                        " />
+                            <button class="emoji-button" mat-icon-button (click)="
+                            togglePicker('reaction', message.value.padNumber, $event);
+                            $event.stopPropagation()">
+                                <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
+                            </button>
+                            
                         </div>
                     </div>
                     <div class="thread-info" *ngIf="chatService.threadInfoMap.get(message.key)?.count as threadCount">
