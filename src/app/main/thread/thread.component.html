@@ -24,7 +24,7 @@
                         </button>
                         <mat-menu class="moreMenu" #menu="matMenu">
                             <button mat-menu-item
-                                (click)="openDialogEditMessageThread(initialMessage.padNumber.toString(), initialMessage.message)">
+                                (click)="openDialogEditMessage(initialMessage.padNumber.toString(), initialMessage.message)">
                                 Nachricht bearbeiten
                             </button>
                         </mat-menu>
@@ -104,7 +104,7 @@
                             </button>
                             <mat-menu class="moreMenu" #menu="matMenu">
                                 <button mat-menu-item
-                                    (click)="openDialogEditMessageThread(message.padNumber.toString(), message.message)">
+                                    (click)="openDialogEditMessage(message.padNumber.toString(), message.message)">
                                     Nachricht bearbeiten
                                 </button>
                             </mat-menu>

@@ -287,7 +287,7 @@ export class DirectMessageComponent {
 
     openDialogEditMessage(messageId: string, currentMessage: string, sendedUserID: string): void {
         const dialogRef = this.dialog.open(DialogEditMessageComponent, {
-          width: '400px',
+            panelClass: 'edit-message-dialog',
           data: { message: currentMessage }
         });
       

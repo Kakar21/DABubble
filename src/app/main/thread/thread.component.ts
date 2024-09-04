@@ -22,7 +22,6 @@ import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { map, Observable, startWith } from "rxjs";
 import { UsersList } from "../../interfaces/users-list";
-import { DialogEditMessageThreadComponent } from "../../dialog-edit-message-thread/dialog-edit-message-thread.component";
 import { MatDialog } from '@angular/material/dialog';
 import { ThreadService } from "./thread.service";
 import { MatMenuModule } from '@angular/material/menu';
@@ -32,6 +31,7 @@ import { ImageService } from "../../image.service";
 import { initializeApp } from "@angular/fire/app";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
 import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
+import { DialogEditMessageComponent } from "../../dialog-edit-message/dialog-edit-message.component";
 
 @Component({
     selector: "app-thread",
@@ -365,9 +365,9 @@ export class ThreadComponent implements OnChanges {
         return date.toLocaleTimeString("de-DE", options);
     }
 
-    openDialogEditMessageThread(threadId: string, currentMessage: string): void {
-        const dialogRef = this.dialog.open(DialogEditMessageThreadComponent, {
-            width: '400px',
+    openDialogEditMessage(threadId: string, currentMessage: string): void {
+        const dialogRef = this.dialog.open(DialogEditMessageComponent, {
+            panelClass: 'edit-message-dialog',
             data: { message: currentMessage }
         });
     

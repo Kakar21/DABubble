@@ -38,7 +38,6 @@ import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { ImageService } from "../../image.service";
-import { DialogEditMessageChannelComponent } from "../../dialog-edit-message-channel/dialog-edit-message-channel.component";
 
 @Component({
     selector: "app-chat",
@@ -545,8 +544,8 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     }
 
     openDialogEditMessage(channelId: string, messageId: string, currentMessage: string): void {
-        const dialogRef = this.dialog.open(DialogEditMessageChannelComponent, {
-            width: '400px',
+        const dialogRef = this.dialog.open(DialogEditMessageComponent, {
+            panelClass: 'edit-message-dialog',
             data: { message: currentMessage }
         });
 

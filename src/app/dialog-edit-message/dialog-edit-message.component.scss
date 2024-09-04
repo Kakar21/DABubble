@@ -3,17 +3,19 @@
     display: block;
 }
 
-.chat-input {
+::ng-deep .cdk-overlay-pane.edit-message-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 1.25rem;
+    overflow: visible;
+  }  
+
+  .chat-input {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 10%;
-    border: 2px solid var(--bg-color);
-    border-radius: 2rem;
-    border-top-right-radius: 0;
-    border: none;
+    border: 1px solid var(--bg-color);
+    border-radius: 1.25rem;
     padding: 1.25rem;
-    min-height: 7rem;
+    transition: 80ms ease-in;
 
     textarea {
         border: none;
@@ -22,8 +24,13 @@
         resize: none;
         flex: 1;
 
+        &:hover {
+            cursor: pointer;
+        }
+
         &:focus {
             outline: none;
+            cursor: text;
         }
 
         &::placeholder {
@@ -31,58 +38,140 @@
         }
     }
 
-    .action-buttons {
+    &:hover {
+        border-color: var(--purple-2);
+        cursor: pointer;
+    }
+
+    &:focus-within {
+        border-color: var(--purple-1);
+        cursor: unset;
+    }
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    width: 100%;
+
+    > button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        > img {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    }
+
+    .button-wrapper {
+        width: 100%;
         display: flex;
         justify-content: space-between;
-        margin-top: 0.5rem;
-        width: 100%;
+        gap: 0.3125rem;
+        position: relative;
 
-        > button {
+        .save-cancel {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            gap: 2rem;
+        }
+    }
 
-            > img {
-                width: 2.5rem;
-                height: 2.5rem;
+    img {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+}
+
+.save {
+    align-self: flex-end;
+    width: min-content;
+    padding: 0 1.5625rem;
+    height: 3.0625rem;
+    transition: 100ms ease-out;
+            border-radius: 1.5625rem;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+        border-radius: 1.5625rem;
+        background: var(--purple-1);
+        overflow: hidden;
+        transition: 100ms ease-out;
+    }
+
+    ::ng-deep::ng-deep .mat-mdc-button-ripple {
+        border-radius: 1.5625rem;
+        overflow: hidden;
+    }
+
+    ::ng-deep::ng-deep .mdc-button__label {
+        color: var(--white);
+        font-family: Nunito;
+        font-size: 1.125rem;
+        padding: 0;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: normal;
+    }
+
+    &:hover {
+        ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+            background-color: var(--purple-2);
+
+            &::before {
+                opacity: 0;
             }
         }
+    }
+}
 
-        .button-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            gap: 0.3125rem;
-            position: relative;
+.cancel {
+    width: max-content;
+    height: 3.0625rem;
+    padding: 0 1.5625rem;
+    border: 1px solid var(--purple-2) !important;
+    border-radius: 1.5625rem;
+    transition: 100ms ease-out;
 
-            .save-cancel {
-                display: flex;
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+        border-radius: 1.5625rem;
+        overflow: hidden;
+        transition: 100ms ease-out;
+    }
 
-                Mat-dialog-actions {
-                    display: flex;
-                    justify-content: flex-end;
+    ::ng-deep::ng-deep .mat-mdc-button-ripple {
+        border-radius: 1.5625rem;
+        overflow: hidden;
+    }
 
-                    &:first-child {
-                        button {
-                            background-color: #fff;
-                            border: solid 1px var(--Purple-1, #444df2);
-                            color: var(--Purple-1, #444df2);
-                        }
-                    }
+    ::ng-deep::ng-deep .mdc-button__label {
+        color: var(--purple-1);
+        text-align: center;
+        font-family: Nunito;
+        font-size: 1.125rem;
+        font-style: normal;
+        padding: 0;
+        font-weight: 700;
+        line-height: normal;
+        transition: 100ms ease-out;
+        letter-spacing: normal;
+    }
 
-                    > button {
-                        font-size: 1rem;
-                        font-weight: 400;
-                        border-radius: 1.5625rem;
-                        background: var(--Purple-1, #444df2);
-                    }
-                }
-            }
+    &:hover {
+        border-color: var(--purple-3);
+
+        ::ng-deep::ng-deep .mdc-button__label {
+            color: var(--white);
         }
 
-        img {
-            height: 1.5rem;
-            width: 1.5rem;
+        ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+            background-color: var(--purple-3);
+
+            &::before {
+                opacity: 0;
+            }
         }
     }
 }
