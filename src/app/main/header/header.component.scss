@@ -27,6 +27,8 @@
     position: relative;
     display: flex;
     align-items: center;
+    border: 1px solid var(--bg-color);
+    border-radius: 2.625rem;
 
     input {
         width: 100%;
@@ -50,6 +52,80 @@
     span {
         position: absolute;
         right: 1.5rem;
+    }
+
+    &:hover {
+        border-color: var(--purple-2);
+        cursor: pointer;
+    }
+
+    &:focus-within {
+        border-color: var(--purple-1);
+        cursor: unset;
+    }
+}
+
+::ng-deep::ng-deep div.search-autocomplete {
+    width: 100% !important;
+    display: flex;
+    padding: 1.25rem 1.3125rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: unset !important;
+    gap: 0.9375rem;
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+    border-radius: 1.875rem 1.875rem 1.875rem 0rem !important;
+}
+
+::ng-deep::ng-deep mat-option.search-no-results {
+    >span {
+        >span {
+            color: var(--text-gray);
+            font-family: Nunito;
+            font-size: 1.125rem;
+        }
+    }
+}
+
+::ng-deep::ng-deep mat-option.search-option {
+    display: unset;
+    align-items: center;
+    padding: 0.25rem 1.25rem;
+    border-radius: 2.1875rem;
+    transition: 80ms ease-in;
+    width: auto;
+    
+    >span {
+        display: flex;
+        gap: 0.9375rem;
+        width: 100%;
+
+        >img {
+            width: 3.125rem;
+            height: 3.125rem;
+            border-radius: 100%;
+            object-fit: cover;
+        }
+
+        >div {
+            width: calc(100% - 3.125rem - 0.9375rem);
+
+            >h3 {
+                font-size: 1.125rem;
+            }
+            >p {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                width: 100%;
+            }
+        }
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: var(--bg-color);
     }
 }
 
