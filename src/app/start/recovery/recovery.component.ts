@@ -17,6 +17,9 @@ import { Router } from "@angular/router";
 export class RecoveryComponent {
     email: string = "";
     emailSent = false;
+    invalidEmail = false;
+    
+
     constructor(
         public location: Location,
         private firestoreService: FirestoreService,
@@ -27,13 +30,14 @@ export class RecoveryComponent {
         this.firestoreService
             .resetPassword(this.email)
             .then(() => {
+                this.invalidEmail = false;
                 this.emailSent = true;
                 setTimeout(() => {
                     this.router.navigate(["/"]);
                 }, 3000);
             })
             .catch((error) => {
-                alert("Fehler beim Senden der E-Mail: " + error.message);
+                this.invalidEmail = true;
             });
     }
 }

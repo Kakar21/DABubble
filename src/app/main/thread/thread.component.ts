@@ -63,6 +63,7 @@ export class ThreadComponent implements OnChanges {
     currentInputValue: string = "";
     formCtrl = new FormControl();
     filteredMembers: Observable<UsersList[]>;
+    initialMessagePicker = false;
 
     constructor(
         public chatService: ChatService,
@@ -262,10 +263,11 @@ export class ThreadComponent implements OnChanges {
         this.isPickerVisible = false;
     }
 
-    togglePicker(context: string, padNr: any, event: MouseEvent) {
+    togglePicker(context: string, padNr: any, event: MouseEvent, initialMessage: boolean) {
         this.isPickerVisible = !this.isPickerVisible;
         this.pickerContext = context;
         this.currentMessagePadnumber = padNr;
+        this.initialMessagePicker = initialMessage
 
     }
 
@@ -273,6 +275,7 @@ export class ThreadComponent implements OnChanges {
         if (this.pickerContext === "input") {
             this.messageText += event.emoji.native;
         } else if (this.pickerContext === "reaction") {
+            console.log(this.currentMessagePadnumber)
             this.addReactionToMessage(
                 this.currentMessagePadnumber,
                 event.emoji.native,
@@ -280,16 +283,26 @@ export class ThreadComponent implements OnChanges {
         }
     }
     addReactionToMessage(messagePadnr: string, emoji: string) {
-        console.log(this.messageId, messagePadnr)
-        this.chatService
+        if (this.initialMessagePicker) {
+            this.chatService
+            .addReaction(messagePadnr, emoji, 'chat', '')
+            .then(() => console.log("Reaction added"))
+            .catch((error) => console.error("Error adding reaction: ", error));
+        } else {
+            this.chatService
             .addReaction(this.messageId, emoji, 'thread',messagePadnr)
             .then(() => console.log("Reaction added"))
             .catch((error) => console.error("Error adding reaction: ", error));
+        }
     }
 
     addOrSubReaction(message: any, reaction: any, ) {
         console.log(message.padNumber, reaction)
         this.chatService.addOrSubReaction(message, reaction, 'thread',this.messageId)
+    }
+
+    addOrSubReactionInitial(message: any, reaction: any) {
+        this.chatService.addOrSubReaction(message, reaction, 'chat', this.messageId)
     }
 
     closePicker(event: Event) {

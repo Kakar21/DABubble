@@ -23,6 +23,11 @@
                 id="email"
             />
             <img src="../../../assets/img/icons/mail-gray.svg" />
+            @if (invalidEmail) {
+                <span class="error"
+                    >Diese E-Mail-Adresse ist leider ungültig.</span
+                >
+            }
         </div>
         <p>
             Wir senden Ihnen eine E-Mail, über die<br />

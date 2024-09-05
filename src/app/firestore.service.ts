@@ -162,6 +162,7 @@ export class FirestoreService {
         signOut(this.auth)
             .then(() => {
                 console.log("User erfolgreich ausgeloggt");
+                location.reload();
             })
             .catch((error) => {
                 console.error("Fehler beim Ausloggen: ", error);

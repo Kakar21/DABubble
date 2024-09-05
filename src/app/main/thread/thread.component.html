@@ -15,7 +15,7 @@
         <div class="chat">
             <div class="message initialMessage" [ngClass]="{ 'my-message': initialMessage.id === currentUser.currentUser.id }">
                 <div class="hoverMenu">
-                    <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', initialMessage.padNumber, $event); $event.stopPropagation()">
+                    <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', initialMessage.padNumber, $event, true); $event.stopPropagation()">
                         <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                     </button>
                     <ng-container *ngIf="initialMessage.id === currentUser.currentUser.id">
@@ -71,7 +71,7 @@
                                             }
                                     </div>
                                 </div>
-                                <button mat-raised-button (click)="addOrSubReaction(initialMessage, reaction.key)">
+                                <button mat-raised-button (click)="addOrSubReactionInitial(initialMessage, reaction.key)">
                                     <ngx-emoji [emoji]="reaction.key"></ngx-emoji>
                                     <span>{{reaction.key}}</span>
                                     <p>{{reaction.value.count}}</p>
@@ -80,7 +80,7 @@
                             }
                             }
                             <button class="emoji-button" mat-icon-button (click)="
-                            togglePicker('reaction', initialMessage.padNumber, $event);
+                            togglePicker('reaction', initialMessage.padNumber, $event, true);
                             $event.stopPropagation()">
                                 <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
                             </button>
@@ -95,7 +95,7 @@
             <div *ngFor="let message of messages; let i = index">
                 <div class="message" [ngClass]="{ 'my-message': message.id === currentUser.currentUser.id }">
                     <div class="hoverMenu">
-                        <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.padNumber, $event); $event.stopPropagation()">
+                        <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.padNumber, $event, false); $event.stopPropagation()">
                             <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                         </button>
                         <ng-container *ngIf="message.id === currentUser.currentUser.id">
@@ -161,7 +161,7 @@
                             }
                             }
                             <button class="emoji-button" mat-icon-button (click)="
-                            togglePicker('reaction', message.padNumber, $event);
+                            togglePicker('reaction', message.padNumber, $event, false);
                             $event.stopPropagation()">
                                 <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
                             </button>
@@ -187,7 +187,7 @@
                     <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)"
                         accept="image/*" />
                     <div class="vector"></div>
-                    <button class="input-emoji" mat-icon-button (click)="togglePicker('input', '',$event);$event.stopPropagation()">
+                    <button class="input-emoji" mat-icon-button (click)="togglePicker('input', '',$event, false);$event.stopPropagation()">
                         <img src="../../../assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
                     </button>
                     <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'input'"
