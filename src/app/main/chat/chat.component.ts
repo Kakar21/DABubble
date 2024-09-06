@@ -307,6 +307,15 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     }
 
     async send() {
+        let imageUrl = '';
+
+        if (this.previewUrl) {
+            const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
+            imageUrl = await this.imageService.uploadFile(fileInput);
+            console.log(imageUrl)
+            this.clearPreview();
+
+        }
         if (this.messageText.trim() !== "") {
             const message: Message = {
                 id: "",
@@ -318,7 +327,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
                 reactions: {},
                 padNumber: "",
                 btnReactions: [],
-                imageUrl: '' // Dies könnte genutzt werden, wenn Sie eine separate Feld für das Bild in Ihrer Datenbank haben
+                imageUrl: imageUrl
             };
     
             await this.chatService.sendMessage(
@@ -326,7 +335,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
                 message,
             );
             this.messageText = ""; // Leert das Textfeld nach dem Senden der Nachricht
-            this.scrollToBottom(); // Scrollt das Chatfenster nach unten
+            await this.scrollToBottom(); // Scrollt das Chatfenster nach unten
         }
     }
     
@@ -513,16 +522,13 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
 
     onFileSelected(event: any) {
         const input = event.target as HTMLInputElement;
-        if (input && input.files && input.files.length > 0) {
-            this.imageService.uploadFile(input).then((url: string) => {
-                if (url) {
-                    this.messageText += `<img src="${url}" alt="Uploaded Image"/>`;
-                } else {
-                    console.error('File upload returned an empty URL.');
-                }
-            }).catch((error) => {
-                console.error('Error uploading file:', error);
-            });
+        if (input.files) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.previewUrl = reader.result;
+            };
+            reader.readAsDataURL(file);
         }
     }
 

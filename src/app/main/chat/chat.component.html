@@ -92,6 +92,9 @@
                     <div #message class="message-text" [ngClass]="{'current-user-text': message.value.name === currentUser.currentUser.name}"  (click)="onMessageClick($event)"
                         [innerHTML]="message.value.message | highlightMentions"  >
                     </div>     
+                    <div *ngIf="message.value.imageUrl" class="loaded-img" (click)="openModal(message.value.imageUrl)">
+                        <img [src]="message.value.imageUrl" alt="Image Preview" />
+                    </div>
                     <div *ngIf="!noReactions(message.value)">
                         <div class="reaction">
                             @if (message.value.reactions) {
@@ -149,7 +152,7 @@
                 </div>
             </div>
             }
-            <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'">
+            <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'" [ngStyle]="{ top: pickerPosition.top, left: pickerPosition.left }">
                 <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
             </div>
 
@@ -176,19 +179,32 @@
             </div>
         </div>
         }
+        <div *ngIf="showModal" class="modal">
+            <div class="modal-content">
+                <span class="close" (click)="closeModal()">&times;</span>
+                <img [src]="modalSrc" alt="Expanded Image Preview">
+            </div>
+        </div>
         <div class="input-container">
             <div class="chat-input">
                 <textarea #messageInput matInput (input)="onInputChange($event)" [formControl]="formCtrl"
                     [matAutocomplete]="auto" type="text" (keydown)="onKeydown($event)" [(ngModel)]="messageText"
                     placeholder="Nachricht an #{{
                         chatService.currentChannel.name
-                    }}"></textarea>
+                    }}">
+                </textarea>
+                <div *ngIf="previewUrl" class="loaded-img" (click)="openModal(previewUrl)">
+                    <img class="delete-preview" (click)="clearPreview()"
+                        src="../../../assets/img/icons/close-purple.svg" alt="close-loaded-img">
+                    <img [src]="previewUrl" alt="Image Preview" />
+                </div>
                 <div class="action-buttons">
                     <div class="button-wrapper">
-                        <button class="input-image" mat-icon-button (click)="fileInput.click()">
+                        <button class="upload-image input-image" mat-icon-button (click)="upload.click()">
+                            <input id="fileUpload" type="file" #upload (change)="onFileSelected($event)"
+                                accept=".png,.jpg">
                             <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                         </button>
-                        <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept="image/*"/>
                         <div class="vector"></div>
                         <button class="input-emoji" mat-icon-button (click)="
                                 togglePicker('input', '', $event);
@@ -197,14 +213,14 @@
                             <img src="../../../assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
                         </button>
 
-                        <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'input'">
+                        <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'input'" style="bottom: 1rem; left: 3.5rem;">
                             <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
                         </div>
                         <button class="input-at" mat-icon-button (click)="addAtSymbol()">
                             <img src="../../../assets/img/icons/alternate_email.svg" alt="Tag someone" />
                         </button>
                     </div>
-                    <button class="input-send" (click)="send()" mat-icon-button>
+                    <button class="input-send" (click)="send()" (click)="uploadFile(upload)" mat-icon-button>
                         <img src="../../../assets/img/icons/send-button.svg" alt="Send message" />
                     </button>
                 </div>

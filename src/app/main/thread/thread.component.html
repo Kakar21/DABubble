@@ -181,11 +181,9 @@
                 placeholder="Antworten..."></textarea>
             <div class="action-buttons">
                 <div class="button-wrapper">
-                    <button class="input-image" mat-icon-button (click)="fileInput.click()">
+                    <button class="input-image" mat-icon-button>
                         <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                     </button>
-                    <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)"
-                        accept="image/*" />
                     <div class="vector"></div>
                     <button class="input-emoji" mat-icon-button (click)="togglePicker('input', '',$event, false);$event.stopPropagation()">
                         <img src="../../../assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
