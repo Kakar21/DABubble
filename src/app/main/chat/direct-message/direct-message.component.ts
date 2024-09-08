@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostListener, Input, ViewChild } from "@angular/core";
 import { ChatComponent } from "../chat.component";
 import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -57,6 +57,7 @@ export class DirectMessageComponent {
     currentInputValue: string = "";
     @ViewChild("messageInput") messageInput!: ElementRef<HTMLInputElement>;
     pickerContext: string = "";
+    pickerPosition = { top: '0px', left: '0px' };
     currentMessagePadnumber: string = "";
     previewUrl: string | ArrayBuffer | null = null;
 
@@ -81,15 +82,32 @@ export class DirectMessageComponent {
     log() {
         console.log();
     }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event: Event) {
+        this.isPickerVisible = false;
+    }
+
     togglePicker(context: string, padNr: any, event: MouseEvent) {
         this.isPickerVisible = !this.isPickerVisible;
         this.pickerContext = context;
         this.currentMessagePadnumber = padNr;
+        if (this.isPickerVisible) {
+            const pickerHeight = 350; // Geschätzte Höhe des Emoji-Pickers
+            const pickerWidth = 300; // Geschätzte Breite des Emoji-Pickers
 
+            let top = Math.min(event.clientY, window.innerHeight - pickerHeight);
+            let left = Math.min(event.clientX, window.innerWidth - pickerWidth);
+
+            this.pickerPosition = { top: `${top}px`, left: `${left}px` };
+        }
     }
+
     closePicker(event: Event) {
         if (this.isPickerVisible) {
             this.isPickerVisible = false;
+            this.pickerContext = "";
+            this.currentMessagePadnumber = "";
         }
     }
     addEmoji(event: any) {
@@ -102,16 +120,17 @@ export class DirectMessageComponent {
             );
         }
     }
+
     addReactionToMessage(messagePadnr: string, emoji: string) {
-        this.chatService
-            .addReaction(this.chatService.selectedUser.id, emoji, 'DM', messagePadnr)
+        this.DMSerivce.addReaction(messagePadnr, emoji, this.chatService.selectedUser.id)
             .then(() => console.log("Reaction added"))
             .catch((error) => console.error("Error adding reaction: ", error));
     }
 
-    addOrSubReaction(message: any, reaction: any,) {
-        debugger;
-        this.chatService.addOrSubReaction(message, reaction, 'DM', this.chatService.selectedUser.id);
+    addOrSubReaction(message: any, reaction: string) {
+        this.DMSerivce.addOrSubReaction(message, reaction, this.chatService.selectedUser.id)
+            .then(() => console.log("Reaction added or removed"))
+            .catch((error) => console.error("Error adding/removing reaction: ", error));
     }
 
     openDialogChannelInfo() {

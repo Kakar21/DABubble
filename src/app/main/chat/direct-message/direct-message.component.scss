@@ -85,6 +85,7 @@
         width: 4.375rem;
         height: 4.375rem;
         border-radius: 50%;
+        object-fit: cover;
     }
 
     > div:not(.message-info, .hoverMenu) {
