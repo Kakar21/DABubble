@@ -124,7 +124,7 @@
                     </div>
                 </div>
             </div>
-            <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'">
+            <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'" [ngStyle]="{ top: pickerPosition.top, left: pickerPosition.left }">
                 <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
             </div>
             }
