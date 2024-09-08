@@ -262,7 +262,6 @@ export class ChatService {
         const messagesSnapshot = await getDocs(threadRef);
         const messageCount = messagesSnapshot.size;
         const newMessageRef = doc(threadRef, this.padNumber(messageCount, 4));
-
         const messageData: Message = {
             id: this.currentUser.currentUser.id,
             avatar: this.currentUser.currentUser.avatar,

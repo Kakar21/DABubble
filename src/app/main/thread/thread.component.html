@@ -39,12 +39,13 @@
                         <h5 (click)="openProfileById(initialMessage.id)">{{ initialMessage.name }}</h5>
                         <span>{{ dayTime(initialMessage.time) }} Uhr</span>
                     </div>
-                    <div class="message-text"
+                    <div class="message-text" [ngStyle]="{ 'display': initialMessage.message.trim() === '' ? 'none' : 'block' }"
                             [ngClass]="{'current-user-text': initialMessage.name === currentUser.currentUser.name}" (click)="onMessageClick($event)"
                             [innerHTML]="initialMessage.message | highlightMentions">
                         
 
                     </div>
+                    <img *ngIf="initialMessage.imageUrl" class="loaded-img" [src]="initialMessage.imageUrl" (click)="openDialogImage(initialMessage.imageUrl)">
                     <div *ngIf="!noReactions(initialMessage)">
                         <div class="reaction">
                             @if (initialMessage.reactions) {
@@ -121,12 +122,13 @@
                             <h5 (click)="openProfileById(message.id)">{{ message.name }}</h5>
                             <span>{{ dayTime(message.time) }} Uhr</span>
                         </div>
-                        <div class="message-text"
+                        <div class="message-text" [ngStyle]="{ 'display': message.message.trim() === '' ? 'none' : 'block' }"
                             [ngClass]="{'current-user-text': message.name === currentUser.currentUser.name}" (click)="onMessageClick($event)"
                             [innerHTML]="message.message | highlightMentions">
                         
 
                     </div>
+                    <img *ngIf="message.imageUrl" class="loaded-img" [src]="message.imageUrl" (click)="openDialogImage(message.imageUrl)">
                     <div *ngIf="!noReactions(message)">
                         <div class="reaction">
                             @if (message.reactions) {
@@ -179,9 +181,17 @@
             <textarea #messageInput matInput (input)="onInputChange($event)" [formControl]="formCtrl"
                 [matAutocomplete]="auto" type="text" (keydown)="onKeydown($event)" [(ngModel)]="messageText"
                 placeholder="Antworten..."></textarea>
+                <div *ngIf="previewUrl" class="preview-image" (click)="openDialogImage(previewUrl)">
+                    <button class="closeButton" (click)="clearPreview()" mat-icon-button>
+                        <img src="../../../assets/img/icons/close.svg"/>
+                    </button>
+                    <img [src]="previewUrl" alt="Image Preview" />
+                </div>
             <div class="action-buttons">
                 <div class="button-wrapper">
-                    <button class="input-image" mat-icon-button>
+                    <button class="upload-image input-image" mat-icon-button (click)="upload.click()">
+                        <input id="fileUploadThread" type="file" #upload (change)="onFileSelected($event)"
+                            accept=".png,.jpg">
                         <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                     </button>
                     <div class="vector"></div>

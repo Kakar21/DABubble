@@ -32,6 +32,7 @@ import { initializeApp } from "@angular/fire/app";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
 import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
 import { DialogEditMessageComponent } from "../../dialog-edit-message/dialog-edit-message.component";
+import { DialogImageComponent } from "../../dialog-image/dialog-image.component";
 
 @Component({
     selector: "app-thread",
@@ -64,6 +65,7 @@ export class ThreadComponent implements OnChanges {
     formCtrl = new FormControl();
     filteredMembers: Observable<UsersList[]>;
     initialMessagePicker = false;
+    previewUrl: string | ArrayBuffer | null = null;
 
     constructor(
         public chatService: ChatService,
@@ -123,7 +125,16 @@ export class ThreadComponent implements OnChanges {
     }
 
     async send() {
-        if (this.messageText.trim() !== "") {
+        let imageUrl = '';
+
+        if (this.previewUrl) {
+            const fileInput = document.getElementById('fileUploadThread') as HTMLInputElement;
+            imageUrl = await this.imageService.uploadFile(fileInput);
+            console.log(imageUrl)
+            this.clearPreview();
+        }
+
+        if ((this.messageText.trim() !== "") || (imageUrl.trim() !== "")) {
             const message: Message = {
                 id: "",
                 avatar: "",
@@ -134,8 +145,9 @@ export class ThreadComponent implements OnChanges {
                 reactions: {},
                 padNumber: "",
                 btnReactions: [],
-                imageUrl: ''
+                imageUrl: imageUrl
             };
+
             await this.chatService.sendThreadMessage(
                 this.channelId,
                 this.messageId,
@@ -146,6 +158,7 @@ export class ThreadComponent implements OnChanges {
             this.loadMessages();
         }
     }
+
     showTooltip(key: string, value: number) {
         const tooltip = document.getElementById("customTooltip");
         if (tooltip) {
@@ -218,6 +231,13 @@ export class ThreadComponent implements OnChanges {
                 console.error("Kein Benutzername definiert für dieses Element");
             }
         }
+    }
+
+    openDialogImage(imageUrl: string | ArrayBuffer) {
+        this.dialog.open(DialogImageComponent, {
+            panelClass: "image-dialog",
+            data: imageUrl
+        });
     }
 
     openProfileCard(username: string) {
@@ -398,18 +418,22 @@ export class ThreadComponent implements OnChanges {
     
     onFileSelected(event: any) {
         const input = event.target as HTMLInputElement;
-        if (input && input.files && input.files.length > 0) {
-            this.imageService.uploadFile(input).then((url: string) => {
-                if (url) {
-                    // Hier wird das Bild als <img> Tag in die Nachricht eingefügt
-                    this.messageText += `<img src="${url}" alt="Uploaded Image" style="max-width: 400px; height: auto;" />`;
-                } else {
-                    console.error('File upload returned an empty URL.');
-                }
-            }).catch((error) => {
-                console.error('Error uploading file:', error);
-            });
+        if (input.files) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.previewUrl = reader.result;
+            };
+            reader.readAsDataURL(file);
         }
+    }
+
+    uploadFile(input: HTMLInputElement) {
+        this.imageService.uploadFile(input);
+    }
+
+    clearPreview() {
+        this.previewUrl = null;
     }
     
    

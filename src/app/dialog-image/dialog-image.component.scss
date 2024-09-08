@@ -1,0 +1,11 @@
+::ng-deep::ng-deep div.image-dialog {
+    img {
+        max-width: 50vw;  
+        max-height: 70vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        margin: auto;  
+    }
+}

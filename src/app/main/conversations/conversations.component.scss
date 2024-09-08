@@ -78,7 +78,8 @@ main {
     box-shadow: none !important;
 
     > mat-expansion-panel-header {
-        padding: 0 0 1rem 0;
+        padding: 0;
+        margin: 0 0 0.915rem 0;
 
         mat-panel-title {
             display: flex;
@@ -179,8 +180,9 @@ main {
             line-height: normal;
             font-size: 1.125rem;
             font-weight: 400;
-            overflow-wrap: break-word;
-            white-space: break-spaces;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;
             max-width: 8.25rem;
         }
     }
@@ -204,7 +206,7 @@ mat-button-toggle {
 .channel-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.8125rem;
 
     .channel {
         display: flex;
@@ -250,6 +252,7 @@ mat-button-toggle {
 }
 
 .new-channel {
+    margin-top: 0.75rem;
     display: flex;
     align-items: center;
     gap: 0.625rem;

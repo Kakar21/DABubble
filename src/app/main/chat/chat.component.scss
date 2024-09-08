@@ -502,16 +502,6 @@
 
 }
 
-.message-image {
-    max-width: 8rem;
-    border-radius: 10px;
-    border: 1px rgba(0, 0, 0, 0.2) solid;
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
-    cursor: pointer;
-}
-
 .upload-image {
     border: none;
     border-radius: 100%;
@@ -535,13 +525,36 @@
 }
 
 .loaded-img {
-    max-width: 8rem;
-    border-radius: 10px;
-    border: 1px rgba(0, 0, 0, 0.2) solid;
+    max-width: 20rem;
+    max-height: 20rem;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid var(--light-purple-line);
+    border-radius: 1.25rem;
+    position: relative;
+
+    &:hover {
+        cursor: pointer;
+        border-color: var(--purple-2);
+    }
+
+    &:active {
+        border-color: var(--purple-1);
+    }
+}
+
+.preview-image {
     position: relative;
     display: inline-block;
-    overflow: hidden;
+    width: 8rem; // Feste Vorschau-Breite
+    height: 8rem; // Feste Vorschau-Höhe
+    margin-right: 1rem; // Abstand zur Nachricht
     cursor: pointer;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid var(--light-purple-line);
+
 
     &::after {
         content: '';
@@ -560,71 +573,24 @@
         opacity: 1;
     }
 
-    img:last-child {
+    img {
         width: 100%;
-        height: auto;
+        height: 100%;
+        object-fit: cover; // Das Bild wird in den Container eingepasst, ohne Verzerrung
+        border-radius: 0.5rem;
     }
 
+    .closeButton {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 10; // Sicherstellen, dass es über dem Bild liegt
+        background-color: rgba(236, 238, 254, 0.5);
 
-}
-
-.delete-preview {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 10;
-    cursor: default;
-    border-radius: 100%;
-
-    &:hover {
-        background-color: rgba(45, 8, 225, 0.2);
+        &:hover {
+            background-color: rgba(236, 238, 254, 1);
+        }
     }
-}
-
-.modal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-.modal-content {
-    position: relative;
-    background-color: #fefefe;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 90%;
-    max-height: 90%;
-    overflow: auto;
-}
-
-.modal-content img {
-    width: 100%;
-    height: auto;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 .input-container {

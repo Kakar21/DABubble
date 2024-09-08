@@ -79,8 +79,9 @@
                         <h5 (click)="openProfileById(message.value.id)">{{ message.value.name }}</h5>
                         <span>{{ dayTime(message.value.time) }} Uhr</span>
                     </div>
-                    <div class="message-text" [innerHTML]="message.value.message | highlightMentions" (click)="onMessageClick($event)">
+                    <div class="message-text" [ngStyle]="{ 'display': message.value.message.trim() === '' ? 'none' : 'block' }" [innerHTML]="message.value.message | highlightMentions" (click)="onMessageClick($event)">
                     </div>
+                    <img *ngIf="message.value.imageUrl" class="loaded-img" [src]="message.value.imageUrl" (click)="openDialogImage(message.value.imageUrl)">
                     <div *ngIf="!noReactions(message.value)">
                         <div class="reaction">
                             @if (message.value.reactions) {
@@ -155,9 +156,17 @@
                 <textarea type="text" (keydown)="onKeydown($event)" [(ngModel)]="messageText" placeholder="Nachricht an {{
                         chatService.selectedUser.name}}" [matAutocomplete]="auto" (input)="onInputChange($event)"
                     [formControl]="formCtrl"></textarea>
+                <div *ngIf="previewUrl" class="preview-image" (click)="openDialogImage(previewUrl)">
+                    <button class="closeButton" (click)="clearPreview()" mat-icon-button>
+                        <img src="../../../assets/img/icons/close.svg"/>
+                    </button>
+                    <img [src]="previewUrl" alt="Image Preview" />
+                </div>
                 <div class="action-buttons">
                     <div class="button-wrapper">
-                        <button class="input-image" mat-icon-button>
+                        <button class="upload-image input-image" mat-icon-button (click)="upload.click()">
+                            <input id="fileUploadDirectmessage" type="file" #upload (change)="onFileSelected($event)"
+                                accept=".png,.jpg">
                             <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                         </button>
                         <div class="vector"></div>

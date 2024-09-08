@@ -89,12 +89,10 @@
                         <h5 (click)="openProfileById(message.value.id)">{{ message.value.name}}</h5>
                         <span>{{ dayTime(message.value.time) }} Uhr</span>
                     </div>
-                    <div #message class="message-text" [ngClass]="{'current-user-text': message.value.name === currentUser.currentUser.name}"  (click)="onMessageClick($event)"
+                    <div #message class="message-text" [ngStyle]="{ 'display': message.value.message.trim() === '' ? 'none' : 'block' }" [ngClass]="{'current-user-text': message.value.name === currentUser.currentUser.name}"  (click)="onMessageClick($event)"
                         [innerHTML]="message.value.message | highlightMentions"  >
                     </div>     
-                    <div *ngIf="message.value.imageUrl" class="loaded-img" (click)="openModal(message.value.imageUrl)">
-                        <img [src]="message.value.imageUrl" alt="Image Preview" />
-                    </div>
+                    <img *ngIf="message.value.imageUrl" class="loaded-img" [src]="message.value.imageUrl" (click)="openDialogImage(message.value.imageUrl)">
                     <div *ngIf="!noReactions(message.value)">
                         <div class="reaction">
                             @if (message.value.reactions) {
@@ -179,12 +177,6 @@
             </div>
         </div>
         }
-        <div *ngIf="showModal" class="modal">
-            <div class="modal-content">
-                <span class="close" (click)="closeModal()">&times;</span>
-                <img [src]="modalSrc" alt="Expanded Image Preview">
-            </div>
-        </div>
         <div class="input-container">
             <div class="chat-input">
                 <textarea #messageInput matInput (input)="onInputChange($event)" [formControl]="formCtrl"
@@ -193,15 +185,16 @@
                         chatService.currentChannel.name
                     }}">
                 </textarea>
-                <div *ngIf="previewUrl" class="loaded-img" (click)="openModal(previewUrl)">
-                    <img class="delete-preview" (click)="clearPreview()"
-                        src="../../../assets/img/icons/close-purple.svg" alt="close-loaded-img">
+                <div *ngIf="previewUrl" class="preview-image" (click)="openDialogImage(previewUrl)">
+                    <button class="closeButton" (click)="clearPreview()" mat-icon-button>
+                        <img src="../../../assets/img/icons/close.svg"/>
+                    </button>
                     <img [src]="previewUrl" alt="Image Preview" />
                 </div>
                 <div class="action-buttons">
                     <div class="button-wrapper">
                         <button class="upload-image input-image" mat-icon-button (click)="upload.click()">
-                            <input id="fileUpload" type="file" #upload (change)="onFileSelected($event)"
+                            <input id="fileUploadChat" type="file" #upload (change)="onFileSelected($event)"
                                 accept=".png,.jpg">
                             <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
                         </button>

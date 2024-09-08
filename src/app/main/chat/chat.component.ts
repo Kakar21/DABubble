@@ -38,6 +38,7 @@ import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { ImageService } from "../../image.service";
+import { DialogImageComponent } from "../../dialog-image/dialog-image.component";
 
 @Component({
     selector: "app-chat",
@@ -84,9 +85,6 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     public currentChannel!: Channel;
     currentInputValue: string = "";
     previewUrl: string | ArrayBuffer | null = null;
-    showModal: boolean = false;
-    showImageModal: "preview" | "chatImage" | string = '';
-    modalSrc: string | ArrayBuffer = '';
     pickerPosition = { top: '0px', left: '0px' };
     editMessageId: string | null = null;
 
@@ -254,6 +252,13 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         }
     }
 
+    openDialogImage(imageUrl: string | ArrayBuffer) {
+        this.dialog.open(DialogImageComponent, {
+            panelClass: "image-dialog",
+            data: imageUrl
+        });
+    }
+
     openDialogChannelInfo() {
         this.dialog.open(DialogChannelInfoComponent, {
             panelClass: "custom-dialog-br",
@@ -310,13 +315,13 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         let imageUrl = '';
 
         if (this.previewUrl) {
-            const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
+            const fileInput = document.getElementById('fileUploadChat') as HTMLInputElement;
             imageUrl = await this.imageService.uploadFile(fileInput);
             console.log(imageUrl)
             this.clearPreview();
-
         }
-        if (this.messageText.trim() !== "") {
+
+        if ((this.messageText.trim() !== "") || (imageUrl.trim() !== "")) {
             const message: Message = {
                 id: "",
                 avatar: this.currentUser.currentUser.avatar || '', // Beispiel für das Hinzufügen eines Avatars
@@ -538,15 +543,6 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
 
     clearPreview() {
         this.previewUrl = null;
-    }
-
-    openModal(modalURL: string | ArrayBuffer) {
-        this.modalSrc = modalURL;
-        this.showModal = true;
-    }
-
-    closeModal() {
-        this.showModal = false;
     }
 
     openDialogEditMessage(channelId: string, messageId: string, currentMessage: string): void {

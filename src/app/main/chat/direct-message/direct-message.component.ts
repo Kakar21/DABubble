@@ -24,26 +24,27 @@ import { map, Observable, startWith } from "rxjs";
 import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { DialogEditMessageComponent } from "../../../dialog-edit-message/dialog-edit-message.component";
 import { HighlightMentionsPipe } from "../../../pipes/highlist-mentions.pipe";
+import { DialogImageComponent } from "../../../dialog-image/dialog-image.component";
 
 @Component({
     selector: "app-direct-message",
     standalone: true,
     imports: [
-    ChatComponent,
-    PickerComponent,
-    EmojiModule,
-    MatButtonModule,
-    MatIconModule,
-    CommonModule,
-    MatDialogModule,
-    ConversationsComponent,
-    MatButtonToggleModule,
-    FormsModule,
-    MatMenuModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-    HighlightMentionsPipe
-],
+        ChatComponent,
+        PickerComponent,
+        EmojiModule,
+        MatButtonModule,
+        MatIconModule,
+        CommonModule,
+        MatDialogModule,
+        ConversationsComponent,
+        MatButtonToggleModule,
+        FormsModule,
+        MatMenuModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        HighlightMentionsPipe
+    ],
 
     templateUrl: "./direct-message.component.html",
     styleUrl: "./direct-message.component.scss",
@@ -57,6 +58,8 @@ export class DirectMessageComponent {
     @ViewChild("messageInput") messageInput!: ElementRef<HTMLInputElement>;
     pickerContext: string = "";
     currentMessagePadnumber: string = "";
+    previewUrl: string | ArrayBuffer | null = null;
+
 
     constructor(
         public dialog: MatDialog,
@@ -107,8 +110,8 @@ export class DirectMessageComponent {
     }
 
     addOrSubReaction(message: any, reaction: any,) {
-        debugger
-        this.chatService.addOrSubReaction(message, reaction, 'DM', this.chatService.selectedUser.id)
+        debugger;
+        this.chatService.addOrSubReaction(message, reaction, 'DM', this.chatService.selectedUser.id);
     }
 
     openDialogChannelInfo() {
@@ -145,10 +148,19 @@ export class DirectMessageComponent {
 
     noReactions(message: Message): boolean {
         return !message.reactions || Object.keys(message.reactions).length === 0;
-    }    
+    }
 
     async send() {
-        if (this.messageText.trim() !== "") {
+        let imageUrl = '';
+
+        if (this.previewUrl) {
+            const fileInput = document.getElementById('fileUploadDirectmessage') as HTMLInputElement;
+            imageUrl = await this.imageService.uploadFile(fileInput);
+            console.log(imageUrl)
+            this.clearPreview();
+        }
+
+        if ((this.messageText.trim() !== "") || (imageUrl.trim() !== "")) {
             const message: Message = {
                 id: "",
                 avatar: "",
@@ -159,7 +171,7 @@ export class DirectMessageComponent {
                 reactions: {},
                 padNumber: "",
                 btnReactions: [],
-                imageUrl: ''
+                imageUrl: imageUrl
             };
 
             await this.DMSerivce.sendMessage(
@@ -285,26 +297,52 @@ export class DirectMessageComponent {
         this.messageInput.nativeElement.focus();
     }
 
+    openDialogImage(imageUrl: string | ArrayBuffer) {
+        this.dialog.open(DialogImageComponent, {
+            panelClass: "image-dialog",
+            data: imageUrl
+        });
+    }
+
     openDialogEditMessage(messageId: string, currentMessage: string, sendedUserID: string): void {
         const dialogRef = this.dialog.open(DialogEditMessageComponent, {
             panelClass: 'edit-message-dialog',
-          data: { message: currentMessage }
+            data: { message: currentMessage }
         });
-      
+
         dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            const newContent = result;  // Das ist der neue Inhalt, den der Benutzer eingegeben hat
-            console.log('Updated content:', newContent);
-            this.DMSerivce.updateMessage(sendedUserID, messageId, newContent)
-              .then(() => console.log('Message updated successfully'))
-              .catch(error => console.error('Error updating message:', error));
-          } else {
-            console.log('Dialog closed without saving');
-          }
+            if (result) {
+                const newContent = result;  // Das ist der neue Inhalt, den der Benutzer eingegeben hat
+                console.log('Updated content:', newContent);
+                this.DMSerivce.updateMessage(sendedUserID, messageId, newContent)
+                    .then(() => console.log('Message updated successfully'))
+                    .catch(error => console.error('Error updating message:', error));
+            } else {
+                console.log('Dialog closed without saving');
+            }
         });
-      }
-      
-      
+    }
+
+
+    onFileSelected(event: any) {
+        const input = event.target as HTMLInputElement;
+        if (input.files) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.previewUrl = reader.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    uploadFile(input: HTMLInputElement) {
+        this.imageService.uploadFile(input);
+    }
+
+    clearPreview() {
+        this.previewUrl = null;
+    }
 
 
 }
