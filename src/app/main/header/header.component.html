@@ -33,7 +33,7 @@
             <mat-option class="search-no-results" *ngIf="(filteredResults | async)?.length === 0" disabled>
                 <span>Keine Ergebnisse gefunden</span>
             </mat-option>
-            <ng-container class="hallo" *ngFor="let option of filteredResults | async">
+            <ng-container *ngFor="let option of filteredResults | async">
                 <mat-option class="search-option" *ngIf="option.type === 'user'" [value]="option">
                     @if (option.avatar && option.avatar.length > 1) {
                         <img src="{{ option.avatar }}" />
@@ -50,7 +50,15 @@
                     </div>
                 </mat-option>
                 <mat-option class="search-option" *ngIf="option.type === 'channel'" [value]="option">
-                    <img src="../../../assets/img/icons/tag.svg" />
+                    @if (option.avatar && option.avatar.length > 1) {
+                        <img src="{{ option.avatar }}" />
+                    } @else {
+                        <img
+                            src="../../assets/img/avatar/{{
+                                option.avatar
+                            }}.svg"
+                        />
+                    }
                     <div>
                         <h3>{{ option.name }}</h3>
                         <p>{{ option.message }}</p>

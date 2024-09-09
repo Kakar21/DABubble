@@ -56,7 +56,7 @@ export class ChatService {
 
     constructor(
         public firestore: FirestoreService,
-        public currentUser: CurrentuserService,
+        public currentUser: CurrentuserService
     ) {
         this.subUsersList();
         this.subChannelsList();
@@ -464,51 +464,5 @@ export class ChatService {
             this.mobileOpen = "directmessage";
         }
     }
-
-    searchMessagesAndChannels(query: string): SearchResult[] {
-        const results: SearchResult[] = [];
-    
-        // Channels durchsuchen
-        this.channelsList.forEach(channel => {
-            const messages = channel.channelData.messages 
-                ? Array.from(channel.channelData.messages.values()).filter(message => {
-                    return message.message.toLowerCase().includes(query.toLowerCase());
-                }) 
-                : [];
-    
-            messages.forEach(message => {
-                results.push({
-                    type: 'channel',
-                    id: message.id,
-                    name: channel.channelData.name,  // Channel-Name
-                    avatar: message.avatar,
-                    message: message.message,  // Nachricht
-                    channelName: channel.channelData.name,
-                    channelID: channel.id
-                });
-            });
-        });
-    
-        // Direct Messages durchsuchen
-        Object.values(this.allMessages).forEach((userMessages: Message[]) => {
-            const matchingMessages = userMessages.filter(message => {
-                return message.message.toLowerCase().includes(query.toLowerCase());
-            });
-    
-            matchingMessages.forEach(message => {
-                results.push({
-                    type: 'user',
-                    id: message.id,
-                    name: message.name,  // Benutzername
-                    avatar: message.avatar,
-                    message: message.message,  // Nachricht
-                    userID: message.id
-                });
-            });
-        });
-    
-        return results;
-    }
-    
     
 }

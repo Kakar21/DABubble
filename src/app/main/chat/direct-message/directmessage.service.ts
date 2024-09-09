@@ -182,36 +182,49 @@ export class DirectmessageService {
     
 
     getAllMessages() {
-        this.allMessages = {};
-
+        this.allMessages = {};  // Leere das Nachrichten-Objekt
+    
+        // Durchlaufe alle Benutzer aus der usersList
         this.chat.usersList.forEach((user) => {
+            // Erstelle einen eindeutigen Chat-Pfad basierend auf den Benutzer-IDs
+            const chatId = this.currentUser.currentUser.id < user.id
+                ? `${this.currentUser.currentUser.id}_${user.id}`
+                : `${user.id}_${this.currentUser.currentUser.id}`;
+    
             const potentialCollectionRef = collection(
                 this.firestore,
-                `users/${this.currentUser.currentUser.id}/${user.id}`,
+                `directmessages/${chatId}/messages`
             );
+    
+            // Sortiere die Nachrichten nach dem Zeitstempel
             const messagesQuery = query(
                 potentialCollectionRef,
-                orderBy("time"),
+                orderBy("time")
             );
-
+    
+            // Setze einen Echtzeitlistener für die Nachrichten
             onSnapshot(messagesQuery, (messagesSnapshot) => {
                 if (!messagesSnapshot.empty) {
+                    // Stelle sicher, dass das Nachrichten-Objekt für diesen Benutzer existiert
                     if (!this.allMessages[user.id]) {
                         this.allMessages[user.id] = {};
                     }
-
+    
+                    // Durchlaufe die Nachrichten und speichere sie in allMessages
                     messagesSnapshot.forEach((messageDoc) => {
                         const messageData = messageDoc.data() as Message;
-
+    
+                        // Speichere die Nachricht mit der ID des Dokuments
                         this.allMessages[user.id][messageDoc.id] = {
                             ...messageData,
-                            id: messageDoc.id,
+                            id: messageDoc.id,  // Füge die ID der Nachricht hinzu
                         };
                     });
                 }
             });
         });
     }
+    
 
     async updateMessage(sendedUserID: string, messageId: string, newContent: string): Promise<void> {
         // Pfad zur spezifischen Nachricht in der Unterkollektion

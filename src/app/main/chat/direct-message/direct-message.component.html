@@ -187,7 +187,7 @@
                     </button>
                 </div>
             </div>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-autocomplete class="directmessage-mention-autocomplete" #auto="matAutocomplete" (optionSelected)="selected($event)">
                 <mat-option *ngFor="let option of filteredMembers | async" [value]="option.name">
                     @if (option.avatar && option.avatar.length > 1) {
                     <img src="{{ option.avatar }}" />

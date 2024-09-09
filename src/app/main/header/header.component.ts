@@ -37,6 +37,7 @@ import { SearchResult } from "../../interfaces/search-result";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { of } from 'rxjs';
 import { ChatComponent } from "../chat/chat.component";
+import { SearchService } from "./search.service";
 
 @Component({
     selector: "app-header",
@@ -73,6 +74,7 @@ export class HeaderComponent {
         private chatService: ChatService,
         private _bottomSheet: MatBottomSheet,
         public DMService: DirectmessageService,
+        private searchService: SearchService
     ) {
         // Hier wird der SearchResult-Stream initialisiert
 
@@ -81,13 +83,18 @@ export class HeaderComponent {
             distinctUntilChanged(),  // Ignoriert gleiche Eingaben hintereinander
             switchMap((query) => {
                 if (typeof query === 'string' && query.trim() !== '') {
-                    return of(this.chatService.searchMessagesAndChannels(query));
+                    return of(searchService.searchMessagesAndChannels(query));
                 } else {
                     return of([]);
                 }
             })
         );
     }
+
+  ngOnInit() {
+        this.searchService.loadAllChannels();
+        this.searchService.loadAllDirectmessages();
+      }
 
     openDialog(event: MouseEvent): void {
         // Sicherstellen, dass event.target tatsächlich ein Element ist.
@@ -127,7 +134,8 @@ export class HeaderComponent {
     }
 
     log() {
-        console.log(this.getChannelMessages());
+        console.log(this.searchService.allChannelMessages);
+        console.log(this.searchService.allDirectMessages);
     }
 
     openBottomSheet(): void {

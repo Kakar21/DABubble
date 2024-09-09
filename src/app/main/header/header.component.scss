@@ -125,7 +125,7 @@
 
     &:hover {
         cursor: pointer;
-        background-color: var(--bg-color);
+        background-color: var(--bg-color) !important;
     }
 }
 
