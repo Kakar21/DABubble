@@ -253,6 +253,20 @@ h1 {
     }
 }
 
+@keyframes highlight {
+    0% {
+        background-color: var(--bg-color) !important;
+    }
+    100% {
+        background-color: transparent !important;
+    }
+}
+
+::ng-deep::ng-deep .highlight-message {
+    animation: highlight 2s ease-in;
+}
+
+
 // Media Queries
 
 @media (max-width: 768px) {

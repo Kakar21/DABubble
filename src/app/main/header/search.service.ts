@@ -42,6 +42,7 @@ export class SearchService {
           name: message.name,  // Channel-Name
           avatar: message.avatar,
           message: message.message,  // Nachricht
+          padNumber: message.padNumber.toString(),
           channelName: this.channels[channelId].name,
           channelID: channelId
         });
@@ -63,6 +64,7 @@ export class SearchService {
           name: message.name,  // Benutzername
           avatar: message.avatar,
           message: message.message,  // Nachricht
+          padNumber: message.padNumber,
           userID: userId
         });
       });

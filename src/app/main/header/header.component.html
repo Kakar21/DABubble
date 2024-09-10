@@ -29,7 +29,7 @@
             [formControl]="formCtrl"
             [matAutocomplete]="auto"
         />
-        <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete" [displayWith]="displayOption">
+        <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete" [displayWith]="displayOption" (optionSelected)="onOptionSelected($event)">
             <mat-option class="search-no-results" *ngIf="(filteredResults | async)?.length === 0" disabled>
                 <span>Keine Ergebnisse gefunden</span>
             </mat-option>

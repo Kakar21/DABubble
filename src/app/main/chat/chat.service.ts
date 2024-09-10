@@ -90,14 +90,25 @@ export class ChatService {
         }
     }
 
-    openDirectMessage(user: UsersList) {
-        this.selectedDirectmessage = user.id;
-        this.selectedChannel = "";
-        this.selectedUser = user;
-        if (window.matchMedia("(max-width: 768px)").matches) {
-            this.mobileOpen = "directmessage";
+    openDirectMessage(userId: string) {
+        // Suche den Benutzer mit der passenden userId in der usersList
+        const user = this.usersList.find(user => user.id === userId);
+    
+        // Falls der Benutzer existiert, wird der Chat geöffnet
+        if (user) {
+            this.selectedDirectmessage = userId;
+            this.selectedChannel = "";
+            this.selectedUser = user;  // Setze den gefundenen Benutzer
+    
+            // Überprüfe, ob das Gerät mobil ist und öffne die Direktnachricht
+            if (window.matchMedia("(max-width: 768px)").matches) {
+                this.mobileOpen = "directmessage";
+            }
+        } else {
+            console.error(`User with ID ${userId} not found`);
         }
     }
+    
     loadChannel(id: string) {
         const channelRef = this.firestore.channelsRef;
         const channelDocRef = doc(channelRef, id);

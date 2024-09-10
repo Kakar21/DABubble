@@ -108,12 +108,12 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
                 this.chatService.loadThreadInfo(this.chatService.currentChannelID, messageId);
             });
         }
-        this.scrollToBottom();
+        // this.scrollToBottom();
     }
 
     ngAfterViewChecked() {
-        if (this.messagesArrayLength !== this.chatService.currentChannel.messages?.size)
-            this.scrollToBottom();
+        if (this.messagesArrayLength !== this.chatService.currentChannel.messages?.size) {}
+            // this.scrollToBottom();
     }
 
 
@@ -564,13 +564,15 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     }
 
     scrollToMessage(messageId: string) {
-        const element = document.getElementById(messageId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Optional: Nachricht hervorheben
-            element.classList.add('highlight');
-            setTimeout(() => element.classList.remove('highlight'), 2000); // Entfernt die Hervorhebung nach 2 Sekunden
+        const messageElement = document.getElementById(messageId) as HTMLElement;
+        
+        if (messageElement) {
+            messageElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            console.log('Message element found, using scrollIntoView...');
+        } else {
+            console.error('Message element not found');
         }
     }
+    
     
 }

@@ -163,6 +163,7 @@ export class HeaderComponent {
                         name: message.name,
                         avatar: message.avatar,
                         message: message.message,
+                        padNumber: message.padNumber,
                         userID: userId,
                     });
                 });
@@ -192,6 +193,7 @@ export class HeaderComponent {
                         name: message.name,
                         avatar: message.avatar,
                         message: message.message,
+                        padNumber: message.padNumber.toString(),
                         channelName: channel.channelData.name,
                         channelID: channel.id,
                     }));
@@ -231,6 +233,7 @@ export class HeaderComponent {
                         name: message.name,
                         avatar: message.avatar,
                         message: message.message,
+                        padNumber: message.padNumber.toString(),
                         channelName: channel.channelData.name,
                         channelID: channel.id,
                     });
@@ -279,5 +282,60 @@ export class HeaderComponent {
         );
     }
 
+    openSearchResult(option: SearchResult) {
+        if ((option.type === 'channel') && option.channelID) {
+          // Öffne den Channel
+          this.chatService.openChannel(option.channelID);
+          this.chatService.setComponent('chat');
+        //   closeThread();
+          
+          // Scrolle zur Nachricht, wenn vorhanden
+          setTimeout(() => {
+            this.scrollToMessage(option.padNumber);
+          }, 500); // Warte, bis der Chat-Inhalt geladen ist
+        } else if ((option.type === 'user') && option.userID) {
+          // Öffne den Direct Message Chat
+          this.DMService.getMessages(option.userID);
+          this.chatService.openDirectMessage(option.userID);
+          this.chatService.setComponent('directMessage');
+      
+          // Scrolle zur Nachricht, wenn vorhanden
+          setTimeout(() => {
+            this.scrollToMessage(option.id);
+          }, 500); // Warte, bis der Chat-Inhalt geladen ist
+        }
+      }      
 
+      scrollToMessage(messageId: string) {
+        const messageElement = document.getElementById(messageId);
+        if (messageElement) {
+          messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          messageElement.classList.add('highlight-message');
+          setTimeout(() => {
+              messageElement.classList.remove('highlight-message');
+          }, 2000); // Zeitdauer der Animation
+        } else {
+          console.error('Message element not found');
+        }
+      }
+    
+    
+    onOptionSelected(event: MatAutocompleteSelectedEvent): void {
+        const selectedOption = event.option.value;
+    
+        if (selectedOption) {
+          if (selectedOption.type === 'user') {
+            this.openSearchResult(selectedOption);
+          } else if (selectedOption.type === 'channel') {
+            this.openSearchResult(selectedOption);
+          }
+        }
+    
+        // Leere das Eingabefeld nach der Auswahl der Option
+        this.formCtrl.setValue('');
+        setTimeout(() => {
+            this.searchInput.nativeElement.blur();  // Explizit den Fokus entfernen
+          }, 0);
+      }
 }

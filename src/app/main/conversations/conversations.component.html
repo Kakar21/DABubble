@@ -101,7 +101,7 @@
                             (click)="
                                 chatService.setComponent('directMessage');
                                 DMservice.getMessages(user.id);
-                                chatService.openDirectMessage(user)
+                                chatService.openDirectMessage(user.id)
                             "
                             [value]="user.id"
                         >
