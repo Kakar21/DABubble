@@ -42,12 +42,19 @@ export class DialogChannelInfoComponent {
         );
 
         this.chatService.setComponent("");
+        this.mobileGoBack()
         this.closeDialog();
     }
 
     editName() {
         this.name = this.chatService.currentChannel.name;
         this.editingName = true;
+    }
+
+    mobileGoBack() {
+        this.chatService.mobileOpen = "";
+        this.chatService.selectedChannel = "";
+        this.chatService.selectedDirectmessage = "";
     }
 
     async saveName() {

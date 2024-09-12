@@ -241,3 +241,20 @@
     left: 6rem;
     bottom: 1rem;
 }
+
+
+@media (max-width: 768px) {
+    :host {
+        width: 75vw;
+    }
+}
+
+@media (max-width: 550px) {
+    .button-wrapper {
+        flex-direction: column;
+
+        .save-cancel {
+            justify-content: space-evenly;
+        }
+    }
+}

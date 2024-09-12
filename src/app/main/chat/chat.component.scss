@@ -861,6 +861,10 @@ mat-option {
         }
     }
 
+    .emoji-picker {
+        left: unset !important;
+    }
+
     .chat-content {
         height: calc(100% - 3.386875rem);
     }

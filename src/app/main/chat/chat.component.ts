@@ -120,7 +120,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
 
     toggleThread(channelId: string, messageId: string) {
         this.threadOpen.emit({ channelId, messageId });
-        if (window.matchMedia("(max-width: 431px)").matches) {
+        if (window.matchMedia("(max-width: 768px)").matches) {
             this.chatService.mobileOpen = "thread";
         }
 

@@ -14,7 +14,7 @@
             <img src="../../../assets/img/icons/close.svg" />
         </button>
     </div>
-    <div class="image-section" (click)="onAvatarClick()">
+    <div class="image-section" [ngClass]="{'not-guest': currentUserUid !== 'mMqjWie0OWa6lWCnq5hStLQqXow1'}" (click)="onAvatarClick()">
         <input type="file" #avatarInput style="display: none;" (change)="onFileSelected($event)" accept="image/*" />
         @if (currentUser.avatar.length > 1) {
             <img src="{{ currentUser.avatar }}" />

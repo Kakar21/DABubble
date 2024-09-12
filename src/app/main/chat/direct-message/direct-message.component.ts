@@ -323,7 +323,7 @@ export class DirectMessageComponent {
         });
     }
 
-    openDialogEditMessage(messageId: string, currentMessage: string, sendedUserID: string): void {
+    openDialogEditMessage(sendedUserID: string, messageId: string, currentMessage: string, ): void {
         const dialogRef = this.dialog.open(DialogEditMessageComponent, {
             panelClass: 'edit-message-dialog',
             data: { message: currentMessage }

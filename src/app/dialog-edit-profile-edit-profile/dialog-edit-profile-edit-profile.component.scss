@@ -23,12 +23,24 @@ section {
     display: flex;
     justify-content: center;
     width: 100%;
+    margin: -0.78125rem 0;
 
     img {
         width: 12.5rem;
         height: 12.5rem;
         border-radius: 100%;
         object-fit: cover;
+    }
+}
+
+.not-guest {
+    img {
+        border: 0.78125rem solid transparent;
+
+        &:hover {
+            border-color: #e6e6e6;
+            cursor: pointer;
+        }
     }
 }
 

@@ -591,6 +591,10 @@ mat-option {
         height: calc(100% - 3.75rem);
     }
 
+    .emoji-picker {
+        left: unset !important;
+    }
+
     .message {
         padding: 0.625rem 1rem;
         gap: 1rem;

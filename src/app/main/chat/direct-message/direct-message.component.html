@@ -58,7 +58,7 @@
                               <img src="../../../assets/img/icons/3-dots.svg" alt="More" />
                             </button>
                             <mat-menu class="moreMenu" #menu="matMenu">
-                              <button mat-menu-item (click)="openDialogEditMessage(message.key, message.value.message, chatService.selectedUser.id)">
+                              <button mat-menu-item (click)="openDialogEditMessage(chatService.selectedUser.id, message.key, message.value.message)">
                                 Nachricht bearbeiten
                               </button>
                             </mat-menu>
@@ -153,7 +153,7 @@
 
         <div class="input-container">
             <div class="chat-input">
-                <textarea type="text" (keydown)="onKeydown($event)" [(ngModel)]="messageText" placeholder="Nachricht an {{
+                <textarea type="text" #messageInput (keydown)="onKeydown($event)" [(ngModel)]="messageText" placeholder="Nachricht an {{
                         chatService.selectedUser.name}}" [matAutocomplete]="auto" (input)="onInputChange($event)"
                     [formControl]="formCtrl"></textarea>
                 <div *ngIf="previewUrl" class="preview-image" (click)="openDialogImage(previewUrl)">

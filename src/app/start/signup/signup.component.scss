@@ -240,6 +240,10 @@ mat-checkbox {
         }
     }
 
+    mat-checkbox {
+        margin-top: unset;
+    }
+
     form {
         gap: 1.875rem;
 
@@ -251,3 +255,11 @@ mat-checkbox {
     }
     // TODO: fix sentence to long = overflowing
 }
+
+// @media (max-width: 444px) {
+//     form {
+//         >div:nth-child(4) {
+//             margin-top: 1rem;
+//         }
+//     }
+// }

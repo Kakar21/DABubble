@@ -88,6 +88,8 @@ export class DialogEditProfileEditProfileComponent {
     }
 
     updateUser() {
+        const oldName = this.currentUser.name;  // Speichere den alten Namen
+
         this.firestore
             .updateEmail(this.email)
             .then(() => {
@@ -96,6 +98,19 @@ export class DialogEditProfileEditProfileComponent {
                     this.email,
                     this.currentUser.avatar,
                 );
+            })
+            .then(() => {
+                // Aktualisiere den Benutzer in allen Channels, in denen er Mitglied ist
+                return this.firestore.updateUserInChannels({
+                    id: this.currentUser.id,
+                    name: this.name,
+                    email: this.email,
+                    avatar: this.currentUser.avatar
+                });
+            })
+            .then(() => {
+                // Aktualisiere den Namen des Benutzers als creator in den Channels
+                return this.firestore.updateUserInChannelCreators(oldName, this.name);
             })
             .then(() => {
                 console.log("User updated successfully");
@@ -148,7 +163,9 @@ export class DialogEditProfileEditProfileComponent {
     }
 
     onAvatarClick() {
-        this.avatarInput.nativeElement.click();
+        if (this.currentUserUid !== "mMqjWie0OWa6lWCnq5hStLQqXow1") {
+            this.avatarInput.nativeElement.click();
+        }
     }
 
     onFileSelected(event: any) {

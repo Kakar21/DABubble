@@ -8,6 +8,7 @@ import {
     getFirestore,
     CollectionReference,
     DocumentData,
+    getDocs,
 } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 import {
@@ -223,6 +224,56 @@ export class FirestoreService {
 
         this.saveUser(user, this.currentUserID);
     }
+
+    async updateUserInChannels(updatedUser: { id: string, name: string, email: string, avatar: string }) {
+        // Holen Sie alle Channels ab
+        const channelsSnapshot = await getDocs(this.channelsRef);
+    
+        // Durchlaufen Sie jeden Channel
+        channelsSnapshot.forEach(async (channelDoc) => {
+            const channelData = channelDoc.data();
+    
+            // Wenn der Channel Mitglieder hat
+            if (channelData["members"] && Array.isArray(channelData["members"])) {
+                const memberIndex = channelData["members"].findIndex((member: any) => member.id === updatedUser.id);
+    
+                // Wenn der Benutzer in den Mitgliedern dieses Channels ist
+                if (memberIndex !== -1) {
+                    // Aktualisieren Sie die Benutzerinformationen in der members-Liste
+                    channelData["members"][memberIndex] = {
+                        ...channelData["members"][memberIndex],
+                        name: updatedUser.name,
+                        email: updatedUser.email,
+                        avatar: updatedUser.avatar
+                    };
+    
+                    // Speichern Sie die aktualisierten Mitgliederinformationen in der Datenbank
+                    await setDoc(doc(this.channelsRef, channelDoc.id), { members: channelData["members"] }, { merge: true });
+    
+                    console.log(`User ${updatedUser.id} updated in channel ${channelDoc.id}`);
+                }
+            }
+        });
+    }
+
+    async updateUserInChannelCreators(oldName: string, newName: string) {
+        // Holen Sie alle Channels ab
+        const channelsSnapshot = await getDocs(this.channelsRef);
+    
+        // Durchlaufen Sie jeden Channel
+        channelsSnapshot.forEach(async (channelDoc) => {
+            const channelData = channelDoc.data();
+    
+            // Überprüfen, ob der alte Name des Benutzers als creator im Channel hinterlegt ist
+            if (channelData["creator"] && channelData["creator"] === oldName) {
+                // Aktualisieren Sie den Namen des Erstellers
+                await setDoc(doc(this.channelsRef, channelDoc.id), { creator: newName }, { merge: true });
+    
+                console.log(`Creator name updated from ${oldName} to ${newName} in channel ${channelDoc.id}`);
+            }
+        });
+    }    
+    
 
     loginAsGuest() {
         const guestEmail = "guest@guest.guest";

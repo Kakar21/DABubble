@@ -227,13 +227,19 @@ export class DirectmessageService {
     
 
     async updateMessage(sendedUserID: string, messageId: string, newContent: string): Promise<void> {
-        // Pfad zur spezifischen Nachricht in der Unterkollektion
-        const messageDocRef = doc(this.firestore, `users/${this.currentUser.currentUser.id}/${sendedUserID}/${messageId}`) as DocumentReference;
+        // Determine the chatId based on the current user and the recipient's userID
+        const chatId = this.currentUser.currentUser.id < sendedUserID 
+            ? `${this.currentUser.currentUser.id}_${sendedUserID}` 
+            : `${sendedUserID}_${this.currentUser.currentUser.id}`;
     
-        console.log('Updating message at:', messageDocRef.path);  // Debugging: Überprüfe den Pfad
-        console.log('New content:', newContent);  // Debugging: Überprüfe den neuen Inhalt
+        // Path to the specific message in the subcollection within `directmessages`
+        const messageDocRef = doc(this.firestore, `directmessages/${chatId}/messages/${messageId}`);
+    
+        console.log('Updating message at:', messageDocRef.path);  // Debugging: Checking the path
+        console.log('New content:', newContent);  // Debugging: Checking the new content
     
         try {
+            // Update the message document with the new content and the updated timestamp
             await updateDoc(messageDocRef, {
                 message: newContent,
                 updatedAt: new Date().toISOString(),
