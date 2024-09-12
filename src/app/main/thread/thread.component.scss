@@ -60,6 +60,7 @@ header {
         flex-direction: column;
         overflow-y: auto;
         height: calc(100% - 10.2725rem);
+        -webkit-overflow-scrolling: touch; /* Für ein besseres Scroll-Verhalten auf iOS */
     }
 }
 

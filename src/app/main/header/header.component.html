@@ -68,7 +68,7 @@
         </mat-autocomplete>
         
         
-        <span class="material-icons">search</span>
+        <img src="../../../assets/img/icons/search.svg" />
     </div>
     
     <div
@@ -108,6 +108,50 @@
     }"
     class="searchbar-wrapper mobile"
 >
-    <input placeholder="Gehe zu..." />
+    <input 
+        matInput
+        placeholder="Gehe zu..."
+        #searchInput
+        [formControl]="formCtrl"
+        [matAutocomplete]="auto"/>
+        <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete" [displayWith]="displayOption" (optionSelected)="onOptionSelected($event)">
+            <mat-option class="search-no-results" *ngIf="(filteredResults | async)?.length === 0" disabled>
+                <span>Keine Ergebnisse gefunden</span>
+            </mat-option>
+            <ng-container *ngFor="let option of filteredResults | async">
+                <mat-option class="search-option" *ngIf="option.type === 'user'" [value]="option">
+                    @if (option.avatar && option.avatar.length > 1) {
+                        <img src="{{ option.avatar }}" />
+                    } @else {
+                        <img
+                            src="../../assets/img/avatar/{{
+                                option.avatar
+                            }}.svg"
+                        />
+                    }
+                    <div>
+                        <h3>{{ option.name }}</h3>
+                        <p>{{ option.message }}</p>
+                    </div>
+                </mat-option>
+                <mat-option class="search-option" *ngIf="option.type === 'channel'" [value]="option">
+                    @if (option.avatar && option.avatar.length > 1) {
+                        <img src="{{ option.avatar }}" />
+                    } @else {
+                        <img
+                            src="../../assets/img/avatar/{{
+                                option.avatar
+                            }}.svg"
+                        />
+                    }
+                    <div>
+                        <h3>{{ option.name }}</h3>
+                        <p>{{ option.message }}</p>
+                    </div>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
     <img src="../../../assets/img/icons/search.svg" />
+
+    
 </div>

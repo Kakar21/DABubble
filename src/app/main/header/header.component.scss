@@ -27,7 +27,6 @@
     position: relative;
     display: flex;
     align-items: center;
-    border: 1px solid var(--bg-color);
     border-radius: 2.625rem;
 
     input {
@@ -38,6 +37,13 @@
         padding: 1.09375rem 2.8125rem;
         color: var(--black);
         font-size: 1.5rem;
+    }
+}
+
+.searchbar-wrapper:not(.mobile) {
+    border: 1px solid var(--bg-color);
+
+    input {
 
         &:focus {
             outline: none;
@@ -49,7 +55,7 @@
         }
     }
 
-    span {
+    img {
         position: absolute;
         right: 1.5rem;
     }
@@ -198,6 +204,18 @@ h1 {
 
         &::placeholder {
             font-size: 1.0625rem;
+            color: var(--text-gray);
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--purple-1);
+            cursor: unset;
+        }
+
+        &:hover {
+            border-color: var(--purple-2);
+            cursor: pointer;
         }
     }
 

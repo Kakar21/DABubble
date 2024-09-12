@@ -398,6 +398,7 @@
     flex-direction: column;
     overflow-y: auto;
     height: calc(100% - 10.2725rem);
+    -webkit-overflow-scrolling: touch; /* Für ein besseres Scroll-Verhalten auf iOS */
     // padding: 1.5rem 1rem 0.75rem 0;
 }
 

@@ -308,6 +308,7 @@ export class HeaderComponent {
 
       scrollToMessage(messageId: string) {
         const messageElement = document.getElementById(messageId);
+
         if (messageElement) {
           messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 

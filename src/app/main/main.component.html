@@ -24,30 +24,32 @@
             ><img src="../../assets/img/icons/sidenav-open.svg" />
         }
     </button>
-    @switch (chatService.openComponent) {
-        @default {
-            <app-welcome-screen></app-welcome-screen>
-        }
-        @case ("chat") {
-            <app-chat (threadOpen)="openThread($event)"></app-chat>
-            <mat-drawer-container autosize>
-                <mat-drawer
-                    #threadDrawer
-                    mode="side"
-                >
-                    <app-thread
-                        [channelId]="chatService.currentChannelID"
-                        [messageId]="selectedMessageId"
-                        (threadClose)="closeThread()" [initialMessage]="initialMessage"
-                    ></app-thread>
-                </mat-drawer>
-            </mat-drawer-container>
-        }
-        @case ("directMessage") {
-            <app-direct-message></app-direct-message>
-        }
-        @case ("newMessage") {
-            <app-new-message></app-new-message>
+    @if (!chatService.mobileOpen) {
+        @switch (chatService.openComponent) {
+            @default {
+                <app-welcome-screen></app-welcome-screen>
+            }
+            @case ("chat") {
+                <app-chat (threadOpen)="openThread($event)"></app-chat>
+                <mat-drawer-container autosize>
+                    <mat-drawer
+                        #threadDrawer
+                        mode="side"
+                    >
+                        <app-thread
+                            [channelId]="chatService.currentChannelID"
+                            [messageId]="selectedMessageId"
+                            (threadClose)="closeThread()" [initialMessage]="initialMessage"
+                        ></app-thread>
+                    </mat-drawer>
+                </mat-drawer-container>
+            }
+            @case ("directMessage") {
+                <app-direct-message></app-direct-message>
+            }
+            @case ("newMessage") {
+                <app-new-message></app-new-message>
+            }
         }
     }
 </main>
@@ -64,12 +66,13 @@
         </button>
     }
     @case ("chat") {
-        <app-chat></app-chat>
+        <app-chat (threadOpen)="openThread($event)"></app-chat>
     }
     @case ("thread") {
         <app-thread
             [channelId]="chatService.currentChannelID"
             [messageId]="selectedMessageId"
+            [initialMessage]="initialMessage"
         ></app-thread>
     }
     @case ("directmessage") {

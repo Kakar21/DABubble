@@ -173,11 +173,11 @@ export class ChatService {
     }
 
     observeMessage(channelId: string, messageId: string): Observable<Message | undefined> {
+        console.log(messageId)
         const messageDocRef = doc(
             this.firestore.firestore,
             `channels/${channelId}/messages/${messageId}`
         );
-    
         return new Observable((observer) => {
             return onSnapshot(messageDocRef, (docSnapshot) => {
                 if (docSnapshot.exists()) {

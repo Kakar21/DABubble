@@ -60,7 +60,10 @@ export class MainComponent {
 
     openThread(event: { channelId: string; messageId: string }) {
         this.selectedMessageId = event.messageId;
-        this.threadDrawer.open();
+        if (!window.matchMedia("(max-width: 768px)").matches) {
+            this.threadDrawer.open();
+        }
+
         this.loadInitialMessage(event.channelId, event.messageId);
     }
 
