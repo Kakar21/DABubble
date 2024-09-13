@@ -310,3 +310,11 @@ input {
         }
     }
 }
+
+@media (max-width: 380px) {
+    .button-container {
+        gap: unset;
+        justify-content: space-between;
+        width: 100%;
+    }
+}

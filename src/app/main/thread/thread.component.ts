@@ -66,6 +66,7 @@ export class ThreadComponent implements OnChanges {
     filteredMembers: Observable<UsersList[]>;
     initialMessagePicker = false;
     previewUrl: string | ArrayBuffer | null = null;
+    perLineCount = 9;
 
     constructor(
         public chatService: ChatService,
@@ -284,11 +285,15 @@ export class ThreadComponent implements OnChanges {
     }
 
     togglePicker(context: string, padNr: any, event: MouseEvent, initialMessage: boolean) {
+        if (window.matchMedia("(max-width: 350px)").matches) {
+            this.perLineCount = 8;
+        } else {
+            this.perLineCount = 9;
+        }
         this.isPickerVisible = !this.isPickerVisible;
         this.pickerContext = context;
         this.currentMessagePadnumber = padNr;
         this.initialMessagePicker = initialMessage
-
     }
 
     addEmoji(event: any) {

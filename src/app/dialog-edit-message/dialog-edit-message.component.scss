@@ -237,15 +237,18 @@
 
 .emoji-picker {
     position: absolute;
-    z-index: 5;
+    z-index: 500;
     left: 6rem;
-    bottom: 1rem;
 }
 
 
 @media (max-width: 768px) {
     :host {
         width: 75vw;
+    }
+
+    .emoji-picker {
+        left: 0 !important;
     }
 }
 
@@ -256,5 +259,16 @@
         .save-cancel {
             justify-content: space-evenly;
         }
+    }
+}
+
+
+@media (max-width: 475px) {
+    :host {
+        width: 90vw;
+    }
+
+    .emoji-picker {
+        left: -10vw !important;
     }
 }

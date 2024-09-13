@@ -256,6 +256,23 @@ mat-checkbox {
     // TODO: fix sentence to long = overflowing
 }
 
+@media (max-width: 460px) {
+    .error {
+      font-size: 3vw;  
+      z-index: 1;
+    }
+}
+
+@media (max-width: 400px) {
+    .description {
+        > h1  {
+            text-align: center;
+            white-space: wrap;
+            width: 70%;
+        }
+    }
+}
+
 // @media (max-width: 444px) {
 //     form {
 //         >div:nth-child(4) {

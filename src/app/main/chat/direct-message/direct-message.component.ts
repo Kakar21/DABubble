@@ -60,6 +60,7 @@ export class DirectMessageComponent {
     pickerPosition = { top: '0px', left: '0px' };
     currentMessagePadnumber: string = "";
     previewUrl: string | ArrayBuffer | null = null;
+    perLineCount = 9;
 
 
     constructor(
@@ -89,16 +90,25 @@ export class DirectMessageComponent {
     }
 
     togglePicker(context: string, padNr: any, event: MouseEvent) {
+        if (window.matchMedia("(max-width: 350px)").matches) {
+            this.perLineCount = 8;
+        } else {
+            this.perLineCount = 9;
+        }
         this.isPickerVisible = !this.isPickerVisible;
         this.pickerContext = context;
         this.currentMessagePadnumber = padNr;
         if (this.isPickerVisible) {
             const pickerHeight = 350; // Geschätzte Höhe des Emoji-Pickers
             const pickerWidth = 300; // Geschätzte Breite des Emoji-Pickers
-
+            const buttonWidth = 50; // Geschätzte Breite des Buttons
+    
+            // Berechne die obere Position wie vorher
             let top = Math.min(event.clientY, window.innerHeight - pickerHeight);
-            let left = Math.min(event.clientX, window.innerWidth - pickerWidth);
-
+    
+            // Berechne die linke Position basierend auf der rechten oberen Ecke des Buttons und verschiebe um die Breite des Buttons
+            let left = Math.min(event.clientX - pickerWidth - buttonWidth, window.innerWidth - pickerWidth);
+    
             this.pickerPosition = { top: `${top}px`, left: `${left}px` };
         }
     }

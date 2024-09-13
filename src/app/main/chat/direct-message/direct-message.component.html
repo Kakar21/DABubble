@@ -125,7 +125,7 @@
                 </div>
             </div>
             <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'" [ngStyle]="{ top: pickerPosition.top, left: pickerPosition.left }">
-                <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
+                <emoji-mart [perLine]="perLineCount" (emojiClick)="addEmoji($event)"></emoji-mart>
             </div>
             }
         </div>
@@ -174,9 +174,9 @@
                             <img src="../../../assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
                         </button>
 
-                        <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'input'"
+                        <div class="emoji-picker input-picker" *ngIf="isPickerVisible && pickerContext === 'input'"
                             style="bottom: 1rem; left: 3.5rem;">
-                            <emoji-mart (emojiClick)="addEmoji($event)"></emoji-mart>
+                            <emoji-mart [perLine]="perLineCount" (emojiClick)="addEmoji($event)"></emoji-mart>
                         </div>
                         <button class="input-at" mat-icon-button (click)="addAtSymbol()">
                             <img src="../../../assets/img/icons/alternate_email.svg" alt="Tag someone" />
