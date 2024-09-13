@@ -284,6 +284,18 @@ main {
         border-radius: 0;
     }
 
+    ::ng-deep::ng-deep section {
+        main {
+            .channel-member {
+                > h4 {
+                    max-width: 50.269vw !important;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+
     .title {
         padding: 2.5rem 1rem 0.625rem 1rem;
         width: calc(100% - 1rem - 1rem);

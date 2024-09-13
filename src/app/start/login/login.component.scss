@@ -418,3 +418,20 @@ form {
         }
     }
 }
+
+@media (max-width: 460px) {
+    .error {
+      font-size: 3vw;  
+      z-index: 1;
+    }
+}
+
+@media (max-width: 380px) {
+    .lower-container {
+        > div {
+            gap: unset;
+            justify-content: space-between;
+            width: 100%;
+        }
+    }
+}

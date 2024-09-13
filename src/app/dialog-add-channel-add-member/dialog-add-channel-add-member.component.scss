@@ -360,6 +360,8 @@ Mat-dialog-actions {
     mat-option {
         h3 {
             max-width: calc(100vw - 14.25rem);
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
 

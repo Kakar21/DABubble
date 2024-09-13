@@ -23,7 +23,7 @@ import {
 import { Router } from "@angular/router";
 import {
     getRedirectResult,
-    signInWithRedirect,
+    signInWithPopup,
     signOut,
     updateEmail,
 } from "@angular/fire/auth";
@@ -57,7 +57,6 @@ export class FirestoreService {
                         this.router.url === "/recovery" ||
                         this.router.url === "/reset-password"
                     ) {
-                        this.handleGoogleRedirectResult();
                         this.router.navigate(["/"]);
                     }
                 } else {
@@ -96,36 +95,29 @@ export class FirestoreService {
     }
 
     loginWithGoogle = () => {
-        signInWithRedirect(this.auth, this.provider);
-    };
-
-    handleGoogleRedirectResult = () => {
-        getRedirectResult(this.auth)
+        signInWithPopup(this.auth, this.provider)
             .then(async (result) => {
-                if (result) {
-                    const user = result.user;
-
-                    await this.saveUser(
-                        {
-                            avatar: user.photoURL || "",
-                            name: user.displayName || "",
-                            email: user.email || "",
-                        },
-                        user.uid,
-                    );
-                }
+                // User information is already available in the result from signInWithPopup
+                const user = result.user;
+    
+                // Save the user data in Firestore
+                await this.saveUser(
+                    {
+                        avatar: user.photoURL || "",
+                        name: user.displayName || "",
+                        email: user.email || "",
+                    },
+                    user.uid,
+                );
+    
+                // Navigate to home or any other route after successful login
                 await this.router.navigate(["/"]);
             })
             .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.error(
-                    "Fehler nach der Umleitung: ",
-                    errorCode,
-                    errorMessage,
-                );
+                console.error("Google sign-in error:", error);
             });
     };
+    
 
     signUpWithEmailAndPassword(
         email: string,

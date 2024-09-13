@@ -595,3 +595,13 @@ mat-option {
         }
     }
 }
+
+@media (max-width: 375px) {
+    mat-option {
+        h3 {
+            max-width: 8.468rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+}

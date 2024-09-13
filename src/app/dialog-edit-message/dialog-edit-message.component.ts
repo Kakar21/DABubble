@@ -1,55 +1,76 @@
-import { Component, Inject, ViewChild } from "@angular/core";
+import { Component, HostListener, Inject, viewChild, ViewChild } from "@angular/core";
 import { Dialog } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import {
-    MAT_DIALOG_DATA,
-    MatDialog,
-    MatDialogActions,
-    MatDialogModule,
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogActions,
+  MatDialogModule,
 } from "@angular/material/dialog";
 import { MatMenu, MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
 import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { MatIconModule } from "@angular/material/icon";
-import { MatDialogRef} from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-    selector: "app-dialog-edit-message",
-    standalone: true,
-    imports: [
-        PickerComponent,
-        MatButtonModule,
-        MatIconModule,
-        CommonModule,
-        MatDialogActions,
-        ReactiveFormsModule,   // Importiere das ReactiveFormsModule
-        MatFormFieldModule,    // Importiere MatFormFieldModule
-        MatInputModule,        // Importiere MatInputModule
-    ],
-    templateUrl: "./dialog-edit-message.component.html",
-    styleUrl: "./dialog-edit-message.component.scss",
+  selector: "app-dialog-edit-message",
+  standalone: true,
+  imports: [
+    PickerComponent,
+    MatButtonModule,
+    MatIconModule,
+    CommonModule,
+    MatDialogActions,
+    ReactiveFormsModule,   // Importiere das ReactiveFormsModule
+    MatFormFieldModule,    // Importiere MatFormFieldModule
+    MatInputModule,        // Importiere MatInputModule
+  ],
+  templateUrl: "./dialog-edit-message.component.html",
+  styleUrl: "./dialog-edit-message.component.scss",
 })
 export class DialogEditMessageComponent {
-    isPickerVisible: boolean = false;
-    messageControl: FormControl;
+  isPickerVisible: boolean = false;
+  messageControl: FormControl;
+  perLineCount = 9;
 
-    constructor(
-        public dialogRef: MatDialogRef<DialogEditMessageComponent>, // Hier wird `dialogRef` korrekt definiert
-        @Inject(MAT_DIALOG_DATA) public data: { message: string }
-      ) {
-        this.messageControl = new FormControl(this.data.message, [Validators.required]); // Initialisierung von `messageControl`
-      }
-    togglePicker() {
-        this.isPickerVisible = !this.isPickerVisible;
-    }
+  constructor(
+    public dialogRef: MatDialogRef<DialogEditMessageComponent>, // Hier wird `dialogRef` korrekt definiert
+    @Inject(MAT_DIALOG_DATA) public data: { message: string; }
+  ) {
+    this.messageControl = new FormControl(this.data.message, [Validators.required]); // Initialisierung von `messageControl`
+  }
 
-    addEmoji(event: any) {
-        console.log(event.emoji);
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.isPickerVisible = false;
+  }
+
+  togglePicker(event: MouseEvent) {
+    if (window.matchMedia("(max-width: 350px)").matches) {
+      this.perLineCount = 8;
+  } else {
+      this.perLineCount = 9;
+  }
+    this.isPickerVisible = !this.isPickerVisible;
+  }
+
+  closePicker(event: Event) {
+    if (this.isPickerVisible) {
+      this.isPickerVisible = false;
     }
+  }
+
+  addEmoji(event: any) {
+    // Füge das Emoji an den aktuellen Wert der FormControl an
+    const currentValue = this.messageControl.value || ''; // Falls der aktuelle Wert null oder leer ist
+    this.messageControl.setValue(currentValue + event.emoji.native);
+}
+
 
   onSave(): void {
     if (this.messageControl.valid) {
@@ -57,8 +78,8 @@ export class DialogEditMessageComponent {
       this.dialogRef.close(this.messageControl.value);
     }
   }
-    
-      onCancel() {
-        this.dialogRef.close();
-      }
+
+  onCancel() {
+    this.dialogRef.close();
+  }
 }
