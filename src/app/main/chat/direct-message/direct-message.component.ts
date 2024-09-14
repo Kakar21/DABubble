@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from "@angular/core";
 import { ChatComponent } from "../chat.component";
 import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -21,7 +21,7 @@ import { CurrentuserService } from "../../../currentuser.service";
 import { ImageService } from "../../../image.service";
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { map, Observable, startWith } from "rxjs";
-import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import { EmojiModule, EmojiService } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { DialogEditMessageComponent } from "../../../dialog-edit-message/dialog-edit-message.component";
 import { HighlightMentionsPipe } from "../../../pipes/highlist-mentions.pipe";
 import { DialogImageComponent } from "../../../dialog-image/dialog-image.component";
@@ -49,7 +49,7 @@ import { DialogImageComponent } from "../../../dialog-image/dialog-image.compone
     templateUrl: "./direct-message.component.html",
     styleUrl: "./direct-message.component.scss",
 })
-export class DirectMessageComponent {
+export class DirectMessageComponent implements OnInit {
     isPickerVisible = false;
     messageText: string = "";
     formCtrl = new FormControl();
@@ -61,6 +61,7 @@ export class DirectMessageComponent {
     currentMessagePadnumber: string = "";
     previewUrl: string | ArrayBuffer | null = null;
     perLineCount = 9;
+    recentEmojis: string[] = [];
 
 
     constructor(
@@ -69,11 +70,17 @@ export class DirectMessageComponent {
         public chatService: ChatService,
         public currentUser: CurrentuserService,
         public imageService: ImageService,
+        private emojiService: EmojiService
+
     ) {
         this.filteredMembers = this.formCtrl.valueChanges.pipe(
             startWith(""),
             map((value: string | null) => (value ? this._filter(value) : [])),
         );
+    }
+
+    ngOnInit(): void {
+        this.loadRecentEmojis()
     }
 
     objectKeys(obj: any): string[] {
@@ -129,7 +136,31 @@ export class DirectMessageComponent {
                 event.emoji.native,
             );
         }
+        setTimeout(() => {
+            this.loadRecentEmojis();  // Refresh recent emojis after a delay
+          }, 100);
     }
+
+    loadRecentEmojis() {
+        const recentEmojiData = localStorage.getItem('emoji-mart.frequently');
+        if (recentEmojiData) {
+          const recentEmojiObj = JSON.parse(recentEmojiData);
+          this.recentEmojis = Object.keys(recentEmojiObj).slice(-2).reverse();  // Get the last two emojis and reverse the order
+        }
+      }    
+
+    addReaction(emojiId: string, messagePadnr: string) {
+        let emoji = this.getEmojiById(emojiId) || ''
+        this.addReactionToMessage(messagePadnr, emoji);  // Use emoji string directly for reaction
+        setTimeout(() => {
+            this.loadRecentEmojis();  // Refresh recent emojis after reaction
+        }, 100);
+    }
+
+    getEmojiById(emojiId: string) {
+        const emoji = this.emojiService.getData(emojiId) // Get the emoji by ID
+        return emoji ? emoji.native : null;           // Return the native emoji
+      }
 
     addReactionToMessage(messagePadnr: string, emoji: string) {
         this.DMSerivce.addReaction(messagePadnr, emoji, this.chatService.selectedUser.id)

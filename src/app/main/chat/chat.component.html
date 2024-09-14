@@ -48,12 +48,9 @@
                 [id]="message.key"
                 class="message">
                 <div class="hoverMenu">
-                    <button class="random-emoji-button" mat-icon-button>
-                        <img src="../../../assets/img/icons/emoji-check.svg" alt="React" />
-                    </button>
-                    <button class="random-emoji-button" mat-icon-button>
-                        <img src="../../../assets/img/icons/emoji-hands-up.svg" alt="React" />
-                    </button>
+                    <button class="random-emoji-button" mat-icon-button *ngFor="let emoji of recentEmojis" (click)="addReaction(emoji, message.value.padNumber.toString())">
+                        <ngx-emoji [isNative]="true" [emoji]="emoji" [size]="24"></ngx-emoji>
+                    </button>                      
                     <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
                         <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
                     </button>
@@ -151,7 +148,7 @@
             </div>
             }
             <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'" [ngStyle]="{ top: pickerPosition.top, left: pickerPosition.left }">
-                <emoji-mart [perLine]="8" (emojiClick)="addEmoji($event)"></emoji-mart>
+                <emoji-mart [exclude]="['skintones']" [perLine]="8" (emojiClick)="addEmoji($event)"></emoji-mart>
             </div>
 
             <!-- TODO: add focus textarea on click -->

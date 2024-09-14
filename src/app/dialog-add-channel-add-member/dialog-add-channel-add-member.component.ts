@@ -100,9 +100,11 @@ export class DialogAddChannelAddMemberComponent {
             map((value: string | null) =>
                 value
                     ? this._filter(value)
-                    : this.chatService.usersList.slice(),
+                    : this.chatService.usersList
+                        .filter(user => user.id !== this.currentUser.currentUser.id) // Hier filtern wir den currentUser nach der ID
             ),
         );
+        
     }
 
     get data() {
@@ -113,25 +115,40 @@ export class DialogAddChannelAddMemberComponent {
         if (!this.data) {
             throw new Error("No data provided for channel creation");
         }
-
-        let members: UsersList[];
-
+    
+        // Initialisiere die Mitglieder-Liste mit dem aktuellen Benutzer (currentUser)
+        let members: UsersList[] = [this.currentUser.currentUser];
+    
         if (this.selectedOption === "2") {
-            members = this.addedMembers;
+            // Füge nur ausgewählte Mitglieder hinzu, die nicht bereits in der Liste sind
+            this.addedMembers.forEach((user) => {
+                if (!members.some(member => member.id === user.id)) {
+                    members.push(user);
+                }
+            });
         } else {
-            members = this.chatService.usersList;
+            // Füge alle Mitglieder hinzu, aber stelle sicher, dass der currentUser nicht doppelt hinzugefügt wird
+            this.chatService.usersList.forEach((user) => {
+                if (!members.some(member => member.id === user.id)) {
+                    members.push(user);
+                }
+            });
         }
-
+    
         const newChannel = await addDoc(collection(this.dataBase, "channels"), {
             name: this.data.channelName,
             description: this.data.channelDescription,
             creator: this.currentUser.currentUser.name,
             members: members,
         });
+    
         this.closeSheet.emit();
         this.dialog.closeAll();
         this.showChannel(newChannel.id);
     }
+    
+    
+    
 
     remove(user: UsersList): void {
         const index = this.addedMembers.indexOf(user);
@@ -156,11 +173,13 @@ export class DialogAddChannelAddMemberComponent {
 
     private _filter(value: string): UsersList[] {
         const filterValue = value.toLowerCase();
-
-        return this.chatService.usersList.filter((user) =>
-            user.name.toLowerCase().includes(filterValue),
-        );
-    }
+    
+        // Filtere den currentUser nach der ID aus
+        return this.chatService.usersList
+            .filter(user => user.name.toLowerCase().includes(filterValue))
+            .filter(user => user.id !== this.currentUser.currentUser.id); // Filter nach ID
+    }      
+    
 
     showChannel(id: string) {
         this.chatService.openChannel(id);

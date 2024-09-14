@@ -11,12 +11,12 @@
     align-items: center;
     gap: 1rem;
 
-    > img:first-child {
+    >img:first-child {
         width: 4.375rem;
         height: 4.375rem;
     }
 
-    > img:last-child {
+    >img:last-child {
         width: 9.75663rem;
         height: 1.5rem;
     }
@@ -101,7 +101,7 @@
     border-radius: 2.1875rem;
     transition: 80ms ease-in;
     width: auto;
-    
+
     >span {
         display: flex;
         gap: 0.9375rem;
@@ -120,6 +120,7 @@
             >h3 {
                 font-size: 1.125rem;
             }
+
             >p {
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -171,6 +172,19 @@
         align-items: center;
         justify-content: center;
 
+        ::ng-deep::ng-deep img {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+
+        &:hover {
+            transition: 100ms ease-out;
+    
+            ::ng-deep::ng-deep img {
+                content: url(../../../assets/img/icons/keyboard_arrow_down-purple.svg);
+            }
+        }
+
         .material-icons {
             width: 1.875rem !important;
             height: 1.875rem !important;
@@ -196,7 +210,7 @@ h1 {
     margin-top: 5rem;
     width: calc(100% - 0.75rem - 0.75rem);
 
-    > input {
+    >input {
         font-size: 1.0625rem;
         padding: 0.5rem 3.5rem 0.5rem 1.5rem;
         border: 1px solid var(--light-purple-line);
@@ -219,7 +233,7 @@ h1 {
         }
     }
 
-    > img {
+    >img {
         position: absolute;
         right: 2.25rem;
         bottom: 0.5rem;
@@ -242,12 +256,12 @@ h1 {
     width: 3.125rem;
     height: 3.125rem;
 
-    > img:first-child {
+    >img:first-child {
         width: 3.125rem;
         height: 3.125rem;
     }
 
-    > img:last-child {
+    >img:last-child {
         position: absolute;
         width: 1.8rem;
         height: 1.20875rem;
@@ -259,12 +273,12 @@ h1 {
     gap: 0.125rem;
     align-items: center;
 
-    > img:first-child {
+    >img:first-child {
         width: 1.5625rem;
         height: 1.5625rem;
     }
 
-    > img:last-child {
+    >img:last-child {
         margin-left: 0.5rem;
         width: 5.03581rem;
         height: 1.13875rem;
@@ -275,6 +289,7 @@ h1 {
     0% {
         background-color: var(--bg-color) !important;
     }
+
     100% {
         background-color: transparent !important;
     }
@@ -311,12 +326,12 @@ h1 {
     .logo {
         gap: 0.6875rem;
 
-        > img:first-child {
+        >img:first-child {
             width: 2.8125rem;
             height: 2.8125rem;
         }
 
-        > img:last-child {
+        >img:last-child {
             width: 6.59388rem;
             height: 1.01375rem;
         }
@@ -327,7 +342,7 @@ h1 {
             width: 3.125rem;
             height: 3.125rem;
 
-            > img {
+            >img {
                 width: 3.125rem;
                 height: 3.125rem;
             }
@@ -343,7 +358,7 @@ h1 {
             }
         }
 
-        > button {
+        >button {
             display: none;
         }
     }
