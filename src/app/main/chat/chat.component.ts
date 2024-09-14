@@ -8,6 +8,8 @@ import {
     AfterViewChecked,
     CUSTOM_ELEMENTS_SCHEMA,
     HostListener,
+    OnInit,
+    ChangeDetectorRef,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
@@ -17,7 +19,7 @@ import { DialogAddMemberToChnlComponent } from "../../dialog-add-member-to-chnl/
 import { MatMenu, MatMenuModule } from "@angular/material/menu";
 import { DialogChannelInfoComponent } from "../../dialog-channel-info/dialog-channel-info.component";
 import { DialogShowChannelMemberComponent } from "../../dialog-show-channel-member/dialog-show-channel-member.component";
-import { PickerComponent } from "@ctrl/ngx-emoji-mart";
+import { EmojiSearch, PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { DialogEditMessageComponent } from "../../dialog-edit-message/dialog-edit-message.component";
 import { ChatService } from "./chat.service";
 import { MainComponent } from "../main.component";
@@ -36,7 +38,7 @@ import { UsersList } from "../../interfaces/users-list";
 import { MatInputModule } from "@angular/material/input";
 import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
-import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import { EmojiModule, EmojiService } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { ImageService } from "../../image.service";
 import { DialogImageComponent } from "../../dialog-image/dialog-image.component";
 
@@ -65,7 +67,7 @@ import { DialogImageComponent } from "../../dialog-image/dialog-image.component"
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     styleUrls: ["./chat.component.scss"],
 })
-export class ChatComponent implements AfterViewInit, AfterViewChecked {
+export class ChatComponent implements AfterViewInit, AfterViewChecked, OnInit {
     @Output() threadOpen = new EventEmitter<{
         channelId: string;
         messageId: string;
@@ -88,17 +90,24 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     pickerPosition = { top: '0px', left: '0px' };
     editMessageId: string | null = null;
     perLineCount = 9;
+    recentEmojis: string[] = [];
+
 
     constructor(
         public dialog: MatDialog,
         public chatService: ChatService,
         public currentUser: CurrentuserService,
-        public imageService: ImageService
+        public imageService: ImageService,
+        private emojiService: EmojiService
     ) {
         this.filteredMembers = this.formCtrl.valueChanges.pipe(
             startWith(""),
             map((value: string | null) => (value ? this._filter(value) : [])),
         );
+    }
+
+    ngOnInit(): void {
+        this.loadRecentEmojis()
     }
 
     ngAfterViewInit() {
@@ -115,8 +124,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     ngAfterViewChecked() {
         if (this.messagesArrayLength !== this.chatService.currentChannel.messages?.size) {}
             // this.scrollToBottom();
-    }
-
+    }      
 
 
     toggleThread(channelId: string, messageId: string) {
@@ -175,7 +183,32 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
                 event.emoji.native,
             );
         }
+        setTimeout(() => {
+            this.loadRecentEmojis();  // Refresh recent emojis after a delay
+          }, 100);
     }
+
+    loadRecentEmojis() {
+        const recentEmojiData = localStorage.getItem('emoji-mart.frequently');
+        if (recentEmojiData) {
+          const recentEmojiObj = JSON.parse(recentEmojiData);
+          this.recentEmojis = Object.keys(recentEmojiObj).slice(-2).reverse();  // Get the last two emojis and reverse the order
+        }
+      }    
+
+    addReaction(emojiId: string, messagePadnr: string) {
+        let emoji = this.getEmojiById(emojiId) || ''
+        this.addReactionToMessage(messagePadnr, emoji);  // Use emoji string directly for reaction
+        setTimeout(() => {
+            this.loadRecentEmojis();  // Refresh recent emojis after reaction
+        }, 100);
+    }
+
+    getEmojiById(emojiId: string) {
+        const emoji = this.emojiService.getData(emojiId) // Get the emoji by ID
+        return emoji ? emoji.native : null;           // Return the native emoji
+      }
+    
 
     noReactions(message: Message): boolean {
         return !message.reactions || Object.keys(message.reactions).length === 0;
@@ -186,6 +219,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
         this.isPickerVisible = false;
     }
     togglePicker(context: string, padNr: any, event: MouseEvent) {
+        console.log(this.recentEmojis)
         if (window.matchMedia("(max-width: 350px)").matches) {
             this.perLineCount = 8;
         } else {
@@ -212,6 +246,7 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked {
     
 
     addReactionToMessage(messagePadnr: string, emoji: string) {
+        console.log(emoji)
         this.chatService
             .addReaction(messagePadnr, emoji, 'chat', '')
             .then(() => console.log("Reaction added"))
