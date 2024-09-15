@@ -18,8 +18,9 @@ import { Message } from "../../interfaces/message";
 import { CurrentuserService } from "../../currentuser.service";
 import { UsersList } from "../../interfaces/users-list";
 import { ChannelsList } from "../../interfaces/channels-list";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { SearchResult } from "../../interfaces/search-result";
+import { onValue, ref } from "@angular/fire/database";
 
 @Injectable({
     providedIn: "root",
@@ -52,13 +53,15 @@ export class ChatService {
     pathNr = '';
     allMessages: Record<string, Message[]> = {};  // Hinzugefügt
     threadInfoMap: Map<string, { count: number; lastMessageTime: string | null }> = new Map();
+    openedComponent = new Subject<string>();  // Subject, das den Namen der geöffneten Komponente sendet
+
 
 
     constructor(
         public firestore: FirestoreService,
         public currentUser: CurrentuserService
     ) {
-        this.subUsersList();
+        this.loadUserList();
         this.subChannelsList();
     }
 
@@ -84,6 +87,7 @@ export class ChatService {
     openChannel(channelId: string) {
         this.selectedChannel = channelId;
         this.selectedDirectmessage = "";
+
         this.loadChannel(channelId);
         if (window.matchMedia("(max-width: 768px)").matches) {
             this.mobileOpen = "chat";
@@ -103,6 +107,8 @@ export class ChatService {
             // Überprüfe, ob das Gerät mobil ist und öffne die Direktnachricht
             if (window.matchMedia("(max-width: 768px)").matches) {
                 this.mobileOpen = "directmessage";
+            } else {
+                this.openedComponent.next('directmessage');
             }
         } else {
             console.error(`User with ID ${userId} not found`);
@@ -287,6 +293,8 @@ export class ChatService {
         };
         console.log(messageData);
         await setDoc(newMessageRef, messageData);
+
+
     }
 
     numberOfMembers() {
@@ -306,27 +314,60 @@ export class ChatService {
         return s;
     }
 
-    subUsersList() {
-        let ref = this.firestore.usersRef;
-        return onSnapshot(ref, (list) => {
-            this.usersList = [];
-            list.forEach((element) => {
-                this.usersList.push(
-                    this.setUsersListObj(element.data(), element.id),
-                );
-            });
+    loadUserList() {
+        const usersRef = this.firestore.usersRef;
+    
+        // Überwache die Benutzerdaten aus Firestore
+        onSnapshot(usersRef, (snapshot) => {
+          const users: UsersList[] = [];
+          
+          snapshot.forEach((doc) => {
+            const userData = doc.data();
+            const userId = doc.id;
+    
+            // Setze die Benutzerinformationen und Online-Status auf false (wird später durch Realtime-Daten aktualisiert)
+            const userObj = this.setUsersListObj(userData, userId);
+            users.push(userObj);
+          });
+    
+          this.usersList = users;
+    
+          // Sobald die Benutzerdaten abgerufen wurden, holen wir den Online-Status aus der Realtime Database
+          this.loadOnlineStatus();
         });
-    }
+      }
+    
+      // Funktion zum Überwachen des Online-Status aus der Realtime Database
+      loadOnlineStatus() {
+        this.usersList.forEach((user) => {
+          const statusRef = ref(this.firestore.db, `status/${user.id}`);
+          
+          // Überwache den Online-Status in der Realtime Database
+          onValue(statusRef, (snapshot) => {
+            if (snapshot.exists()) {
+              const statusData = snapshot.val();
+      
+              if (typeof statusData.online !== 'undefined') {
+                user.online = statusData.online;
+              } else {
+                user.online = false;
+              }
+            } else {
+              user.online = false;
+            }
+          });
+        });
+      }
 
     setUsersListObj(obj: any, id: string): UsersList {
         return {
-            id: id || "",
-            name: obj.name || "",
-            avatar: obj.avatar || "",
-            email: obj.email || "",
-            online: obj.online || false,
+          id: id || '',
+          name: obj.name || '',
+          avatar: obj.avatar || '',
+          email: obj.email || '',
+          online: obj.online || false, // Standardwert ist false, wird durch Realtime-Daten aktualisiert
         };
-    }
+      }
 
     setComponent(componentName: string) {
         this.openComponent = componentName;

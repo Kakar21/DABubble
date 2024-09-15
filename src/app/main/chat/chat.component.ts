@@ -107,6 +107,19 @@ export class ChatComponent implements AfterViewInit, AfterViewChecked, OnInit {
     }
 
     ngOnInit(): void {
+        if (this.chatService.openComponent == 'chat') {
+            setTimeout(() => {
+              this.messageInput.nativeElement.focus();
+            }, 100);
+          }
+        this.chatService.openedComponent.subscribe((component) => {
+            if (component === 'chat') {
+              setTimeout(() => {
+                this.messageInput.nativeElement.value = '';
+                this.messageInput.nativeElement.focus();
+              }, 100);
+            }
+          });
         this.loadRecentEmojis()
     }
 

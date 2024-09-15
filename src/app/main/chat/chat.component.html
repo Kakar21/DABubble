@@ -58,7 +58,8 @@
                                     toggleThread(
                                         chatService.currentChannelID,
                                         message.key
-                                    )
+                                    );
+                                    chatService.openedComponent.next('thread');
                                 " mat-icon-button>
                         <img src="../../../assets/img/icons/comment.svg" alt="Comment" />
                     </button>
@@ -138,9 +139,9 @@
                     </div>
                     <div class="thread-info" *ngIf="chatService.threadInfoMap.get(message.key)?.count as threadCount">
                         @if (threadCount > 1) {
-                            <span (click)="toggleThread(chatService.currentChannelID,message.key)">{{ chatService.threadInfoMap.get(message.key)?.count }} Antworten</span>
+                            <span (click)="toggleThread(chatService.currentChannelID,message.key); chatService.openedComponent.next('thread');">{{ chatService.threadInfoMap.get(message.key)?.count }} Antworten</span>
                         } @else {
-                            <span (click)="toggleThread(chatService.currentChannelID,message.key)">1 Antwort</span>
+                            <span (click)="toggleThread(chatService.currentChannelID,message.key); chatService.openedComponent.next('thread');">1 Antwort</span>
                         }
                         <p *ngIf="chatService.threadInfoMap.get(message.key)?.lastMessageTime as lastMessageTime">Letzte Antwort {{ threadDateTime(lastMessageTime) }}</p>
                     </div>
@@ -148,7 +149,7 @@
             </div>
             }
             <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'" [ngStyle]="{ top: pickerPosition.top, left: pickerPosition.left }">
-                <emoji-mart [exclude]="['skintones']" [perLine]="8" (emojiClick)="addEmoji($event)"></emoji-mart>
+                <emoji-mart [perLine]="8" (emojiClick)="addEmoji($event)"></emoji-mart>
             </div>
 
             <!-- TODO: add focus textarea on click -->

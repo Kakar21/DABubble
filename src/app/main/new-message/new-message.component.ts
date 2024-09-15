@@ -48,7 +48,7 @@ import { UsersList } from "../../interfaces/users-list";
     templateUrl: "./new-message.component.html",
     styleUrl: "./new-message.component.scss",
 })
-export class NewMessageComponent {
+export class NewMessageComponent implements OnInit {
     messageText: string = "";
     startsWith: string = "";
     isPickerVisible = false;
@@ -71,6 +71,14 @@ export class NewMessageComponent {
                 value ? this._filter(value) : this.getAvailableOptions(),
             ),
         );
+    }
+
+    ngOnInit(): void {
+        if (this.chatService.openComponent == 'newMessage') {
+            setTimeout(() => {
+              this.nameInput.nativeElement.focus();
+            }, 100);
+          }
     }
 
     togglePicker() {
