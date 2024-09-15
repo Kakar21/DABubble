@@ -53,6 +53,7 @@
                             (click)="
                                 chatService.openChannel(channel.id);
                                 chatService.setComponent('chat');
+                                chatService.openedComponent.next('chat');
                                 closeThread()
                             "
                             [value]="channel.id"
@@ -100,6 +101,7 @@
                             class="contact"
                             (click)="
                                 chatService.setComponent('directMessage');
+                                chatService.openedComponent.next('directMessage');
                                 DMservice.getMessages(user.id);
                                 chatService.openDirectMessage(user.id)
                             "

@@ -85,6 +85,14 @@ export class ThreadComponent implements OnChanges {
         if (this.channelId && this.messageId) {
             this.loadMessages();
         }
+        this.chatService.openedComponent.subscribe((component) => {
+            if (component === 'thread') {
+              setTimeout(() => {
+                this.messageInput.nativeElement.value = '';
+                this.messageInput.nativeElement.focus();
+              }, 100);
+            }
+          });
     }    
 
     ngOnChanges(changes: SimpleChanges) {
@@ -99,6 +107,7 @@ export class ThreadComponent implements OnChanges {
 
     closeThread() {
         this.threadClose.emit(false);
+        this.chatService.openedComponent.next('chat');
         if (window.matchMedia("(max-width: 768px)").matches) {
             this.chatService.mobileOpen = "chat";
         }

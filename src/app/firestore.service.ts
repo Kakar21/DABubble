@@ -9,6 +9,7 @@ import {
     CollectionReference,
     DocumentData,
     getDocs,
+    serverTimestamp,
 } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 import {
@@ -28,6 +29,9 @@ import {
     updateEmail,
 } from "@angular/fire/auth";
 import { User } from "./interfaces/user";
+import { getDatabase, onDisconnect, onValue, ref, set } from "@angular/fire/database";
+import { appConfig, firebaseConfig } from "./app.config";
+import { initializeApp } from "@angular/fire/app";
 
 @Injectable({
     providedIn: "root",
@@ -40,17 +44,23 @@ export class FirestoreService {
     currentUserID = "";
     usersRef: CollectionReference<DocumentData>;
     channelsRef: CollectionReference<DocumentData>;
+    private userStatusDatabaseRef: any;
+    private heartbeatInterval: any;
+    app = initializeApp(firebaseConfig)
+    db = getDatabase(this.app, "https://dabubble-2a68b-default-rtdb.europe-west1.firebasedatabase.app");
+
 
     constructor(private router: Router) {
         this.usersRef = collection(this.firestore, "users");
         this.channelsRef = collection(this.firestore, "channels");
-
+    
         this.currentUser$ = new Observable((observer) => {
             onAuthStateChanged(this.auth, (user) => {
                 if (user) {
+                    console.log("Benutzer angemeldet:", user.uid);
                     observer.next(user.uid);
                     this.currentUserID = user.uid;
-                    this.updateUserStatus(user.uid, true); // User ist online
+                    this.startHeartbeat(user.uid); // Heartbeat starten
                     if (
                         this.router.url === "/login" ||
                         this.router.url === "/signup" ||
@@ -60,35 +70,105 @@ export class FirestoreService {
                         this.router.navigate(["/"]);
                     }
                 } else {
+                    console.log("Kein Benutzer angemeldet");
                     observer.next(null);
-                    this.updateUserStatus(this.currentUserID, false); // User ist offline
+                    this.stopHeartbeat(); // Heartbeat stoppen
                     if (this.router.url === "/") {
                         this.router.navigate(["/login"]);
                     }
                 }
             });
         });
-
-        // Event listener für das Schließen des Fensters oder Tabs
-        window.addEventListener("beforeunload", this.setOfflineStatus);
-        window.addEventListener("unload", this.setOfflineStatus);
     }
 
-    private setOfflineStatus = () => {
-        if (this.currentUserID) {
-            this.updateUserStatus(this.currentUserID, false);
-        }
-    };
-
-    private updateUserStatus(userId: string | undefined, status: boolean) {
-        if (userId) {
-            setDoc(
-                doc(this.usersRef, userId),
-                { online: status },
-                { merge: true },
-            );
-        }
+    private startHeartbeat(userId: string) {
+        this.userStatusDatabaseRef = ref(this.db, `status/${userId}`);
+    
+        // Setze den Online-Status
+        set(this.userStatusDatabaseRef, {
+            online: true,
+            lastActive: new Date().toISOString(),  // Manuell generierter Timestamp
+        });
+    
+        // Offline-Status setzen, wenn die Verbindung unterbrochen wird
+        onDisconnect(this.userStatusDatabaseRef).set({
+            online: false,
+            lastActive: new Date().toISOString(),  // Manuell generierter Timestamp
+        });
+    
+        // Heartbeat alle 10 Sekunden senden
+        this.heartbeatInterval = setInterval(() => {
+            set(this.userStatusDatabaseRef, {
+                online: true,
+                lastActive: new Date().toISOString(),  // Manuell generierter Timestamp
+            });
+        }, 10000);  // Alle 10 Sekunden
     }
+    
+    
+    
+    
+    
+    private stopHeartbeat() {
+        if (!this.currentUserID) {
+            console.log("Kein Benutzer eingeloggt, Heartbeat-Stop wird übersprungen.");
+            return;  // Keine Aktionen, wenn kein Benutzer eingeloggt ist
+        }
+    
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval);
+        }
+    
+        if (this.userStatusDatabaseRef) {
+            // Benutzer als offline markieren, wenn authentifiziert
+            set(this.userStatusDatabaseRef, {
+                online: false,
+                lastActive: new Date().toISOString(),  // Manuell generierter Timestamp
+            });
+        }
+    
+        this.currentUserID = '';  // Benutzer-ID löschen, da kein Benutzer mehr eingeloggt ist
+    }
+    
+    
+    getUserStatus(userId: string, callback: (status: { online: boolean }) => void): void {
+        const db = getDatabase();
+        const statusRef = ref(db, `status/${userId}`);
+    
+        onValue(statusRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            callback({ online: data.online });
+          } else {
+            callback({ online: false });
+          }
+        });
+      }
+    
+      // Abfrage des Online-Status für mehrere Benutzer
+      getUsersStatus(userIds: string[], callback: (statuses: { [key: string]: boolean }) => void): void {
+        const db = getDatabase();
+        const statuses: { [key: string]: boolean } = {};
+    
+        userIds.forEach(userId => {
+          const statusRef = ref(db, `status/${userId}`);
+    
+          onValue(statusRef, (snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              statuses[userId] = data.online;
+            } else {
+              statuses[userId] = false;
+            }
+    
+            // Wenn alle Statusdaten abgerufen wurden
+            if (Object.keys(statuses).length === userIds.length) {
+              callback(statuses);  // Callback mit den gesammelten Statusdaten
+            }
+          });
+        });
+      }
+
 
     getFirestore(): Firestore {
         return this.firestore;
@@ -152,15 +232,17 @@ export class FirestoreService {
     };
 
     logout() {
+        this.stopHeartbeat();  // Setze den Online-Status auf false und stoppe den Heartbeat
         signOut(this.auth)
             .then(() => {
                 console.log("User erfolgreich ausgeloggt");
-                location.reload();
+                this.currentUserID = '';  // Clear the current user ID after logout
+                this.router.navigate(['/login']);  // Weiterleitung nach dem Ausloggen
             })
             .catch((error) => {
                 console.error("Fehler beim Ausloggen: ", error);
             });
-    }
+    }    
 
     async saveUser(item: User, uid: string) {
         await setDoc(
