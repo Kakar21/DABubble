@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Firestore, doc, onSnapshot } from "@angular/fire/firestore";
+import { doc, onSnapshot } from "@angular/fire/firestore";
 import { FirestoreService } from "./firestore.service";
 import { UsersList } from "./interfaces/users-list";
 
@@ -17,12 +17,25 @@ export class CurrentuserService {
         online: false,
     };
 
+
     constructor(private firestore: FirestoreService) {
         this.firestore.currentUser$.subscribe((uid) => {
             this.currentUserUid = uid;
             this.subCurrentUser();
         });
     }
+
+
+    setUsersListObj(obj: any, id: string): UsersList {
+        return {
+          id: id || '',
+          name: obj.name || '',
+          avatar: obj.avatar || '',
+          email: obj.email || '',
+          online: obj.online || false, // Standardwert ist false, wird durch Realtime-Daten aktualisiert
+        };
+      }
+
 
     subCurrentUser(): void {
         let firestore = this.firestore.getFirestore();
@@ -31,13 +44,12 @@ export class CurrentuserService {
             let ref = doc(firestore, "users", this.currentUserUid);
             onSnapshot(ref, (doc) => {
                 this.currentUser = this.setCurrentUserObj(doc.data(), doc.id);
-                console.log(this.currentUser);
             });
         } else {
             this.isLoggedIn = false;
-            console.log("invalid user uid");
         }
     }
+
 
     setCurrentUserObj(obj: any, id: string): UsersList {
         return {

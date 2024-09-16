@@ -1,14 +1,7 @@
-import { Component, HostListener, Inject, viewChild, ViewChild } from "@angular/core";
-import { Dialog } from "@angular/cdk/dialog";
+import { Component, HostListener, Inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogActions,
-  MatDialogModule,
-} from "@angular/material/dialog";
-import { MatMenu, MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
+import { MAT_DIALOG_DATA, MatDialogActions } from "@angular/material/dialog";
 import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDialogRef } from '@angular/material/dialog';
@@ -38,6 +31,7 @@ export class DialogEditMessageComponent {
   messageControl: FormControl;
   perLineCount = 9;
 
+  
   constructor(
     public dialogRef: MatDialogRef<DialogEditMessageComponent>, // Hier wird `dialogRef` korrekt definiert
     @Inject(MAT_DIALOG_DATA) public data: { message: string; }
@@ -45,19 +39,22 @@ export class DialogEditMessageComponent {
     this.messageControl = new FormControl(this.data.message, [Validators.required]); // Initialisierung von `messageControl`
   }
 
+
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     this.isPickerVisible = false;
   }
 
+
   togglePicker(event: MouseEvent) {
     if (window.matchMedia("(max-width: 350px)").matches) {
       this.perLineCount = 8;
-  } else {
+    } else {
       this.perLineCount = 9;
-  }
+    }
     this.isPickerVisible = !this.isPickerVisible;
   }
+
 
   closePicker(event: Event) {
     if (this.isPickerVisible) {
@@ -65,11 +62,12 @@ export class DialogEditMessageComponent {
     }
   }
 
+
   addEmoji(event: any) {
     // Füge das Emoji an den aktuellen Wert der FormControl an
     const currentValue = this.messageControl.value || ''; // Falls der aktuelle Wert null oder leer ist
     this.messageControl.setValue(currentValue + event.emoji.native);
-}
+  }
 
 
   onSave(): void {
@@ -78,6 +76,7 @@ export class DialogEditMessageComponent {
       this.dialogRef.close(this.messageControl.value);
     }
   }
+
 
   onCancel() {
     this.dialogRef.close();

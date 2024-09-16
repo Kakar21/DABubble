@@ -7,19 +7,18 @@ import { ChatService } from "../main/chat/chat.service";
     standalone: true,
 })
 export class HighlightMentionsPipe implements PipeTransform {
+
+
     constructor(
         private chatService: ChatService,
         private sanitizer: DomSanitizer,
-    ) {}
+    ) { }
+
 
     transform(value: string): SafeHtml {
         const mentionPattern = /@(\w+(?: \w+)?)/g;
-        const formattedText = value.replace(
-            mentionPattern,
-            (match, username) => {
-                const userExists = this.chatService.usersList.some(
-                    (user) => user.name === username,
-                );
+        const formattedText = value.replace( mentionPattern, (match, username) => {
+                const userExists = this.chatService.usersList.some((user) => user.name === username);
                 if (userExists) {
                     return `<span class="highlight-mention" data-username="${username}">${match}</span>`;
                 } else {

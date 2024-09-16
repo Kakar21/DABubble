@@ -37,16 +37,16 @@
                 <div>
                     <div class="message-info">
                         <h5 (click)="openProfileById(initialMessage.id)">{{ initialMessage.name }}</h5>
-                        <span>{{ dayTime(initialMessage.time) }} Uhr</span>
+                        <span>{{ commonFnService.dayTime(initialMessage.time) }} Uhr</span>
                     </div>
                     <div class="message-text" [ngStyle]="{ 'display': initialMessage.message.trim() === '' ? 'none' : 'block' }"
-                            [ngClass]="{'current-user-text': initialMessage.name === currentUser.currentUser.name}" (click)="onMessageClick($event)"
+                            [ngClass]="{'current-user-text': initialMessage.name === currentUser.currentUser.name}" (click)="commonFnService.onMessageClick($event)"
                             [innerHTML]="initialMessage.message | highlightMentions">
                         
 
                     </div>
                     <img *ngIf="initialMessage.imageUrl" class="loaded-img" [src]="initialMessage.imageUrl" (click)="openDialogImage(initialMessage.imageUrl)">
-                    <div *ngIf="!noReactions(initialMessage)">
+                    <div *ngIf="!commonFnService.noReactions(initialMessage)">
                         <div class="reaction">
                             @if (initialMessage.reactions) {
                             @for (reaction of initialMessage.reactions| keyvalue;track reaction;let i = $index) {
@@ -120,16 +120,16 @@
                     <div>
                         <div class="message-info">
                             <h5 (click)="openProfileById(message.id)">{{ message.name }}</h5>
-                            <span>{{ dayTime(message.time) }} Uhr</span>
+                            <span>{{ commonFnService.dayTime(message.time) }} Uhr</span>
                         </div>
                         <div class="message-text" [ngStyle]="{ 'display': message.message.trim() === '' ? 'none' : 'block' }"
-                            [ngClass]="{'current-user-text': message.name === currentUser.currentUser.name}" (click)="onMessageClick($event)"
+                            [ngClass]="{'current-user-text': message.name === currentUser.currentUser.name}" (click)="commonFnService.onMessageClick($event)"
                             [innerHTML]="message.message | highlightMentions">
                         
 
                     </div>
                     <img *ngIf="message.imageUrl" class="loaded-img" [src]="message.imageUrl" (click)="openDialogImage(message.imageUrl)">
-                    <div *ngIf="!noReactions(message)">
+                    <div *ngIf="!commonFnService.noReactions(message)">
                         <div class="reaction">
                             @if (message.reactions) {
                             @for (reaction of message.reactions| keyvalue;track reaction;let i = $index) {
@@ -176,7 +176,7 @@
     <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'">
         <emoji-mart [perLine]="perLineCount" (emojiClick)="addEmoji($event)"></emoji-mart>
     </div>
-    <div class="input-container">
+    <div class="input-container" (click)="focusTextarea()">
         <div class="chat-input">
             <textarea #messageInput matInput (input)="onInputChange($event)" [formControl]="formCtrl"
                 [matAutocomplete]="auto" type="text" (keydown)="onKeydown($event)" [(ngModel)]="messageText"
@@ -224,6 +224,5 @@
             </mat-option>
         </mat-autocomplete>
     </div>
-    <!-- TODO: add focus textarea on click -->
     </div>
 </main>

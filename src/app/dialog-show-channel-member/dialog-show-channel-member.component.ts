@@ -14,15 +14,19 @@ import { UsersList } from "../interfaces/users-list";
     styleUrl: "./dialog-show-channel-member.component.scss",
 })
 export class DialogShowChannelMemberComponent {
+
+
     constructor(
         public dialogRef: MatDialogRef<DialogShowChannelMemberComponent>,
         public chatService: ChatService,
         public dialog: MatDialog,
-    ) {}
+    ) { }
+
 
     closeDialog() {
         this.dialogRef.close();
     }
+
 
     openDialogAddMembers() {
         this.dialog.open(DialogAddMemberToChnlComponent, {
@@ -30,11 +34,13 @@ export class DialogShowChannelMemberComponent {
         });
     }
 
+
     openProfileCard(user: UsersList) {
         this.dialog.open(PofileInfoCardComponent, {
             data: user,
         });
     }
+
 
     isOnline(userId: string): boolean {
         const user = this.chatService.usersList.find(

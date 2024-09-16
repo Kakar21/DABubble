@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { SignupComponent } from "../signup/signup.component";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { Router } from "@angular/router";
 import { ImageService } from "../../image.service"; // Importiere den ImageService
 
 @Component({
@@ -13,18 +12,21 @@ import { ImageService } from "../../image.service"; // Importiere den ImageServi
     styleUrl: "./avatar.component.scss",
 })
 export class AvatarComponent {
+    @Output() submitAvatar = new EventEmitter<string>();
     avatar = "";
     avatarPreviewUrl: string | ArrayBuffer | null = null;
     error = false;
     accountCreated = false;
-    @Output() submitAvatar = new EventEmitter<string>();
 
-    constructor(private router: Router, private imageService: ImageService) {}
+
+    constructor(private imageService: ImageService) { }
+
 
     selectAvatar(number: string) {
         this.avatar = number;
         this.avatarPreviewUrl = null; // Entferne die Bildvorschau, wenn ein Standard-Avatar gewählt wird
     }
+
 
     async onFileSelected(event: any) {
         const file: File = event.target.files[0];
@@ -38,12 +40,12 @@ export class AvatarComponent {
         }
     }
 
+
     submit() {
         if (this.avatar || this.avatarPreviewUrl) {
             this.accountCreated = true;
             setTimeout(() => {
                 this.submitAvatar.emit(this.avatarPreviewUrl ? this.avatarPreviewUrl as string : this.avatar);
-                // Optional: navigiere weiter oder speichere die Auswahl
             }, 1500);
         } else {
             this.error = true;

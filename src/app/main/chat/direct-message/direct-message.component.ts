@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core";
 import { ChatComponent } from "../chat.component";
 import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -11,7 +11,6 @@ import { UsersList } from "../../../interfaces/users-list";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { serverTimestamp } from "@angular/fire/firestore";
 import { PofileInfoCardComponent } from "../../../pofile-info-card/pofile-info-card.component";
-import { DialogAddMemberToChnlComponent } from "../../../dialog-add-member-to-chnl/dialog-add-member-to-chnl.component";
 import { FormsModule, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { Message } from "../../../interfaces/message";
 import { DirectmessageService } from "./directmessage.service";
@@ -21,10 +20,11 @@ import { CurrentuserService } from "../../../currentuser.service";
 import { ImageService } from "../../../image.service";
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { map, Observable, startWith } from "rxjs";
-import { EmojiModule, EmojiService } from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { DialogEditMessageComponent } from "../../../dialog-edit-message/dialog-edit-message.component";
 import { HighlightMentionsPipe } from "../../../pipes/highlist-mentions.pipe";
 import { DialogImageComponent } from "../../../dialog-image/dialog-image.component";
+import { CommonFnService } from "../../../common-fn.service";
 
 @Component({
     selector: "app-direct-message",
@@ -50,18 +50,17 @@ import { DialogImageComponent } from "../../../dialog-image/dialog-image.compone
     styleUrl: "./direct-message.component.scss",
 })
 export class DirectMessageComponent implements OnInit {
+    @ViewChild("messageInput") messageInput!: ElementRef<HTMLInputElement>;
     isPickerVisible = false;
     messageText: string = "";
     formCtrl = new FormControl();
     filteredMembers: Observable<UsersList[]>;
     currentInputValue: string = "";
-    @ViewChild("messageInput") messageInput!: ElementRef<HTMLInputElement>;
     pickerContext: string = "";
     pickerPosition = { top: '0px', left: '0px' };
     currentMessagePadnumber: string = "";
     previewUrl: string | ArrayBuffer | null = null;
     perLineCount = 9;
-    recentEmojis: string[] = [];
 
 
     constructor(
@@ -70,68 +69,89 @@ export class DirectMessageComponent implements OnInit {
         public chatService: ChatService,
         public currentUser: CurrentuserService,
         public imageService: ImageService,
-        private emojiService: EmojiService
+        public commonFnService: CommonFnService
 
     ) {
         this.filteredMembers = this.formCtrl.valueChanges.pipe(
             startWith(""),
-            map((value: string | null) => (value ? this._filter(value) : [])),
+            map((value: string | null) => (value ? this.commonFnService._filter(value) : [])),
         );
     }
 
+
     ngOnInit(): void {
+        this.focusOnMessageInputIfDirectMessage();
+        this.subscribeToComponentChange();
+        this.commonFnService.loadRecentEmojis();
+    }
+
+
+    private focusOnMessageInputIfDirectMessage(): void {
         if (this.chatService.openComponent == 'directMessage') {
             setTimeout(() => {
-              this.messageInput.nativeElement.focus();
+                this.messageInput.nativeElement.focus();
             }, 100);
-          }
+        }
+    }
+
+
+    private subscribeToComponentChange(): void {
         this.chatService.openedComponent.subscribe((component) => {
             if (component === 'directMessage') {
-              setTimeout(() => {
-                this.messageInput.nativeElement.value = '';
-                this.messageInput.nativeElement.focus();
-              }, 100);
+                this.resetMessageInput();
             }
-          });
-        this.loadRecentEmojis()
+        });
     }
+
+
+    private resetMessageInput(): void {
+        setTimeout(() => {
+            this.messageInput.nativeElement.value = '';
+            this.messageInput.nativeElement.focus();
+        }, 100);
+    }
+
+
 
     objectKeys(obj: any): string[] {
         return Object.keys(obj);
     }
 
-    log() {
-        console.log();
-    }
 
     @HostListener('window:resize', ['$event'])
     onResize(event: Event) {
         this.isPickerVisible = false;
     }
 
-    togglePicker(context: string, padNr: any, event: MouseEvent) {
-        if (window.matchMedia("(max-width: 350px)").matches) {
-            this.perLineCount = 8;
-        } else {
-            this.perLineCount = 9;
+
+    togglePicker(context: string, padNr: any, event: MouseEvent): void {
+        this.setPickerProperties(context, padNr);
+        if (this.isPickerVisible) {
+            this.calculatePickerPosition(event);
         }
+    }
+
+
+    private setPickerProperties(context: string, padNr: any): void {
+        this.perLineCount = window.matchMedia("(max-width: 350px)").matches ? 8 : 9;
         this.isPickerVisible = !this.isPickerVisible;
         this.pickerContext = context;
         this.currentMessagePadnumber = padNr;
-        if (this.isPickerVisible) {
-            const pickerHeight = 350; // Geschätzte Höhe des Emoji-Pickers
-            const pickerWidth = 300; // Geschätzte Breite des Emoji-Pickers
-            const buttonWidth = 50; // Geschätzte Breite des Buttons
-    
-            // Berechne die obere Position wie vorher
-            let top = Math.min(event.clientY, window.innerHeight - pickerHeight);
-    
-            // Berechne die linke Position basierend auf der rechten oberen Ecke des Buttons und verschiebe um die Breite des Buttons
-            let left = Math.min(event.clientX - pickerWidth - buttonWidth, window.innerWidth - pickerWidth);
-    
-            this.pickerPosition = { top: `${top}px`, left: `${left}px` };
-        }
     }
+
+
+    private calculatePickerPosition(event: MouseEvent): void {
+        const pickerHeight = 350;
+        const pickerWidth = 300;
+        const buttonWidth = 50;
+
+        let top = Math.min(event.clientY, window.innerHeight - pickerHeight);
+        let left = Math.min(event.clientX - pickerWidth - buttonWidth, window.innerWidth - pickerWidth);
+
+        this.pickerPosition = { top: `${top}px`, left: `${left}px` };
+    }
+
+
 
     closePicker(event: Event) {
         if (this.isPickerVisible) {
@@ -140,6 +160,8 @@ export class DirectMessageComponent implements OnInit {
             this.currentMessagePadnumber = "";
         }
     }
+
+
     addEmoji(event: any) {
         if (this.pickerContext === "input") {
             this.messageText += event.emoji.native;
@@ -150,48 +172,38 @@ export class DirectMessageComponent implements OnInit {
             );
         }
         setTimeout(() => {
-            this.loadRecentEmojis();  // Refresh recent emojis after a delay
-          }, 100);
-    }
-
-    loadRecentEmojis() {
-        const recentEmojiData = localStorage.getItem('emoji-mart.frequently');
-        if (recentEmojiData) {
-          const recentEmojiObj = JSON.parse(recentEmojiData);
-          this.recentEmojis = Object.keys(recentEmojiObj).slice(-2).reverse();  // Get the last two emojis and reverse the order
-        }
-      }    
-
-    addReaction(emojiId: string, messagePadnr: string) {
-        let emoji = this.getEmojiById(emojiId) || ''
-        this.addReactionToMessage(messagePadnr, emoji);  // Use emoji string directly for reaction
-        setTimeout(() => {
-            this.loadRecentEmojis();  // Refresh recent emojis after reaction
+            this.commonFnService.loadRecentEmojis();  // Refresh recent emojis after a delay
         }, 100);
     }
 
-    getEmojiById(emojiId: string) {
-        const emoji = this.emojiService.getData(emojiId) // Get the emoji by ID
-        return emoji ? emoji.native : null;           // Return the native emoji
-      }
+
+    addReaction(emojiId: string, messagePadnr: string) {
+        let emoji = this.commonFnService.getEmojiById(emojiId) || '';
+        this.addReactionToMessage(messagePadnr, emoji);  // Use emoji string directly for reaction
+        setTimeout(() => {
+            this.commonFnService.loadRecentEmojis();  // Refresh recent emojis after reaction
+        }, 100);
+    }
+
 
     addReactionToMessage(messagePadnr: string, emoji: string) {
         this.DMSerivce.addReaction(messagePadnr, emoji, this.chatService.selectedUser.id)
-            .then(() => console.log("Reaction added"))
             .catch((error) => console.error("Error adding reaction: ", error));
     }
 
+
     addOrSubReaction(message: any, reaction: string) {
         this.DMSerivce.addOrSubReaction(message, reaction, this.chatService.selectedUser.id)
-            .then(() => console.log("Reaction added or removed"))
             .catch((error) => console.error("Error adding/removing reaction: ", error));
     }
+
 
     openDialogChannelInfo() {
         this.dialog.open(DialogChannelInfoComponent, {
             panelClass: "custom-dialog-br",
         });
     }
+
 
     openProfileById(userId: string) {
         const user = this.chatService.usersList.find(
@@ -201,114 +213,71 @@ export class DirectMessageComponent implements OnInit {
             this.dialog.open(PofileInfoCardComponent, {
                 data: user,
             });
-        } else {
-            console.log("Benutzer nicht gefunden");
         }
     }
 
-    openProfileCard(username: string) {
-        const user = this.chatService.usersList.find(
-            (u) => u.name === username,
-        );
-        if (user) {
-            this.dialog.open(PofileInfoCardComponent, {
-                data: user,
-            });
-        } else {
-            console.log("Benutzer nicht gefunden");
+
+    async send(): Promise<void> {
+        const imageUrl = await this.handleImageUpload();
+        if (this.shouldSendMessage(imageUrl)) {
+            const message = this.buildMessage(imageUrl);
+            await this.DMSerivce.sendMessage(this.chatService.selectedUser.id, message);
+            this.clearMessageText();
         }
     }
 
-    noReactions(message: Message): boolean {
-        return !message.reactions || Object.keys(message.reactions).length === 0;
+
+    private async handleImageUpload(): Promise<string> {
+        if (!this.previewUrl) return '';
+
+        const fileInput = document.getElementById('fileUploadDirectmessage') as HTMLInputElement;
+        const imageUrl = await this.imageService.uploadFile(fileInput);
+        this.clearPreview();
+        return imageUrl;
     }
 
-    async send() {
-        let imageUrl = '';
 
-        if (this.previewUrl) {
-            const fileInput = document.getElementById('fileUploadDirectmessage') as HTMLInputElement;
-            imageUrl = await this.imageService.uploadFile(fileInput);
-            console.log(imageUrl)
-            this.clearPreview();
-        }
-
-        if ((this.messageText.trim() !== "") || (imageUrl.trim() !== "")) {
-            const message: Message = {
-                id: "",
-                avatar: "",
-                name: "", // wird im chat.service übernommen
-                time: new Date().toISOString(),
-                message: this.messageText,
-                createdAt: serverTimestamp(),
-                reactions: {},
-                padNumber: "",
-                btnReactions: [],
-                imageUrl: imageUrl
-            };
-
-            await this.DMSerivce.sendMessage(
-                this.chatService.selectedUser.id,
-                message,
-            );
-            this.messageText = ""; // Textfeld nach dem Senden leeren
-        }
+    private shouldSendMessage(imageUrl: string): boolean {
+        return this.messageText.trim() !== "" || imageUrl.trim() !== "";
     }
 
-    isLater(newMessageTime: string, index: string): boolean {
-        const previousMessage = this.DMSerivce.messages[index];
+
+    private buildMessage(imageUrl: string): Message {
+        return {
+            id: "",
+            avatar: "",
+            name: "",
+            time: new Date().toISOString(),
+            message: this.messageText,
+            createdAt: serverTimestamp(),
+            reactions: {},
+            padNumber: "",
+            btnReactions: [],
+            imageUrl: imageUrl,
+        };
+    }
+
+
+    private clearMessageText(): void {
+        this.messageText = "";
+    }
+
+
+
+    isLater(newMessageTime: string, index: number): boolean {
+        const previousMessage = this.DMSerivce.messages[this.commonFnService.padNumber(index, 4)];
 
         if (!previousMessage) {
             return false;
         }
 
         const previousMessageTime = previousMessage.time;
-
-        const previousMessageDate = new Date(previousMessageTime).setHours(
-            0,
-            0,
-            0,
-            0,
-        );
+        const previousMessageDate = new Date(previousMessageTime).setHours(0, 0, 0, 0);
         const newMessageDate = new Date(newMessageTime).setHours(0, 0, 0, 0);
 
         return newMessageDate > previousMessageDate;
     }
 
-    dayDate(timestamp: string): string {
-        const date = new Date(timestamp);
-        const today = new Date();
-
-        today.setHours(0, 0, 0, 0);
-        const dateToCompare = new Date(date).setHours(0, 0, 0, 0);
-
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-
-        if (dateToCompare === today.getTime()) {
-            return "Heute";
-        } else if (dateToCompare === yesterday.getTime()) {
-            return "Gestern";
-        }
-
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-        };
-        return date.toLocaleDateString("de-DE", options);
-    }
-
-    dayTime(timestamp: string): string {
-        const date = new Date(timestamp);
-
-        const options: Intl.DateTimeFormatOptions = {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-        };
-        return date.toLocaleTimeString("de-DE", options);
-    }
 
     onKeydown(event: KeyboardEvent) {
         if (event.key === "Enter" && !event.shiftKey) {
@@ -317,10 +286,12 @@ export class DirectMessageComponent implements OnInit {
         }
     }
 
+
     onInputChange(event: Event): void {
         const input = event.target as HTMLInputElement;
         this.currentInputValue = input.value;
     }
+
 
     selected(event: MatAutocompleteSelectedEvent): void {
         const selectedUserName = event.option.viewValue;
@@ -330,45 +301,16 @@ export class DirectMessageComponent implements OnInit {
         this.messageInput.nativeElement.focus();
     }
 
-    private _filter(value: string): UsersList[] {
-        if (this.mentionUser(value)) {
-            const filterValue = value
-                .slice(value.lastIndexOf("@") + 1)
-                .toLowerCase();
-            return this.chatService.usersList.filter((user) =>
-                user.name.toLowerCase().includes(filterValue),
-            );
-        } else {
-            return [];
-        }
-    }
-
-    mentionUser(value: string): boolean {
-        const atIndex = value.lastIndexOf("@");
-        if (atIndex === -1) return false;
-        const charAfterAt = value.charAt(atIndex + 1);
-        return charAfterAt !== " ";
-    }
-
-    onMessageClick(event: MouseEvent) {
-        const target = event.target as HTMLElement;
-        if (target.classList.contains("highlight-mention")) {
-            const username = target.getAttribute("data-username");
-            if (username) {
-                this.openProfileCard(username);
-            } else {
-                console.error("Kein Benutzername definiert für dieses Element");
-            }
-        }
-    }
 
     addAtSymbol() {
         if (this.messageText.slice(-1) !== "@") {
             this.messageText += "@";
             this.currentInputValue += "@";
         }
+
         this.messageInput.nativeElement.focus();
     }
+
 
     openDialogImage(imageUrl: string | ArrayBuffer) {
         this.dialog.open(DialogImageComponent, {
@@ -377,7 +319,8 @@ export class DirectMessageComponent implements OnInit {
         });
     }
 
-    openDialogEditMessage(sendedUserID: string, messageId: string, currentMessage: string, ): void {
+
+    openDialogEditMessage(sendedUserID: string, messageId: string, currentMessage: string,): void {
         const dialogRef = this.dialog.open(DialogEditMessageComponent, {
             panelClass: 'edit-message-dialog',
             data: { message: currentMessage }
@@ -386,12 +329,8 @@ export class DirectMessageComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 const newContent = result;  // Das ist der neue Inhalt, den der Benutzer eingegeben hat
-                console.log('Updated content:', newContent);
                 this.DMSerivce.updateMessage(sendedUserID, messageId, newContent)
-                    .then(() => console.log('Message updated successfully'))
                     .catch(error => console.error('Error updating message:', error));
-            } else {
-                console.log('Dialog closed without saving');
             }
         });
     }
@@ -409,13 +348,13 @@ export class DirectMessageComponent implements OnInit {
         }
     }
 
-    uploadFile(input: HTMLInputElement) {
-        this.imageService.uploadFile(input);
+
+    focusTextarea() {
+        this.messageInput.nativeElement.focus();
     }
+
 
     clearPreview() {
         this.previewUrl = null;
     }
-
-
 }

@@ -1,13 +1,5 @@
 import { Component } from "@angular/core";
-import {
-    ReactiveFormsModule,
-    FormGroup,
-    FormControl,
-    Validators,
-    ValidatorFn,
-    AbstractControl,
-    ValidationErrors,
-} from "@angular/forms";
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FirestoreService } from "../../firestore.service";
 import { MatButtonModule } from "@angular/material/button";
@@ -30,23 +22,23 @@ export class ResetPasswordComponent {
     resetPasswordForm: FormGroup;
     oobCode: string;
 
+    
     constructor(
         private route: ActivatedRoute,
         private firestoreService: FirestoreService,
         private router: Router,
     ) {
         this.oobCode = this.route.snapshot.queryParams["oobCode"];
-        this.resetPasswordForm = new FormGroup(
-            {
+        this.resetPasswordForm = new FormGroup({
                 newPassword: new FormControl("", [
                     Validators.required,
                     Validators.pattern("^[^\\s]{6,}$"), // Aktualisierte Regex für das Pattern
                 ]),
-                confirmNewPassword: new FormControl("", [Validators.required]),
-            },
+                confirmNewPassword: new FormControl("", [Validators.required])},
             { validators: this.passwordMatchValidator() },
         );
     }
+
 
     changePassword() {
         if (this.resetPasswordForm.invalid) {
@@ -54,8 +46,7 @@ export class ResetPasswordComponent {
             return;
         }
         const newPassword = this.resetPasswordForm.get("newPassword")?.value;
-        this.firestoreService
-            .confirmPasswordReset(this.oobCode, newPassword)
+        this.firestoreService.confirmPasswordReset(this.oobCode, newPassword)
             .then(() => {
                 alert("Passwort erfolgreich geändert.");
                 this.router.navigate(["/login"]);
@@ -65,17 +56,17 @@ export class ResetPasswordComponent {
             });
     }
 
+
     passwordMatchValidator(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
             const newPassword = control.get("newPassword");
             const confirmNewPassword = control.get("confirmNewPassword");
-            return newPassword &&
-                confirmNewPassword &&
-                newPassword.value !== confirmNewPassword.value
+            return newPassword && confirmNewPassword && newPassword.value !== confirmNewPassword.value
                 ? { mismatch: true }
                 : null;
         };
     }
+
 
     goBack() {
         this.router.navigate(["/login"]);

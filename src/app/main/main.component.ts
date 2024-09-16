@@ -1,4 +1,4 @@
-import { Component, ElementRef, Output, ViewChild } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { MatDrawer } from "@angular/material/sidenav";
 import { ConversationsComponent } from "./conversations/conversations.component";
 import { HeaderComponent } from "./header/header.component";
@@ -36,29 +36,32 @@ import { EMPTY_MESSAGE, Message } from "../interfaces/message";
     styleUrls: ["./main.component.scss"],
 })
 export class MainComponent {
+    @ViewChild("threadDrawer") public threadDrawer!: MatDrawer;
     initialMessage: Message = EMPTY_MESSAGE;
     threadOpen = false;
     showMenu = false;
     selectedMessageId!: string;
 
 
-    @ViewChild("threadDrawer") public threadDrawer!: MatDrawer;
+    constructor(public chatService: ChatService) { }
 
-    constructor(public chatService: ChatService) {}
 
     mobileGoBack() {
         this.chatService.mobileOpen = "";
     }
 
+
     openMobileComponent(component: string) {
         this.chatService.mobileOpen = component;
     }
+
 
     openComponent(componentName: string) {
         this.chatService.setComponent(componentName);
     }
 
-    openThread(event: { channelId: string; messageId: string }) {
+
+    openThread(event: { channelId: string; messageId: string; }) {
         this.selectedMessageId = event.messageId;
         if (!window.matchMedia("(max-width: 768px)").matches) {
             this.threadDrawer.open();
@@ -67,16 +70,15 @@ export class MainComponent {
         this.loadInitialMessage(event.channelId, event.messageId);
     }
 
-    loadInitialMessage(channelId: string, messageId: string ) {
+
+    loadInitialMessage(channelId: string, messageId: string) {
         this.chatService.observeMessage(channelId, messageId).subscribe((message) => {
             if (message) {
                 this.initialMessage = message;
-                console.log(this.initialMessage)
-            } else {
-                console.log('Nachricht existiert nicht oder wurde gelöscht.');
             }
         });
     }
+
 
     closeThread() {
         if (this.threadDrawer) {

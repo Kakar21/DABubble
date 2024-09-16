@@ -1,15 +1,9 @@
-import { DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
-import {
-    MAT_DIALOG_DATA,
-    MatDialogActions,
-    MatDialogRef,
-} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogRef } from "@angular/material/dialog";
 import { UsersList } from "../interfaces/users-list";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { ChatService } from "../main/chat/chat.service";
-import { User } from "../interfaces/user";
 import { DirectmessageService } from "../main/chat/direct-message/directmessage.service";
 
 @Component({
@@ -20,15 +14,20 @@ import { DirectmessageService } from "../main/chat/direct-message/directmessage.
     styleUrl: "./pofile-info-card.component.scss",
 })
 export class PofileInfoCardComponent {
+
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: UsersList,
         public dialogRef: MatDialogRef<PofileInfoCardComponent>,
         public chatService: ChatService,
         public DMservice: DirectmessageService,
-    ) {}
+    ) { }
+
+
     closeDialog() {
         this.dialogRef.close();
     }
+
 
     openDM(user: UsersList) {
         this.dialogRef.close();

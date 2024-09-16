@@ -20,14 +20,15 @@ export class DialogChannelInfoComponent {
     name = "";
     description = "";
     invalidName = false;
-
     dataBase = getFirestore();
+
 
     constructor(
         public dialogRef: MatDialogRef<DialogChannelInfoComponent>,
         public chatService: ChatService,
         private currentUser: CurrentuserService,
-    ) {}
+    ) { }
+
 
     async leaveChannel() {
         const updatedMembers = this.chatService.currentChannel.members.filter(
@@ -36,20 +37,20 @@ export class DialogChannelInfoComponent {
 
         await updateDoc(
             doc(this.dataBase, "channels", this.chatService.currentChannelID),
-            {
-                members: updatedMembers,
-            },
+            { members: updatedMembers },
         );
 
         this.chatService.setComponent("");
-        this.mobileGoBack()
+        this.mobileGoBack();
         this.closeDialog();
     }
+
 
     editName() {
         this.name = this.chatService.currentChannel.name;
         this.editingName = true;
     }
+
 
     mobileGoBack() {
         this.chatService.mobileOpen = "";
@@ -57,45 +58,41 @@ export class DialogChannelInfoComponent {
         this.chatService.selectedDirectmessage = "";
     }
 
+
     async saveName() {
         if (this.nameValid() && this.name) {
             await updateDoc(
-                doc(
-                    this.dataBase,
-                    "channels",
-                    this.chatService.currentChannelID,
-                ),
-                {
-                    name: this.name,
-                },
+                doc(this.dataBase, "channels", this.chatService.currentChannelID),
+                { name: this.name },
             );
-
             this.editingName = false;
         } else {
             this.invalidName = true;
         }
     }
 
+
     editDescription() {
         this.description = this.chatService.currentChannel.description;
         this.editingDescription = true;
     }
 
+
     async saveDescription() {
         await updateDoc(
             doc(this.dataBase, "channels", this.chatService.currentChannelID),
-            {
-                description: this.description,
-            },
+            { description: this.description },
         );
-        this.chatService.currentChannel.description = this.description;
 
+        this.chatService.currentChannel.description = this.description;
         this.editingDescription = false;
     }
+
 
     nameValid() {
         return this.name.indexOf(" ") == -1;
     }
+
 
     closeDialog(): void {
         this.dialogRef.close();

@@ -1,41 +1,19 @@
 import { CommonModule } from "@angular/common";
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import {
-    MatDialog,
-    MatDialogActions,
-    MatDialogContent,
-    MatDialogRef,
-} from "@angular/material/dialog";
-import {
-    MatAutocomplete,
-    MatAutocompleteModule,
-    MatAutocompleteSelectedEvent,
-    MatOption,
-} from "@angular/material/autocomplete";
+import { MatDialogActions, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
+import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent, MatOption } from "@angular/material/autocomplete";
 import { MatInputModule } from "@angular/material/input";
 import { map, startWith } from "rxjs/operators";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { Observable } from "rxjs";
 import { ChatService } from "../main/chat/chat.service";
 import { UsersList } from "../interfaces/users-list";
-import {
-    MatChipGrid,
-    MatChipInputEvent,
-    MatChipsModule,
-} from "@angular/material/chips";
+import { MatChipGrid, MatChipsModule } from "@angular/material/chips";
 import { MatIcon, MatIconModule } from "@angular/material/icon";
 import { DialogChannelInfoComponent } from "../dialog-channel-info/dialog-channel-info.component";
-import { User } from "../interfaces/user";
 import { doc, getFirestore, updateDoc } from "@angular/fire/firestore";
-interface Message {
-    avatar: string;
-    name: string;
-    time: string;
-    message: string;
-    reactions: object;
-}
 
 @Component({
     selector: "app-dialog-add-member-to-chnl",
@@ -60,17 +38,13 @@ interface Message {
     styleUrls: ["./dialog-add-member-to-chnl.component.scss"], // Achtung: 'styleUrl' zu 'styleUrls' geändert und als Array definiert
 })
 export class DialogAddMemberToChnlComponent {
+    @ViewChild("nameInput") nameInput!: ElementRef<HTMLInputElement>;
     separatorKeysCodes: number[] = [ENTER, COMMA];
     userCtrl = new FormControl("");
     filteredMembers: Observable<UsersList[]>;
-    // fruits: string[] = ['Lemon'];
     addedMembers: UsersList[] = [];
-    // allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
-
-    @ViewChild("nameInput")
-    nameInput!: ElementRef<HTMLInputElement>;
     dataBase = getFirestore();
-    // announcer = inject(LiveAnnouncer);
+
 
     constructor(
         public dialogRef: MatDialogRef<DialogChannelInfoComponent>,
@@ -79,10 +53,10 @@ export class DialogAddMemberToChnlComponent {
         this.filteredMembers = this.userCtrl.valueChanges.pipe(
             startWith(""),
             map((value: string | null) =>
-                value ? this._filter(value) : this.getAvailableUsers(),
-            ),
+                value ? this._filter(value) : this.getAvailableUsers()),
         );
     }
+
 
     public async addSelectedUsers() {
         const members = this.chatService.currentChannel.members;
@@ -93,17 +67,13 @@ export class DialogAddMemberToChnlComponent {
         }
 
         await updateDoc(
-            doc(
-                this.dataBase,
-                "channels",
-                `${this.chatService.currentChannelID}`,
-            ),
-            {
-                members: members,
-            },
+            doc(this.dataBase, "channels", `${this.chatService.currentChannelID}`),
+            { members: members },
         );
+
         this.closeDialog();
     }
+
 
     getAvailableUsers(): UsersList[] {
         // Erstellen Sie ein Set mit den IDs der aktuellen Mitglieder für eine effiziente Überprüfung
@@ -117,6 +87,7 @@ export class DialogAddMemberToChnlComponent {
         );
     }
 
+
     remove(user: UsersList): void {
         const index = this.addedMembers.indexOf(user);
 
@@ -125,10 +96,8 @@ export class DialogAddMemberToChnlComponent {
         }
     }
 
+
     selected(event: MatAutocompleteSelectedEvent): void {
-        console.log(this.chatService.usersList);
-        console.log(this.chatService.currentChannel.members);
-        console.log(this.getAvailableUsers());
         const value = (event.option.value || "").trim();
 
         // Add our member
@@ -142,6 +111,7 @@ export class DialogAddMemberToChnlComponent {
         this.userCtrl.setValue(null);
     }
 
+
     private _filter(value: string): UsersList[] {
         const filterValue = value.toLowerCase();
 
@@ -149,6 +119,7 @@ export class DialogAddMemberToChnlComponent {
             user.name.toLowerCase().includes(filterValue),
         );
     }
+
 
     closeDialog(): void {
         this.dialogRef.close();

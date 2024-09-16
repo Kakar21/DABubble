@@ -11,5 +11,7 @@ import { MatButtonModule } from "@angular/material/button";
     styleUrl: "./privacy-policy.component.scss",
 })
 export class PrivacyPolicyComponent {
-    constructor(public location: Location) {}
+
+
+    constructor(public location: Location) { }
 }

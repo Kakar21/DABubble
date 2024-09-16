@@ -26,19 +26,20 @@ export class LoginComponent {
     invalidEmail = false;
     invalidPasswordOrEmail = false;
 
+
     constructor(
         private firestore: FirestoreService,
         public router: Router,
-    ) {}
+    ) { }
 
-    // Google Anmeldung
+
     async loginWithGoogle() {
         return this.firestore.loginWithGoogle();
     }
 
+
     async loginWithEmailAndPassword() {
-        this.firestore
-            .loginWithEmailAndPassword(this.email, this.password)
+        this.firestore.loginWithEmailAndPassword(this.email, this.password)
             .then((errorCode) => {
                 this.invalidEmail = false;
                 this.invalidPasswordOrEmail = false;
@@ -48,18 +49,14 @@ export class LoginComponent {
                     } else {
                         this.invalidPasswordOrEmail = true;
                     }
-                } else {
-                    console.log("Anmeldung erfolgreich");
-                    // Navigation oder weitere Aktionen
                 }
             });
     }
 
+
     loginAsGuest() {
-        this.firestore
-            .loginAsGuest()
+        this.firestore.loginAsGuest()
             .then(() => {
-                console.log("Gast-Anmeldung erfolgreich");
                 this.router.navigate(["/"]);
             })
             .catch((error) => {

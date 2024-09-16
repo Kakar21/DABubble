@@ -11,5 +11,7 @@ import { MatButtonModule } from "@angular/material/button";
     styleUrl: "./legal-notice.component.scss",
 })
 export class LegalNoticeComponent {
-    constructor(public location: Location) {}
+
+    
+    constructor(public location: Location) { }
 }

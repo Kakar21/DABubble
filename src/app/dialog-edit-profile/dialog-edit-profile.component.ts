@@ -1,14 +1,8 @@
-import { Dialog, DialogModule, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import {
-    MatDialog,
-    MatDialogActions,
-    MatDialogContent,
-    MatDialogRef,
-} from "@angular/material/dialog";
+import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { MatInputModule } from "@angular/material/input";
 import { DialogEditProfileEditProfileComponent } from "../dialog-edit-profile-edit-profile/dialog-edit-profile-edit-profile.component";
 import { FirestoreService } from "../firestore.service";
@@ -28,19 +22,22 @@ import { FirestoreService } from "../firestore.service";
     styleUrl: "./dialog-edit-profile.component.scss",
 })
 export class DialogEditProfileComponent {
+
+
     constructor(
         public dialogRef: MatDialogRef<DialogEditProfileComponent>,
         public dialog: MatDialog,
         public firestore: FirestoreService,
-    ) {}
+    ) { }
+
 
     logout() {
         this.dialogRef.close();
         this.firestore.logout();
     }
 
+
     openDialog(event: MouseEvent): void {
-        // Sicherstellen, dass event.target tatsächlich ein Element ist.
         let element = event.target as Element | null;
         if (element) {
             // Casten zu HTMLElement, um Zugriff auf getBoundingClientRect zu gewährleisten.
@@ -53,9 +50,14 @@ export class DialogEditProfileComponent {
                 right: `${window.innerWidth - boundingClientRect.left - boundingClientRect.width + window.scrollX - 30}px`,
             };
 
-            this.dialog.open(DialogEditProfileEditProfileComponent, {
-                position: dialogPosition,
-            });
+            this.openDialogEditProfileEditProfile(dialogPosition);
         }
+    }
+
+
+    openDialogEditProfileEditProfile(dialogPosition: { top: string, right: string; }) {
+        this.dialog.open(DialogEditProfileEditProfileComponent, {
+            position: dialogPosition,
+        });
     }
 }

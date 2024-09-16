@@ -15,7 +15,6 @@
     } @else {
     <div
         class="logo"
-        (click)="log()"
     >
         <img src="../../../assets/img/logo/icon.svg" />
         <img src="../../../assets/img/logo/name.svg" />
@@ -27,9 +26,10 @@
             placeholder="Code learning durchsuchen"
             #searchInput
             [formControl]="formCtrl"
+            (click)="loadSearch()"
             [matAutocomplete]="auto"
         />
-        <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete" [displayWith]="displayOption" (optionSelected)="onOptionSelected($event)">
+        <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete"  [displayWith]="displayOption" (optionSelected)="onOptionSelected($event)">
             <mat-option class="search-no-results" *ngIf="(filteredResults | async)?.length === 0" disabled>
                 <span>Keine Ergebnisse gefunden</span>
             </mat-option>
@@ -113,7 +113,8 @@
         placeholder="Gehe zu..."
         #searchInput
         [formControl]="formCtrl"
-        [matAutocomplete]="auto"/>
+        [matAutocomplete]="auto"
+        (click)="loadSearch()"/>
         <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete" [displayWith]="displayOption" (optionSelected)="onOptionSelected($event)">
             <mat-option class="search-no-results" *ngIf="(filteredResults | async)?.length === 0" disabled>
                 <span>Keine Ergebnisse gefunden</span>

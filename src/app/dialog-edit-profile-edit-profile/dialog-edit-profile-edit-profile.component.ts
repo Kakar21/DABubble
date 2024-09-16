@@ -1,20 +1,13 @@
-import { Dialog, DialogModule, DialogRef } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import {
-    MatDialog,
-    MatDialogActions,
-    MatDialogContent,
-    MatDialogRef,
-} from "@angular/material/dialog";
+import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { MatInputModule } from "@angular/material/input";
 import { FirestoreService } from "../firestore.service";
 import { UsersList } from "../interfaces/users-list";
-import { User } from "../interfaces/user";
 import { HeaderComponent } from "../main/header/header.component";
-import { DocumentData, doc, onSnapshot } from "@angular/fire/firestore";
+import { doc, onSnapshot } from "@angular/fire/firestore";
 import { ImageService } from "../image.service";
 
 @Component({
@@ -34,7 +27,6 @@ import { ImageService } from "../image.service";
 })
 export class DialogEditProfileEditProfileComponent {
     @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
-
     currentUserUid: string | null = "";
     currentUser: UsersList = {
         id: "",
@@ -50,6 +42,7 @@ export class DialogEditProfileEditProfileComponent {
     emailError = false;
     nameError = false;
 
+
     constructor(
         public dialogRef: MatDialogRef<DialogEditProfileEditProfileComponent>,
         public dialog: MatDialog,
@@ -59,9 +52,9 @@ export class DialogEditProfileEditProfileComponent {
         this.firestore.currentUser$.subscribe((uid) => {
             this.currentUserUid = uid;
             this.subCurrentUser();
-            // Führen Sie hier Aktionen aus, die vom aktuellen Benutzerstatus abhängen
         });
     }
+
 
     editProfile() {
         this.name = this.currentUser.name;
@@ -69,11 +62,13 @@ export class DialogEditProfileEditProfileComponent {
         this.editing = true;
     }
 
+
     cancel() {
         this.editing = false;
         this.name = this.currentUser.name;
         this.email = this.currentUser.email;
     }
+
 
     save() {
         if (!this.name) {
@@ -87,57 +82,68 @@ export class DialogEditProfileEditProfileComponent {
         }
     }
 
+
     updateUser() {
         const oldName = this.currentUser.name;  // Speichere den alten Namen
-
-        this.firestore
-            .updateEmail(this.email)
-            .then(() => {
-                return this.firestore.updateUser(
-                    this.name,
-                    this.email,
-                    this.currentUser.avatar,
-                );
-            })
-            .then(() => {
-                // Aktualisiere den Benutzer in allen Channels, in denen er Mitglied ist
-                return this.firestore.updateUserInChannels({
-                    id: this.currentUser.id,
-                    name: this.name,
-                    email: this.email,
-                    avatar: this.currentUser.avatar
-                });
-            })
-            .then(() => {
-                // Aktualisiere den Namen des Benutzers als creator in den Channels
-                return this.firestore.updateUserInChannelCreators(oldName, this.name);
-            })
-            .then(() => {
-                console.log("User updated successfully");
-                this.editing = false;
-                this.reloginError = false;
-                this.emailError = false;
-            })
-            .catch((error) => {
-                switch (error.code) {
-                    case "auth/requires-recent-login":
-                        this.emailError = false;
-                        this.reloginError = true;
-                        break;
-                    case "auth/invalid-email":
-                        this.reloginError = false;
-                        this.emailError = true;
-                        break;
-                    default:
-                        console.log("An unexpected error occurred.");
-                        break;
-                }
-            });
+        this.updateEmailAndUser()
+            .then(() => this.updateUserInChannels())
+            .then(() => this.updateUserInChannelCreators(oldName))
+            .then(() => this.onUserUpdateSuccess())
+            .catch((error) => this.handleUpdateError(error));
     }
+
+
+    updateEmailAndUser() {
+        return this.firestore.updateEmail(this.email).then(() => {
+            return this.firestore.updateUser(
+                this.name,
+                this.email,
+                this.currentUser.avatar
+            );
+        });
+    }
+
+
+    updateUserInChannels() {
+        return this.firestore.updateUserInChannels({
+            id: this.currentUser.id,
+            name: this.name,
+            email: this.email,
+            avatar: this.currentUser.avatar,
+        });
+    }
+
+
+    updateUserInChannelCreators(oldName: string) {
+        return this.firestore.updateUserInChannelCreators(oldName, this.name);
+    }
+
+
+    onUserUpdateSuccess() {
+        this.editing = false;
+        this.reloginError = false;
+        this.emailError = false;
+    }
+
+
+    handleUpdateError(error: any) {
+        switch (error.code) {
+            case "auth/requires-recent-login":
+                this.reloginError = true;
+                this.emailError = false;
+                break;
+            case "auth/invalid-email":
+                this.reloginError = false;
+                this.emailError = true;
+                break;
+        }
+    }
+
 
     closeDialog() {
         this.dialogRef.close();
     }
+
 
     subCurrentUser() {
         let firestore = this.firestore.getFirestore();
@@ -148,9 +154,10 @@ export class DialogEditProfileEditProfileComponent {
                 this.currentUser = this.setCurrentUserObj(doc.data(), doc.id);
             });
         } else {
-            return console.log("invalid user uid");
+            return;
         }
     }
+
 
     setCurrentUserObj(obj: any, id: string): UsersList {
         return {
@@ -162,11 +169,13 @@ export class DialogEditProfileEditProfileComponent {
         };
     }
 
+
     onAvatarClick() {
         if (this.currentUserUid !== "mMqjWie0OWa6lWCnq5hStLQqXow1") {
             this.avatarInput.nativeElement.click();
         }
     }
+
 
     onFileSelected(event: any) {
         const input = event.target as HTMLInputElement;
@@ -184,14 +193,13 @@ export class DialogEditProfileEditProfileComponent {
         }
     }
 
+
     saveAvatarUrl(url: string) {
         this.firestore.updateUser(
             this.currentUser.name,
             this.currentUser.email,
             url // Update the avatar URL in the user's profile
-        ).then(() => {
-            console.log("Avatar updated successfully");
-        }).catch((error) => {
+        ).catch((error) => {
             console.error('Error updating avatar in Firestore:', error);
         });
     }

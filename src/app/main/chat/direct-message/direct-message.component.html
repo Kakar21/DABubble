@@ -1,6 +1,6 @@
 <section class="chat-body" (click)="closePicker($event)">
     <div class="chat-header">
-        <mat-button-toggle-group class="contact-list" (click)="openProfileCard(chatService.selectedUser.name)" vertical="true"
+        <mat-button-toggle-group class="contact-list" (click)="commonFnService.openProfileCard(chatService.selectedUser.name)" vertical="true"
             hideSingleSelectionIndicator="true">
             <mat-button-toggle class="contact">
                 <div>
@@ -31,10 +31,10 @@
             ) {
             @if (
             i == 0 ||
-            isLater(message.value.time, (i - 1).toString())
+            isLater(message.value.time, (i - 1))
             ) {
             <div class="day-date">
-                <h2>{{ dayDate(message.value.time) }}</h2>
+                <h2>{{ commonFnService.dayDate(message.value.time) }}</h2>
                 <div class="vector"></div>
             </div>
             }
@@ -44,7 +44,7 @@
                                 this.currentUser.currentUser.id,
                         }" [id]="message.key">
                 <div class="hoverMenu">
-                    <button class="random-emoji-button" mat-icon-button *ngFor="let emoji of recentEmojis" (click)="addReaction(emoji, message.value.padNumber.toString())">
+                    <button class="random-emoji-button" mat-icon-button *ngFor="let emoji of commonFnService.recentEmojis" (click)="addReaction(emoji, message.value.padNumber.toString())">
                         <ngx-emoji [isNative]="true" [emoji]="emoji" [size]="24"></ngx-emoji>
                     </button>
                     <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
@@ -74,12 +74,12 @@
                 <div>
                     <div class="message-info">
                         <h5 (click)="openProfileById(message.value.id)">{{ message.value.name }}</h5>
-                        <span>{{ dayTime(message.value.time) }} Uhr</span>
+                        <span>{{ commonFnService.dayTime(message.value.time) }} Uhr</span>
                     </div>
-                    <div class="message-text" [ngStyle]="{ 'display': message.value.message.trim() === '' ? 'none' : 'block' }" [innerHTML]="message.value.message | highlightMentions" (click)="onMessageClick($event)">
+                    <div class="message-text" [ngStyle]="{ 'display': message.value.message.trim() === '' ? 'none' : 'block' }" [innerHTML]="message.value.message | highlightMentions" (click)="commonFnService.onMessageClick($event)">
                     </div>
                     <img *ngIf="message.value.imageUrl" class="loaded-img" [src]="message.value.imageUrl" (click)="openDialogImage(message.value.imageUrl)">
-                    <div *ngIf="!noReactions(message.value)">
+                    <div *ngIf="!commonFnService.noReactions(message.value)">
                         <div class="reaction">
                             @if (message.value.reactions) {
                             @for (reaction of message.value.reactions| keyvalue;track reaction;let i = $index) {
@@ -140,7 +140,7 @@
                     <h1>{{ chatService.selectedUser.name }}</h1>
                 </div>
                 <span>Diese Unterhaltung findet nur zwischen
-                    <button (click)="openProfileCard(chatService.selectedUser.name)">
+                    <button (click)="commonFnService.openProfileCard(chatService.selectedUser.name)">
                         &#64;{{ chatService.selectedUser.name }}
                     </button>
                     und dir statt.</span>
@@ -148,7 +148,7 @@
         </div>
         }
 
-        <div class="input-container">
+        <div class="input-container" (click)="focusTextarea()">
             <div class="chat-input">
                 <textarea type="text" #messageInput (keydown)="onKeydown($event)" [(ngModel)]="messageText" placeholder="Nachricht an {{
                         chatService.selectedUser.name}}" [matAutocomplete]="auto" (input)="onInputChange($event)"

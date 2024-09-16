@@ -1,47 +1,18 @@
 import { CommonModule } from "@angular/common";
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    Inject,
-    Input,
-    OnInit,
-    Optional,
-    Output,
-    ViewChild,
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, Inject, Input, Optional, Output, ViewChild } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import {
-    MAT_DIALOG_DATA,
-    MatDialog,
-    MatDialogActions,
-    MatDialogContent,
-    MatDialogRef,
-} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatIcon } from "@angular/material/icon";
 import { ChatService } from "../main/chat/chat.service";
 import { UsersList } from "../interfaces/users-list";
-import { FirestoreService } from "../firestore.service";
 import { addDoc, collection, getFirestore } from "@angular/fire/firestore";
-import {
-    MatAutocomplete,
-    MatAutocompleteModule,
-    MatAutocompleteSelectedEvent,
-    MatOption,
-} from "@angular/material/autocomplete";
+import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent, MatOption } from "@angular/material/autocomplete";
 import { Observable, map, startWith } from "rxjs";
-import {
-    MatChip,
-    MatChipGrid,
-    MatChipInputEvent,
-    MatChipListbox,
-    MatChipSet,
-    MatChipsModule,
-} from "@angular/material/chips";
+import { MatChipGrid, MatChipsModule } from "@angular/material/chips";
 import { CurrentuserService } from "../currentuser.service";
 
 @Component({
@@ -72,29 +43,25 @@ export class DialogAddChannelAddMemberComponent {
         channelDescription: string;
     };
     @Output() closeSheet = new EventEmitter<void>();
+    @ViewChild("nameInput") nameInput!: ElementRef<HTMLInputElement>;
     separatorKeysCodes: number[] = [ENTER, COMMA];
     userCtrl = new FormControl("");
     filteredMembers: Observable<UsersList[]>;
     addedMembers: UsersList[] = [];
-    public allOfficeUsers: UsersList[] = this.chatService.usersList;
     selectedOption: string = "1";
-
-    @ViewChild("nameInput")
-    nameInput!: ElementRef<HTMLInputElement>;
-
     dataBase = getFirestore();
+    public allOfficeUsers: UsersList[] = this.chatService.usersList;
 
     constructor(
         @Optional()
         @Inject(MAT_DIALOG_DATA)
-        private dialogData: { channelName: string; channelDescription: string },
+        private dialogData: { channelName: string; channelDescription: string; },
         @Optional()
         public dialogRef: MatDialogRef<DialogAddChannelAddMemberComponent>,
         public dialog: MatDialog,
         public chatService: ChatService,
         private currentUser: CurrentuserService,
     ) {
-        console.log(this.data);
         this.filteredMembers = this.userCtrl.valueChanges.pipe(
             startWith(""),
             map((value: string | null) =>
@@ -104,51 +71,69 @@ export class DialogAddChannelAddMemberComponent {
                         .filter(user => user.id !== this.currentUser.currentUser.id) // Hier filtern wir den currentUser nach der ID
             ),
         );
-        
     }
+
 
     get data() {
         return this.bottomsheetData || this.dialogData;
     }
 
+
     public async createChannel() {
         if (!this.data) {
             throw new Error("No data provided for channel creation");
         }
-    
-        // Initialisiere die Mitglieder-Liste mit dem aktuellen Benutzer (currentUser)
+
+        const members = this.initializeMembers();
+        await this.saveChannel(members);
+
+        this.closeSheet.emit();
+        this.dialog.closeAll();
+    }
+
+
+    private initializeMembers(): UsersList[] {
         let members: UsersList[] = [this.currentUser.currentUser];
-    
+
         if (this.selectedOption === "2") {
-            // Füge nur ausgewählte Mitglieder hinzu, die nicht bereits in der Liste sind
-            this.addedMembers.forEach((user) => {
-                if (!members.some(member => member.id === user.id)) {
-                    members.push(user);
-                }
-            });
+            this.addSelectedMembers(members);
         } else {
-            // Füge alle Mitglieder hinzu, aber stelle sicher, dass der currentUser nicht doppelt hinzugefügt wird
-            this.chatService.usersList.forEach((user) => {
-                if (!members.some(member => member.id === user.id)) {
-                    members.push(user);
-                }
-            });
+            this.addAllMembers(members);
         }
-    
+
+        return members;
+    }
+
+
+    private addSelectedMembers(members: UsersList[]): void {
+        this.addedMembers.forEach((user) => {
+            if (!members.some(member => member.id === user.id)) {
+                members.push(user);
+            }
+        });
+    }
+
+
+    private addAllMembers(members: UsersList[]): void {
+        this.chatService.usersList.forEach((user) => {
+            if (!members.some(member => member.id === user.id)) {
+                members.push(user);
+            }
+        });
+    }
+
+
+    private async saveChannel(members: UsersList[]): Promise<void> {
         const newChannel = await addDoc(collection(this.dataBase, "channels"), {
             name: this.data.channelName,
             description: this.data.channelDescription,
             creator: this.currentUser.currentUser.name,
             members: members,
         });
-    
-        this.closeSheet.emit();
-        this.dialog.closeAll();
+
         this.showChannel(newChannel.id);
     }
-    
-    
-    
+
 
     remove(user: UsersList): void {
         const index = this.addedMembers.indexOf(user);
@@ -157,6 +142,7 @@ export class DialogAddChannelAddMemberComponent {
             this.addedMembers.splice(index, 1);
         }
     }
+
 
     selected(event: MatAutocompleteSelectedEvent): void {
         const value = (event.option.viewValue || "").trim();
@@ -171,15 +157,16 @@ export class DialogAddChannelAddMemberComponent {
         this.userCtrl.setValue(null);
     }
 
+
     private _filter(value: string): UsersList[] {
         const filterValue = value.toLowerCase();
-    
+
         // Filtere den currentUser nach der ID aus
         return this.chatService.usersList
             .filter(user => user.name.toLowerCase().includes(filterValue))
             .filter(user => user.id !== this.currentUser.currentUser.id); // Filter nach ID
-    }      
-    
+    }
+
 
     showChannel(id: string) {
         this.chatService.openChannel(id);
@@ -187,6 +174,7 @@ export class DialogAddChannelAddMemberComponent {
         this.chatService.selectedChannel = id;
         this.chatService.selectedDirectmessage = "";
     }
+
 
     closeDialog(): void {
         if (window.matchMedia("(max-width: 768px)").matches) {

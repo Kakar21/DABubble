@@ -1,14 +1,6 @@
 import { Component } from "@angular/core";
-import { MatIconModule } from "@angular/material/icon";
 import { RouterOutlet } from "@angular/router";
-import {
-    trigger,
-    state,
-    style,
-    animate,
-    transition,
-} from "@angular/animations";
-import { FirestoreService } from "./firestore.service";
+import { trigger, style, animate, transition } from "@angular/animations";
 
 @Component({
     selector: "app-root",
@@ -20,11 +12,4 @@ import { FirestoreService } from "./firestore.service";
 })
 export class AppComponent {
     title = "DABubble";
-
-    constructor(private firestore: FirestoreService) {
-        this.firestore.currentUser$.subscribe((uid) => {
-            console.log("Aktuelle Benutzer UID:", uid);
-            // Führen Sie hier Aktionen aus, die vom aktuellen Benutzerstatus abhängen
-        });
-    }
 }

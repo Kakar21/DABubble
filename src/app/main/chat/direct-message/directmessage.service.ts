@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CurrentuserService } from "../../../currentuser.service";
-import { Firestore, collection, doc, getDocs, onSnapshot, orderBy, query, setDoc, updateDoc, DocumentReference, getDoc, where } from "@angular/fire/firestore";
+import { Firestore, collection, doc, getDocs, onSnapshot, orderBy, query, setDoc, updateDoc, DocumentReference, getDoc } from "@angular/fire/firestore";
 import { serverTimestamp } from "@angular/fire/firestore";
 import { Message } from "../../../interfaces/message";
 import { ChatService } from "../chat.service";
@@ -11,32 +11,35 @@ import { ChatService } from "../chat.service";
 export class DirectmessageService {
     sendedUserID!: string;
     messages: Record<string, Message> = {};
-    allMessages: { [userId: string]: { [messageId: string]: any } } = {};
+    allMessages: { [userId: string]: { [messageId: string]: any; }; } = {};
     selectedPadnumber: string = "";
+
 
     constructor(
         public currentUser: CurrentuserService,
         private firestore: Firestore,
         private chat: ChatService,
-    ) {}
+    ) { }
 
     async sendMessage(sendedUserID: string, message: Message) {
-        const chatId = this.currentUser.currentUser.id < sendedUserID 
-            ? `${this.currentUser.currentUser.id}_${sendedUserID}` 
-            : `${sendedUserID}_${this.currentUser.currentUser.id}`;
-    
-        const userRef = collection(
-            this.firestore,
-            `directmessages/${chatId}/messages`
-        );
-    
-        const messagesSnapshot = await getDocs(userRef);
-        const messageCount = messagesSnapshot.size;
+        const chatId = this.generateChatId(sendedUserID);
+        const userRef = collection(this.firestore, `directmessages/${chatId}/messages`);
+        const messageCount = await this.getMessageCount(userRef);
         const newMessageRef = doc(userRef, this.padNumber(messageCount, 4));
-    
-        const newMessage: Message = {
+        const newMessage = this.createMessage(message);
+
+        await this.saveMessage(newMessageRef, newMessage);
+    }
+
+    private async getMessageCount(userRef: any) {
+        const messagesSnapshot = await getDocs(userRef);
+        return messagesSnapshot.size;
+    }
+
+    private createMessage(message: Message): Message {
+        return {
             id: this.currentUser.currentUser.id,
-            avatar: this.currentUser.currentUser.avatar, 
+            avatar: this.currentUser.currentUser.avatar,
             name: this.currentUser.currentUser.name,
             time: message.time,
             message: message.message,
@@ -46,7 +49,9 @@ export class DirectmessageService {
             btnReactions: [],
             imageUrl: message.imageUrl
         };
-    
+    }
+
+    private async saveMessage(newMessageRef: any, newMessage: Message) {
         try {
             await setDoc(newMessageRef, newMessage, { merge: true });
         } catch (error) {
@@ -55,91 +60,136 @@ export class DirectmessageService {
     }
 
     async addReaction(messagePadNr: string, emoji: string, userId: string) {
-        // Eindeutigen Chat-Pfad erstellen
-        const chatId = this.currentUser.currentUser.id < userId 
-            ? `${this.currentUser.currentUser.id}_${userId}` 
-            : `${userId}_${this.currentUser.currentUser.id}`;
+        const messageRef = await this.getMessageRef(messagePadNr, userId);
+        const messageData = await this.getMessageData(messageRef);
+        if (!messageData) return;
 
-        const messagesRef = collection(
-            this.firestore,
-            `directmessages/${chatId}/messages`
-        );
+        await this.updateReaction(messageData, emoji, messageRef);
+    }
 
-        const messageRef = doc(messagesRef, messagePadNr);
+    private async getMessageRef(messagePadNr: string, userId: string) {
+        const chatId = this.generateChatId(userId);
+        const messagesRef = collection(this.firestore, `directmessages/${chatId}/messages`);
+        return doc(messagesRef, messagePadNr);
+    }
+
+    private async getMessageData(messageRef: DocumentReference) {
         const messageSnapshot = await getDoc(messageRef);
-
         if (!messageSnapshot.exists()) {
-            console.error(`Message with ID ${messagePadNr} not found`);
-            return;
+            console.error("Message not found");
+            return null;
         }
+        return messageSnapshot.data();
+    }
 
-        const messageData = messageSnapshot.data();
-        if (!messageData["reactions"]) {
-            messageData["reactions"] = {};
-        }
-
-        if (!messageData["reactions"][emoji]) {
-            messageData["reactions"][emoji] = {
-                count: 0,
-                users: []
-            };
-        }
-
-        const reaction = messageData["reactions"][emoji];
+    private async updateReaction(messageData: any, emoji: string, messageRef: DocumentReference) {
+        const reaction = this.getOrCreateReaction(messageData, emoji);
         const currentUserName = this.currentUser.currentUser.name;
 
         if (!reaction.users.includes(currentUserName)) {
-            messageData["reactions"][emoji].count++;
-            messageData["reactions"][emoji].users.push(currentUserName);
+            reaction.count++;
+            reaction.users.push(currentUserName);
             await updateDoc(messageRef, { reactions: messageData["reactions"] });
         }
     }
-    
-    async addOrSubReaction(message: Message, reaction: string, userId: string) {
-        const chatId = this.currentUser.currentUser.id < userId 
-            ? `${this.currentUser.currentUser.id}_${userId}` 
-            : `${userId}_${this.currentUser.currentUser.id}`;
 
-        const messagesRef = collection(
-            this.firestore,
-            `directmessages/${chatId}/messages`
-        );
-
-        const messageRef = doc(messagesRef, message.toString());
-        const messageSnapshot = await getDoc(messageRef);
-
-        if (!messageSnapshot.exists()) {
-            console.error(`Message with ID ${message.padNumber} not found`);
-            return;
-        }
-
-        const messageData = messageSnapshot.data();
-        const currentUserName = this.currentUser.currentUser.name;
-
+    private getOrCreateReaction(messageData: any, emoji: string) {
         if (!messageData["reactions"]) {
-            messageData["reactions"] = {
-                [reaction]: { count: 0, users: [] }
-            };
+            messageData["reactions"] = {};
         }
+        if (!messageData["reactions"][emoji]) {
+            messageData["reactions"][emoji] = { count: 0, users: [] };
+        }
+        return messageData["reactions"][emoji];
+    }
 
-        const reactionData = messageData["reactions"][reaction] || { count: 0, users: [] };
+    async addOrSubReaction(message: Message, reaction: string, userId: string) {
+        const messageRef = await this.getMessageRef(message.toString(), userId);
+        const messageData = await this.getMessageData(messageRef);
+        if (!messageData) return;
+
+        await this.toggleReaction(messageData, reaction, messageRef);
+    }
+
+    private async toggleReaction(messageData: any, reaction: string, messageRef: DocumentReference) {
+        const currentUserName = this.currentUser.currentUser.name;
+        const reactionData = this.getOrCreateReaction(messageData, reaction);
         const userIndex = reactionData.users.indexOf(currentUserName);
 
         if (userIndex === -1) {
-            // Reaktion hinzufügen
             reactionData.users.push(currentUserName);
             reactionData.count++;
         } else {
-            // Reaktion entfernen
             reactionData.users.splice(userIndex, 1);
             reactionData.count--;
-
             if (reactionData.count === 0) {
                 delete messageData["reactions"][reaction];
             }
         }
 
         await updateDoc(messageRef, { reactions: messageData["reactions"] });
+    }
+
+    getMessages(userId: string) {
+        const chatId = this.generateChatId(userId);
+        const messagesRef = collection(this.firestore, `directmessages/${chatId}/messages`);
+        this.listenToMessages(messagesRef);
+    }
+
+    private listenToMessages(messagesRef: any) {
+        const messagesQuery = query(messagesRef, orderBy("padNumber"));
+        onSnapshot(messagesQuery, (querySnapshot) => {
+            this.messages = {};
+            querySnapshot.forEach((doc) => {
+                const messageData = doc.data() as Message;
+                this.messages[doc.id] = messageData;
+            });
+        });
+    }
+
+    getAllMessages() {
+        this.allMessages = {};
+        this.chat.usersList.forEach((user) => this.fetchMessagesForUser(user));
+    }
+
+    private fetchMessagesForUser(user: any) {
+        const chatId = this.generateChatId(user.id);
+        const potentialCollectionRef = collection(this.firestore, `directmessages/${chatId}/messages`);
+        const messagesQuery = query(potentialCollectionRef, orderBy("time"));
+
+        onSnapshot(messagesQuery, (messagesSnapshot) => {
+            this.saveUserMessages(user, messagesSnapshot);
+        });
+    }
+
+    private saveUserMessages(user: any, messagesSnapshot: any) {
+        if (!messagesSnapshot.empty) {
+            if (!this.allMessages[user.id]) {
+                this.allMessages[user.id] = {};
+            }
+            messagesSnapshot.forEach((messageDoc: any) => {
+                const messageData = messageDoc.data() as Message;
+                this.allMessages[user.id][messageDoc.id] = { ...messageData, id: messageDoc.id };
+            });
+        }
+    }
+
+    async updateMessage(sendedUserID: string, messageId: string, newContent: string): Promise<void> {
+        const messageDocRef = this.getMessageDocRef(sendedUserID, messageId);
+        await this.updateMessageContent(messageDocRef, newContent);
+    }
+
+    private getMessageDocRef(sendedUserID: string, messageId: string) {
+        const chatId = this.generateChatId(sendedUserID);
+        return doc(this.firestore, `directmessages/${chatId}/messages/${messageId}`);
+    }
+
+    private async updateMessageContent(messageDocRef: DocumentReference, newContent: string) {
+        try {
+            await updateDoc(messageDocRef, { message: newContent, updatedAt: new Date().toISOString() });
+        } catch (error) {
+            console.error("Error updating message:", error);
+        }
     }
 
     padNumber(num: number, size: number) {
@@ -149,104 +199,9 @@ export class DirectmessageService {
         return s;
     }
 
-    getMessages(userId: string) {
-        // Erstelle einen eindeutigen Pfad basierend auf beiden Benutzer-IDs
-        const chatId = this.currentUser.currentUser.id < userId 
-            ? `${this.currentUser.currentUser.id}_${userId}` 
-            : `${userId}_${this.currentUser.currentUser.id}`;
-    
-        const messagesRef = collection(
-            this.firestore,
-            `directmessages/${chatId}/messages`
-        );
-    
-        // Abfrage für Nachrichten, nur sortiert nach 'padNumber'
-        const messagesQuery = query(
-            messagesRef,
-            orderBy("padNumber")  // Nur nach 'padNumber' sortieren
-        );
-    
-        // Echtzeitlistener
-        onSnapshot(messagesQuery, (querySnapshot) => {
-            this.messages = {}; // Nachrichten leeren
-    
-            querySnapshot.forEach((doc) => {
-                const messageData = doc.data() as Message;
-                this.messages[doc.id] = messageData; // Nachricht speichern mit ihrer ID als Schlüssel
-            });
-        });
-    }
-    
-    
-    
-    
-
-    getAllMessages() {
-        this.allMessages = {};  // Leere das Nachrichten-Objekt
-    
-        // Durchlaufe alle Benutzer aus der usersList
-        this.chat.usersList.forEach((user) => {
-            // Erstelle einen eindeutigen Chat-Pfad basierend auf den Benutzer-IDs
-            const chatId = this.currentUser.currentUser.id < user.id
-                ? `${this.currentUser.currentUser.id}_${user.id}`
-                : `${user.id}_${this.currentUser.currentUser.id}`;
-    
-            const potentialCollectionRef = collection(
-                this.firestore,
-                `directmessages/${chatId}/messages`
-            );
-    
-            // Sortiere die Nachrichten nach dem Zeitstempel
-            const messagesQuery = query(
-                potentialCollectionRef,
-                orderBy("time")
-            );
-    
-            // Setze einen Echtzeitlistener für die Nachrichten
-            onSnapshot(messagesQuery, (messagesSnapshot) => {
-                if (!messagesSnapshot.empty) {
-                    // Stelle sicher, dass das Nachrichten-Objekt für diesen Benutzer existiert
-                    if (!this.allMessages[user.id]) {
-                        this.allMessages[user.id] = {};
-                    }
-    
-                    // Durchlaufe die Nachrichten und speichere sie in allMessages
-                    messagesSnapshot.forEach((messageDoc) => {
-                        const messageData = messageDoc.data() as Message;
-    
-                        // Speichere die Nachricht mit der ID des Dokuments
-                        this.allMessages[user.id][messageDoc.id] = {
-                            ...messageData,
-                            id: messageDoc.id,  // Füge die ID der Nachricht hinzu
-                        };
-                    });
-                }
-            });
-        });
-    }
-    
-
-    async updateMessage(sendedUserID: string, messageId: string, newContent: string): Promise<void> {
-        // Determine the chatId based on the current user and the recipient's userID
-        const chatId = this.currentUser.currentUser.id < sendedUserID 
-            ? `${this.currentUser.currentUser.id}_${sendedUserID}` 
+    private generateChatId(sendedUserID: string) {
+        return this.currentUser.currentUser.id < sendedUserID
+            ? `${this.currentUser.currentUser.id}_${sendedUserID}`
             : `${sendedUserID}_${this.currentUser.currentUser.id}`;
-    
-        // Path to the specific message in the subcollection within `directmessages`
-        const messageDocRef = doc(this.firestore, `directmessages/${chatId}/messages/${messageId}`);
-    
-        console.log('Updating message at:', messageDocRef.path);  // Debugging: Checking the path
-        console.log('New content:', newContent);  // Debugging: Checking the new content
-    
-        try {
-            // Update the message document with the new content and the updated timestamp
-            await updateDoc(messageDocRef, {
-                message: newContent,
-                updatedAt: new Date().toISOString(),
-            });
-            console.log("Message updated successfully.");
-        } catch (error) {
-            console.error("Error updating message:", error);
-        }
     }
 }

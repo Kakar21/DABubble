@@ -1,32 +1,20 @@
 import { CommonModule } from "@angular/common";
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    OnInit,
-    Output,
-    ViewChild,
-} from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { DirectmessageService } from "../chat/direct-message/directmessage.service";
-import {
-    MatAutocompleteModule,
-    MatAutocompleteSelectedEvent,
-} from "@angular/material/autocomplete";
-import { getFirestore } from "@angular/fire/firestore";
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { Observable, map, startWith } from "rxjs";
 import { ChatService } from "../chat/chat.service";
 import { NewMessageOption } from "../../interfaces/new-message-option";
-import { MatChipGrid, MatChipsModule } from "@angular/material/chips";
+import { MatChipsModule } from "@angular/material/chips";
 import { MatInputModule } from "@angular/material/input";
 import { CurrentuserService } from "../../currentuser.service";
-import { UsersList } from "../../interfaces/users-list";
 
 @Component({
     selector: "app-new-message",
@@ -49,16 +37,13 @@ import { UsersList } from "../../interfaces/users-list";
     styleUrl: "./new-message.component.scss",
 })
 export class NewMessageComponent implements OnInit {
+    @ViewChild("nameInput") nameInput!: ElementRef<HTMLInputElement>;
     messageText: string = "";
     startsWith: string = "";
     isPickerVisible = false;
     formCtrl = new FormControl("");
     filteredOptions: Observable<NewMessageOption[]>;
-    // fruits: string[] = ['Lemon'];
-    // allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
 
-    @ViewChild("nameInput")
-    nameInput!: ElementRef<HTMLInputElement>;
 
     constructor(
         public DMSerivce: DirectmessageService,
@@ -73,31 +58,29 @@ export class NewMessageComponent implements OnInit {
         );
     }
 
+
     ngOnInit(): void {
         if (this.chatService.openComponent == 'newMessage') {
             setTimeout(() => {
-              this.nameInput.nativeElement.focus();
+                this.nameInput.nativeElement.focus();
             }, 100);
-          }
+        }
     }
+
 
     togglePicker() {
         this.isPickerVisible = !this.isPickerVisible;
     }
 
-    addEmoji(event: any) {
-        console.log(event.emoji);
-    }
-
-    objectKeys(obj: any): string[] {
-        return Object.keys(obj);
-    }
 
     getAvailableOptions(): NewMessageOption[] {
-        const currentUserId = this.currentUserService.currentUserUid;
+        return [...this._getFilteredUsers(), ...this._getFilteredChannels()];
+    }
 
-        // Entfernen Sie den aktuellen Benutzer aus der Benutzerliste
-        const users = this.chatService.usersList
+
+    private _getFilteredUsers(): NewMessageOption[] {
+        const currentUserId = this.currentUserService.currentUserUid;
+        return this.chatService.usersList
             .filter((user) => user.id !== currentUserId)
             .map((user) => ({
                 type: "user" as const,
@@ -106,43 +89,58 @@ export class NewMessageComponent implements OnInit {
                 email: user.email,
                 avatar: user.avatar,
             }));
+    }
 
-        // Filtern Sie Kanäle, in denen der aktuelle Benutzer Mitglied ist
-        const channels = this.chatService.channelsList
+
+    private _getFilteredChannels(): NewMessageOption[] {
+        const currentUserId = this.currentUserService.currentUserUid;
+        return this.chatService.channelsList
             .filter((channel) =>
                 channel.channelData.members.some(
-                    (member) => member.id === currentUserId,
-                ),
+                    (member) => member.id === currentUserId
+                )
             )
             .map((channel) => ({
                 type: "channel" as const,
                 id: channel.id,
                 name: channel.channelData.name,
             }));
-
-        // Kombinieren Sie Benutzer und Kanäle in einem Array
-        return [...users, ...channels];
     }
 
+
     selected(event: MatAutocompleteSelectedEvent): void {
-        const value = (event.option.value || "").trim();
-        const selectedOption = this.getAvailableOptions().find(
-            (option) => option.id === value,
-        );
+        const selectedOption = this._findSelectedOption(event.option.value.trim());
 
         if (selectedOption) {
-            if (selectedOption.type === "user") {
-                this.openDirectMessage(selectedOption.id);
-                this.chatService.setComponent("directMessage");
-            } else if (selectedOption.type === "channel") {
-                this.openChannel(selectedOption.id);
-                this.chatService.setComponent("chat");
-            }
+            this._handleSelection(selectedOption);
         }
 
+        this._resetInput();
+    }
+
+
+    private _findSelectedOption(value: string): NewMessageOption | undefined {
+        return this.getAvailableOptions().find((option) => option.id === value);
+    }
+
+
+    private _resetInput(): void {
         this.nameInput.nativeElement.value = "";
         this.formCtrl.setValue(null);
     }
+
+
+    private _handleSelection(option: NewMessageOption): void {
+        if (option.type === "user") {
+            this.openDirectMessage(option.id);
+            this.chatService.setComponent("directMessage");
+        } else if (option.type === "channel") {
+            this.openChannel(option.id);
+            this.chatService.setComponent("chat");
+        }
+    }
+
+
 
     openChannel(channelId: string) {
         this.chatService.selectedChannel = channelId;
@@ -152,6 +150,7 @@ export class NewMessageComponent implements OnInit {
             this.chatService.mobileOpen = "chat";
         }
     }
+
 
     openDirectMessage(userId: string) {
         const selectedUser = this.chatService.usersList.find(
@@ -169,41 +168,40 @@ export class NewMessageComponent implements OnInit {
         }
     }
 
+
     private _filter(value: string): NewMessageOption[] {
         const filterValue = value.toLowerCase();
-
         const allOptions = this.getAvailableOptions();
 
-        if (filterValue.startsWith("#")) {
-            return allOptions.filter(
-                (option) =>
-                    option.type === "channel" &&
-                    option.name.toLowerCase().includes(filterValue.slice(1)),
-            );
-        } else if (filterValue.startsWith("@")) {
-            return allOptions.filter(
-                (option) =>
-                    option.type === "user" &&
-                    option.name.toLowerCase().includes(filterValue.slice(1)),
-            );
-        } else {
-            const filteredUsers = allOptions.filter(
-                (option) =>
-                    option.type === "user" &&
-                    (option.name.toLowerCase().includes(filterValue) ||
-                        (option.email &&
-                            option.email
-                                .toLowerCase()
-                                .startsWith(filterValue))),
-            );
+        return filterValue.startsWith("#")
+            ? this._filterByChannel(filterValue.slice(1), allOptions)
+            : filterValue.startsWith("@")
+                ? this._filterByUser(filterValue.slice(1), allOptions)
+                : this._filterAll(filterValue, allOptions);
+    }
 
-            const filteredChannels = allOptions.filter(
-                (option) =>
-                    option.type === "channel" &&
-                    option.name.toLowerCase().includes(filterValue),
-            );
 
-            return [...filteredUsers, ...filteredChannels];
-        }
+    private _filterByChannel(value: string, options: NewMessageOption[]): NewMessageOption[] {
+        return options.filter(
+            (option) =>
+                option.type === "channel" &&
+                option.name.toLowerCase().includes(value)
+        );
+    }
+
+
+    private _filterByUser(value: string, options: NewMessageOption[]): NewMessageOption[] {
+        return options.filter(
+            (option) =>
+                option.type === "user" &&
+                option.name.toLowerCase().includes(value)
+        );
+    }
+
+
+    private _filterAll(filterValue: string, options: NewMessageOption[]): NewMessageOption[] {
+        const filteredUsers = this._filterByUser(filterValue, options);
+        const filteredChannels = this._filterByChannel(filterValue, options);
+        return [...filteredUsers, ...filteredChannels];
     }
 }

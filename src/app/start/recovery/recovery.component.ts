@@ -18,17 +18,17 @@ export class RecoveryComponent {
     email: string = "";
     emailSent = false;
     invalidEmail = false;
-    
+
 
     constructor(
         public location: Location,
         private firestoreService: FirestoreService,
         private router: Router,
-    ) {}
+    ) { }
+
 
     sendResetEmail() {
-        this.firestoreService
-            .resetPassword(this.email)
+        this.firestoreService.resetPassword(this.email)
             .then(() => {
                 this.invalidEmail = false;
                 this.emailSent = true;
