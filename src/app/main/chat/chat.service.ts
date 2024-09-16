@@ -77,6 +77,7 @@ export class ChatService {
     openChannel(channelId: string) {
         this.selectedChannel = channelId;
         this.selectedDirectmessage = "";
+
         this.loadChannel(channelId);
         if (this.isMobileDevice()) {
             this.mobileOpen = "chat";
@@ -258,7 +259,29 @@ export class ChatService {
             this.usersList = users;
             this.loadOnlineStatus();
         });
-    }
+      }
+    
+      // Funktion zum Überwachen des Online-Status aus der Realtime Database
+      loadOnlineStatus() {
+        this.usersList.forEach((user) => {
+          const statusRef = ref(this.firestore.db, `status/${user.id}`);
+          
+          // Überwache den Online-Status in der Realtime Database
+          onValue(statusRef, (snapshot) => {
+            if (snapshot.exists()) {
+              const statusData = snapshot.val();
+      
+              if (typeof statusData.online !== 'undefined') {
+                user.online = statusData.online;
+              } else {
+                user.online = false;
+              }
+            } else {
+              user.online = false;
+            }
+          });
+        });
+      }
 
 
     loadOnlineStatus() {

@@ -193,7 +193,7 @@ export class FirestoreService {
             .catch((error) => {
                 console.error("Fehler beim Ausloggen: ", error);
             });
-    }
+    }    
 
 
     async saveUser(item: User, uid: string) {

@@ -7,7 +7,7 @@ import { DialogAddMemberToChnlComponent } from "../../dialog-add-member-to-chnl/
 import { MatMenuModule } from "@angular/material/menu";
 import { DialogChannelInfoComponent } from "../../dialog-channel-info/dialog-channel-info.component";
 import { DialogShowChannelMemberComponent } from "../../dialog-show-channel-member/dialog-show-channel-member.component";
-import { PickerComponent } from "@ctrl/ngx-emoji-mart";
+import { EmojiSearch, PickerComponent } from "@ctrl/ngx-emoji-mart";
 import { DialogEditMessageComponent } from "../../dialog-edit-message/dialog-edit-message.component";
 import { ChatService } from "./chat.service";
 import { MainComponent } from "../main.component";
@@ -23,7 +23,7 @@ import { UsersList } from "../../interfaces/users-list";
 import { MatInputModule } from "@angular/material/input";
 import { HighlightMentionsPipe } from "../../pipes/highlist-mentions.pipe";
 import { PofileInfoCardComponent } from "../../pofile-info-card/pofile-info-card.component";
-import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import { EmojiModule, EmojiService } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { ImageService } from "../../image.service";
 import { DialogImageComponent } from "../../dialog-image/dialog-image.component";
 import { CommonFnService } from "../../common-fn.service";

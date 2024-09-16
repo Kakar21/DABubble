@@ -71,6 +71,7 @@ export class DialogAddChannelAddMemberComponent {
                         .filter(user => user.id !== this.currentUser.currentUser.id) // Hier filtern wir den currentUser nach der ID
             ),
         );
+        
     }
 
 
@@ -133,6 +134,9 @@ export class DialogAddChannelAddMemberComponent {
 
         this.showChannel(newChannel.id);
     }
+    
+    
+    
 
 
     remove(user: UsersList): void {

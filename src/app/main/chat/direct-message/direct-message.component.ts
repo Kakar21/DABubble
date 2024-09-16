@@ -20,7 +20,7 @@ import { CurrentuserService } from "../../../currentuser.service";
 import { ImageService } from "../../../image.service";
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { map, Observable, startWith } from "rxjs";
-import { EmojiModule } from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import { EmojiModule, EmojiService } from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import { DialogEditMessageComponent } from "../../../dialog-edit-message/dialog-edit-message.component";
 import { HighlightMentionsPipe } from "../../../pipes/highlist-mentions.pipe";
 import { DialogImageComponent } from "../../../dialog-image/dialog-image.component";
@@ -61,6 +61,7 @@ export class DirectMessageComponent implements OnInit {
     currentMessagePadnumber: string = "";
     previewUrl: string | ArrayBuffer | null = null;
     perLineCount = 9;
+    recentEmojis: string[] = [];
 
 
     constructor(
@@ -110,7 +111,6 @@ export class DirectMessageComponent implements OnInit {
             this.messageInput.nativeElement.focus();
         }, 100);
     }
-
 
 
     objectKeys(obj: any): string[] {
