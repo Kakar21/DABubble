@@ -8,7 +8,7 @@ import { getFirestore, provideFirestore } from "@angular/fire/firestore";
 import { getDatabase, provideDatabase } from "@angular/fire/database";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyD7uqij9obVTjDRwVKQzXxmXq2UJvD4S8c",
     authDomain: "dabubble-2a68b.firebaseapp.com",
     projectId: "dabubble-2a68b",

@@ -1,0 +1,320 @@
+section {
+    display: inline-flex;
+    padding: 2.5rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.375rem;
+    width: 30vw;
+}
+
+.profile-section {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    span {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+}
+
+.image-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: -0.78125rem 0;
+
+    img {
+        width: 12.5rem;
+        height: 12.5rem;
+        border-radius: 100%;
+        object-fit: cover;
+    }
+}
+
+.not-guest {
+    img {
+        border: 0.78125rem solid transparent;
+
+        &:hover {
+            border-color: #e6e6e6;
+            cursor: pointer;
+        }
+    }
+}
+
+.profile-name-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9375rem;
+
+    > span {
+        display: flex;
+        align-items: center;
+        gap: 0.9375rem;
+        color: var(--online-green);
+        font-size: 1.25rem;
+    }
+}
+
+.profile-name-section {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > h1 {
+        font-size: 2rem;
+    }
+
+    > span {
+        color: var(--purple-3);
+        font-size: 1.125rem;
+        font-weight: 600;
+        transition: 150ms ease-in;
+
+        &:hover {
+            color: var(--Purple-1, #444df2);
+            font-weight: 700;
+            cursor: pointer;
+        }
+    }
+}
+
+.profile-mail-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.9375rem;
+
+    .profile-mail {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+
+        > span {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+    }
+
+    a {
+        padding-left: 3.125rem;
+        color: var(--link);
+        font-family: Nunito;
+        font-size: 1.125rem;
+        font-weight: 500;
+        line-height: 120%;
+        overflow-wrap: break-word;
+        white-space: break-spaces;
+        max-width: calc(20vw - 2.5rem - 2.5rem - 3.125rem);
+        text-align: start;
+        box-decoration-break: clone;
+        /* 1.35rem */
+    }
+}
+
+::ng-deep::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 1.875rem 0rem 1.875rem 1.875rem;
+}
+
+.editing-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+
+    img {
+        width: 1.875rem;
+        height: 1.875rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+}
+
+.edit-name,
+.edit-email {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4375rem;
+
+    > div {
+        display: flex;
+        gap: 1.25rem;
+        align-items: center;
+    }
+}
+
+input {
+    border: 0;
+    width: calc(100% - 2rem - 2rem);
+    padding: 1.125rem 2rem;
+    border-radius: 6.25rem;
+    background: var(--bg-color);
+    color: var(--black);
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 120%;
+    /* 21.6px */
+
+    &::placeholder {
+        color: var(--text-gray);
+        font-size: 1.125rem;
+        font-weight: 500;
+        line-height: 120%;
+    }
+
+    &:hover {
+        outline: 1px solid var(--light-purple-line);
+    }
+
+    &:focus {
+        outline: 1px solid var(--purple-3);
+    }
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.submit {
+    width: min-content;
+    padding: 0 1.5625rem;
+    height: 3.0625rem;
+    transition: 100ms ease-out;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+        border-radius: 3.125rem;
+        background: var(--purple-1);
+        overflow: hidden;
+        transition: 100ms ease-out;
+    }
+
+    ::ng-deep::ng-deep .mat-mdc-button-ripple {
+        border-radius: 3.125rem;
+        overflow: hidden;
+    }
+
+    ::ng-deep::ng-deep .mdc-button__label {
+        color: var(--white);
+        font-family: Nunito;
+        font-size: 1.125rem;
+        padding: 0;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: normal;
+    }
+
+    &:hover {
+        ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+            background-color: var(--purple-2);
+
+            &::before {
+                opacity: 0;
+            }
+        }
+    }
+}
+
+.cancel {
+    width: max-content;
+    height: 3.0625rem;
+    padding: 0 1.5625rem;
+    border: 1px solid var(--purple-2) !important;
+    border-radius: 3.125rem;
+    transition: 100ms ease-out;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+        border-radius: 3.125rem;
+        overflow: hidden;
+        transition: 100ms ease-out;
+    }
+
+    ::ng-deep::ng-deep .mat-mdc-button-ripple {
+        border-radius: 3.125rem;
+        overflow: hidden;
+    }
+
+    ::ng-deep::ng-deep .mdc-button__label {
+        color: var(--purple-1);
+        text-align: center;
+        font-family: Nunito;
+        font-size: 1.125rem;
+        font-style: normal;
+        padding: 0;
+        font-weight: 700;
+        line-height: normal;
+        transition: 100ms ease-out;
+        letter-spacing: normal;
+    }
+
+    &:hover {
+        border-color: var(--purple-3);
+
+        ::ng-deep::ng-deep .mdc-button__label {
+            color: var(--white);
+        }
+
+        ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+            background-color: var(--purple-3);
+
+            &::before {
+                opacity: 0;
+            }
+        }
+    }
+}
+
+.error {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 0.375rem);
+    animation: 100ms ease-in blendIn;
+    color: var(--error);
+    font-family: Nunito;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+// Media Queries
+
+@media (max-width: 768px) {
+    section {
+        padding: 2.5rem 1.25rem;
+        width: calc(92.5vw - 1.25rem - 1.25rem);
+    }
+
+    ::ng-deep::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+        border-radius: 1.875rem;
+    }
+
+    .profile-name-section {
+        > span {
+            content: url(../../../../assets/img/icons/edit.svg);
+            width: 1.5rem;
+            height: 1.5rem;
+            padding: 0.1875rem;
+            border-radius: 50%;
+            background: var(--bg-color);
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .button-container {
+        gap: unset;
+        justify-content: space-between;
+        width: 100%;
+    }
+}

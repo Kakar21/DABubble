@@ -1,0 +1,409 @@
+main {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0 2rem 1.875rem;
+    height: calc(100vh - 12.75rem);
+}
+
+.workspace {
+    display: flex;
+    align-items: center;
+    padding: 0 calc(1.5rem + 6px) 1.5625rem 0;
+    justify-content: space-between;
+
+    > div:not(.logo) {
+        display: flex;
+        align-items: center;
+        gap: 0.9375rem;
+    }
+
+    .logo {
+        display: flex;
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        border-radius: 1.875rem;
+        overflow: hidden;
+
+        > img:first-child {
+            width: 3.75rem;
+            height: 3.75rem;
+        }
+
+        > img:last-child {
+            position: absolute;
+            width: 2.16rem;
+            height: 1.4505rem;
+        }
+    }
+
+    > h2 {
+        padding-right: 1.25rem;
+    }
+
+    > img {
+        padding: 0.5rem;
+    }
+}
+
+.new-message {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+
+    ::ng-deep::ng-deep span {
+        width: 2.5rem;
+        height: 2.5rem;
+
+        &::before {
+            background: none !important;
+        }
+    }
+
+    &:hover {
+        transition: 100ms ease-out;
+        background-color: var(--bg-color);
+
+        ::ng-deep::ng-deep img {
+            content: url(../../../../assets/img/icons/edit_square-purple.svg);
+        }
+    }
+}
+
+.channels,
+.directmessages {
+    box-shadow: none !important;
+
+    > mat-expansion-panel-header {
+        padding: 0;
+        margin: 0 0 0.915rem 0;
+
+        mat-panel-title {
+            display: flex;
+            justify-content: space-between;
+
+            > div {
+                display: flex;
+                align-items: center;
+
+                img {
+                    padding-right: 0.5rem;
+                }
+            }
+        }
+    }
+}
+
+.channels,
+.directmessages {
+    mat-expansion-panel-header {
+        h3 {
+            font-size: 1.25rem;
+        }
+    }
+
+    mat-expansion-panel-header:hover {
+        background: none !important;
+
+        mat-panel-title > div > h3 {
+            color: var(--purple-3);
+        }
+
+        ::ng-deep::ng-deep .mat-expansion-indicator {
+            content: url(../../../../assets/img/icons/arrow_drop_down-purple.svg);
+        }
+    }
+}
+
+.channels {
+    mat-expansion-panel-header:hover {
+        mat-panel-title > div > img {
+            content: url(../../../../assets/img/icons/workspaces-purple.svg);
+        }
+    }
+}
+
+.directmessages {
+    mat-expansion-panel-header:hover {
+        mat-panel-title > div > img {
+            content: url(../../../../assets/img/icons/account_circle-purple.svg);
+        }
+    }
+}
+
+.add {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.875rem;
+    height: 1.875rem;
+
+    ::ng-deep::ng-deep span {
+        width: 1.875rem;
+        height: 1.875rem;
+
+        &::before {
+            background: none !important;
+        }
+    }
+
+    &:hover {
+        transition: 100ms ease-out;
+        background-color: var(--bg-color);
+
+        ::ng-deep::ng-deep img {
+            content: url(../../../../assets/img/icons/add-purple.svg);
+        }
+    }
+}
+
+.channels {
+    ::ng-deep::ng-deep
+        .mat-button-toggle-appearance-standard
+        .mat-button-toggle-label-content {
+        padding: 0;
+        display: flex;
+        align-items: center;
+        width: max-content;
+        gap: 0.625rem;
+
+        > img {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        > h3 {
+            line-height: normal;
+            font-size: 1.125rem;
+            font-weight: 400;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap;
+            max-width: 8.25rem;
+        }
+    }
+}
+
+mat-button-toggle-group {
+    border: 0;
+}
+
+mat-button-toggle {
+    width: fit-content;
+}
+
+::ng-deep::ng-deep .mat-expansion-indicator {
+    width: 1.875rem;
+    height: 1.875rem;
+    margin-right: 0.9375rem !important;
+    content: url(../../../../assets/img/icons/arrow_drop_down.svg);
+}
+
+.channel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8125rem;
+
+    .channel {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        border-radius: 1.25rem;
+        border: 0 !important;
+        overflow: hidden;
+
+        &:hover:not(
+                .mat-button-toggle-appearance-standard.mat-button-toggle-checked
+            ) {
+            transition: 80ms ease-in;
+            background-color: var(--bg-color);
+
+            img {
+                content: url(../../../../assets/img/icons/tag-purple.svg) !important;
+            }
+        }
+    }
+
+    ::ng-deep::ng-deep .mat-button-toggle-focus-overlay {
+        background: none !important;
+    }
+
+    ::ng-deep::ng-deep .mat-button-toggle-button {
+        padding: 0.25rem 1.25rem;
+    }
+
+    ::ng-deep::ng-deep
+        .mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+        background: var(--bg-color);
+
+        img {
+            content: url(../../../../assets/img/icons/tag-purple-bold.svg);
+        }
+
+        h3 {
+            color: var(--purple-3);
+            font-weight: 700;
+        }
+    }
+}
+
+.new-channel {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+
+    > img {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    > span {
+        font-size: 1.125rem;
+        line-height: normal;
+    }
+
+    &:hover {
+        cursor: pointer;
+
+        > img {
+            content: url(../../../../assets/img/icons/add_circle-purple.svg);
+        }
+
+        > span {
+            color: var(--purple-3);
+        }
+    }
+}
+
+.directmessages {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.8125rem;
+
+    ::ng-deep::ng-deep
+        .mat-button-toggle-appearance-standard
+        .mat-button-toggle-label-content {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.9375rem;
+        padding: 0;
+        flex: 1;
+        width: max-content;
+
+        > div {
+            height: 3.125rem;
+            position: relative;
+
+            > img:first-child {
+                width: 3.125rem;
+                height: 3.125rem;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            > img:last-child {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                width: 0.875rem;
+                height: 0.875rem;
+            }
+        }
+
+        > span {
+            color: var(--black);
+            font-family: Nunito;
+            font-size: 1.125rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            overflow-wrap: break-word;
+            white-space: break-spaces;
+            max-width: 9.75rem;
+            text-align: start;
+        }
+    }
+
+    ::ng-deep::ng-deep .mat-button-toggle-checked {
+        background-color: var(--bg-color);
+
+        ::ng-deep::ng-deep .mat-button-toggle-label-content > span {
+            color: var(--purple-3);
+            font-weight: 700;
+        }
+    }
+}
+
+.contact {
+    display: flex;
+    border-radius: 2.1875rem;
+    border: 0 !important;
+    overflow: hidden;
+    line-height: normal;
+    transition: 80ms ease-in;
+
+    &:hover {
+        background-color: var(--bg-color);
+    }
+
+    ::ng-deep::ng-deep .mat-button-toggle-focus-overlay {
+        background: none !important;
+    }
+
+    ::ng-deep::ng-deep .mat-button-toggle-button {
+        padding: 0.25rem 1.25rem;
+    }
+}
+
+.container {
+    padding-right: 1.5rem;
+    overflow-y: auto;
+}
+
+::ng-deep::ng-deep .mat-expansion-panel-body {
+    padding: 0 0 1rem 1.5rem !important;
+}
+
+// Media Queries
+
+@media (max-width: 768px) {
+    .workspace {
+        display: none;
+    }
+
+    main {
+        padding: 0 2.25rem 2.25rem 2.25rem;
+        height: auto;
+    }
+
+    .container {
+        padding: 0;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        gap: 0.875rem;
+    }
+
+    .channels,
+    .directmessages {
+        > mat-expansion-panel-header {
+            height: 2.875rem;
+
+            mat-panel-title {
+                margin: 0;
+            }
+        }
+    }
+}

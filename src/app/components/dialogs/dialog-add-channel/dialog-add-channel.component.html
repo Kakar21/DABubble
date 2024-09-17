@@ -1,0 +1,47 @@
+<section class="dialog-container">
+    <div>
+        <h2 mat-dialog-title>Channel erstellen</h2>
+        <button
+            class="closeButton"
+            (click)="closeDialog()"
+            mat-icon-button
+        >
+            <img src="assets/img/icons/close.svg" />
+        </button>
+    </div>
+    <span
+        >Channels dienen deinem Team zur Kommunikation. Am besten sollten Sie
+        themebezogen sein #marketing zum Beispiel.</span
+    >
+    <div class="inputContainer">
+        <h3>Channel-Name</h3>
+        <div>
+            <input
+                [(ngModel)]="channelName"
+                placeholder="z.B. Kooperationsprojekte"
+            />
+            <img src="assets/img/icons/tag-gray.svg" />
+            @if (invalidName) {
+                <span class="error">Bitte keine Leerzeichen.</span>
+            }
+        </div>
+    </div>
+    <div class="inputContainer second">
+        <h3>Beschreibung <span>(optional)</span></h3>
+        <div>
+            <input
+                [(ngModel)]="channelDescription"
+                placeholder="Dein Text hier"
+            />
+        </div>
+    </div>
+
+    <mat-dialog-actions>
+        <button
+            mat-flat-button
+            (click)="forwardDialog()"
+        >
+            Erstellen
+        </button>
+    </mat-dialog-actions>
+</section>

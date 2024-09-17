@@ -1,0 +1,201 @@
+<section class="chat-body" (click)="closePicker($event)">
+    <div class="chat-header">
+        <mat-button-toggle-group class="contact-list" (click)="commonFnService.openProfileCardByUser(chatService.selectedUser)" vertical="true"
+            hideSingleSelectionIndicator="true">
+            <mat-button-toggle class="contact">
+                <div>
+                    @if (chatService.selectedUser.avatar.length > 1) {
+                    <img src="{{ chatService.selectedUser.avatar }}" />
+                    } @else {
+                    <img src="assets/img/avatar/{{
+                                chatService.selectedUser.avatar
+                            }}.svg" alt="" />
+                    }
+                    @if (chatService.selectedUser.online) {
+                    <img src="assets/img/icons/online.svg" />
+                    } @else {
+                    <img src="assets/img/icons/offline.svg" />
+                    }
+                </div>
+                <h1>{{ chatService.selectedUser.name }}</h1>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+    <div class="chat-content">
+        @if (DMSerivce.messages && objectKeys(DMSerivce.messages).length > 0) {
+        <div class="chat">
+            @for (
+            message of DMSerivce.messages | keyvalue;
+            track message;
+            let i = $index
+            ) {
+            @if (
+            i == 0 ||
+            isLater(message.value.time, (i - 1))
+            ) {
+            <div class="day-date">
+                <h2>{{ commonFnService.dayDate(message.value.time) }}</h2>
+                <div class="vector"></div>
+            </div>
+            }
+            <div class="message" [ngClass]="{
+                            'my-message':
+                                message.value.id ===
+                                this.currentUser.currentUser.id,
+                        }" [id]="message.key">
+                <div class="hoverMenu">
+                    <button class="random-emoji-button" mat-icon-button *ngFor="let emoji of commonFnService.recentEmojis" (click)="addReaction(emoji, message.value.padNumber.toString())">
+                        <ngx-emoji [isNative]="true" [emoji]="emoji" [size]="24"></ngx-emoji>
+                    </button>
+                    <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.value.padNumber, $event); $event.stopPropagation()">
+                        <img src="assets/img/icons/add_reaction.svg" alt="Add reaction" />
+                    </button>
+                        <ng-container *ngIf="message.value.id === chatService.currentUser.currentUser.id">
+                            <button mat-icon-button class="moreButton" [matMenuTriggerFor]="menu">
+                              <img src="assets/img/icons/3-dots.svg" alt="More" />
+                            </button>
+                            <mat-menu class="moreMenu" #menu="matMenu">
+                              <button mat-menu-item (click)="openDialogEditMessage(chatService.selectedUser.id, message.key, message.value.message)">
+                                Nachricht bearbeiten
+                              </button>
+                            </mat-menu>
+                          </ng-container>
+                          
+                </div>
+
+                @if (message.value.avatar.length > 1) {
+                <img src="{{ message.value.avatar }}" />
+                } @else {
+                <img src="assets/img/avatar/{{
+                                    message.value.avatar
+                                }}.svg" />
+                }
+
+                <div>
+                    <div class="message-info">
+                        <h5 (click)="openProfileById(message.value.id)">{{ message.value.name }}</h5>
+                        <span>{{ commonFnService.dayTime(message.value.time) }} Uhr</span>
+                    </div>
+                    <div class="message-text" [ngStyle]="{ 'display': message.value.message.trim() === '' ? 'none' : 'block' }" [innerHTML]="message.value.message | highlightMentions" (click)="commonFnService.onMessageClick($event)">
+                    </div>
+                    <img *ngIf="message.value.imageUrl" class="loaded-img" [src]="message.value.imageUrl" (click)="openDialogImage(message.value.imageUrl)">
+                    <div *ngIf="!commonFnService.noReactions(message.value)">
+                        <div class="reaction">
+                            @if (message.value.reactions) {
+                            @for (reaction of message.value.reactions| keyvalue;track reaction;let i = $index) {
+                            <div class="reaction-wrapper">
+                                <div class="reaction-tooltip">
+                                    <span>{{reaction.key}}</span>
+                                    <div>
+                                        @for (user of reaction.value.users; track $index) {
+                                            @if (($index + 1) != reaction.value.users.length) {
+                                                @if (($index + 2) == reaction.value.users.length) {
+                                                <span>{{user}} und </span>
+                                                } @else {
+                                                <span>{{user}}, </span>
+                                                }
+                                            } @else {
+                                                <span>{{user}}</span>
+                                            }
+                                            }
+                                            @if (reaction.value.users.length > 1) {
+                                            <p>haben reagiert</p>
+                                            }@else {
+                                            <p>hat reagiert</p>
+                                            }
+                                    </div>
+                                </div>
+                                <button mat-raised-button (click)="addOrSubReaction(message.key, reaction.key)">
+                                    <span>{{reaction.key}}</span>
+                                    <p>{{reaction.value.count}}</p>
+                                </button>
+                            </div>
+                            }
+                            }
+                            <button class="emoji-button" mat-icon-button (click)="
+                            togglePicker('reaction', message.value.padNumber, $event);
+                            $event.stopPropagation()">
+                                <img src="assets/img/icons/add_reaction.svg" alt="Add reaction"  />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="emoji-picker" *ngIf="isPickerVisible && pickerContext === 'reaction'" [ngStyle]="{ top: pickerPosition.top, left: pickerPosition.left }">
+                <emoji-mart [perLine]="perLineCount" (emojiClick)="addEmoji($event)"></emoji-mart>
+            </div>
+            }
+        </div>
+        } @else {
+        <div class="blank-chat">
+            <div class="blank-info">
+                <div>
+                    @if (chatService.selectedUser.avatar.length > 1) {
+                    <img src="{{ chatService.selectedUser.avatar }}" />
+                    } @else {
+                    <img src="assets/img/avatar/{{
+                                    chatService.selectedUser.avatar
+                                }}.svg" alt="" />
+                    }
+                    <h1>{{ chatService.selectedUser.name }}</h1>
+                </div>
+                <span>Diese Unterhaltung findet nur zwischen
+                    <button (click)="commonFnService.openProfileCardByUser(chatService.selectedUser)">
+                        &#64;{{ chatService.selectedUser.name }}
+                    </button>
+                    und dir statt.</span>
+            </div>
+        </div>
+        }
+
+        <div class="input-container" (click)="focusTextarea()">
+            <div class="chat-input">
+                <textarea type="text" #messageInput (keydown)="onKeydown($event)" [(ngModel)]="messageText" placeholder="Nachricht an {{
+                        chatService.selectedUser.name}}" [matAutocomplete]="auto" (input)="onInputChange($event)"
+                    [formControl]="formCtrl"></textarea>
+                <div *ngIf="previewUrl" class="preview-image" (click)="openDialogImage(previewUrl)">
+                    <button class="closeButton" (click)="clearPreview()" mat-icon-button>
+                        <img src="assets/img/icons/close.svg"/>
+                    </button>
+                    <img [src]="previewUrl" alt="Image Preview" />
+                </div>
+                <div class="action-buttons">
+                    <div class="button-wrapper">
+                        <button class="upload-image input-image" mat-icon-button (click)="upload.click()">
+                            <input id="fileUploadDirectmessage" type="file" #upload (change)="onFileSelected($event)"
+                                accept=".png,.jpg">
+                            <img src="assets/img/icons/add-gray.svg" alt="Add image" />
+                        </button>
+                        <div class="vector"></div>
+                        <button class="input-emoji"  mat-icon-button (click)="togglePicker('input', '',$event);$event.stopPropagation()">
+                            <img src="assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
+                        </button>
+
+                        <div class="emoji-picker input-picker" *ngIf="isPickerVisible && pickerContext === 'input'"
+                            style="bottom: 1rem; left: 3.5rem;">
+                            <emoji-mart [perLine]="perLineCount" (emojiClick)="addEmoji($event)"></emoji-mart>
+                        </div>
+                        <button class="input-at" mat-icon-button (click)="addAtSymbol()">
+                            <img src="assets/img/icons/alternate_email.svg" alt="Tag someone" />
+                        </button>
+                    </div>
+                    <button class="input-send" (click)="send()" mat-icon-button>
+                        <img src="assets/img/icons/send-button.svg" alt="Send message" />
+                    </button>
+                </div>
+            </div>
+            <mat-autocomplete class="directmessage-mention-autocomplete" #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let option of filteredMembers | async" [value]="option.name">
+                    @if (option.avatar && option.avatar.length > 1) {
+                    <img src="{{ option.avatar }}" />
+                    } @else {
+                    <img src="assets/img/avatar/{{
+                                option.avatar
+                            }}.svg" />
+                    }
+                    <h3>{{ option.name }}</h3>
+                </mat-option>
+            </mat-autocomplete>
+        </div>
+    </div>
+</section>

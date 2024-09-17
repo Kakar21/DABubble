@@ -1,0 +1,98 @@
+<section>
+    <div class="profile-section">
+        @if (!editing) {
+            <span>Profil</span>
+        } @else {
+            <span>Dein Profil bearbeiten</span>
+        }
+
+        <button
+            class="closeButton"
+            (click)="closeDialog()"
+            mat-icon-button
+        >
+            <img src="assets/img/icons/close.svg" />
+        </button>
+    </div>
+    <div class="image-section" [ngClass]="{'not-guest': currentUserUid !== 'mMqjWie0OWa6lWCnq5hStLQqXow1'}" (click)="onAvatarClick()">
+        <input type="file" #avatarInput style="display: none;" (change)="onFileSelected($event)" accept="image/*" />
+        @if (currentUser.avatar.length > 1) {
+            <img src="{{ currentUser.avatar }}" />
+        } @else {
+            <img src="assets/img/avatar/{{ currentUser.avatar }}.svg" />
+        }
+    </div>    
+    @if (!editing) {
+        <div class="profile-name-container">
+            <div class="profile-name-section">
+                <h1>{{ currentUser.name }}</h1>
+                @if (currentUserUid !== "mMqjWie0OWa6lWCnq5hStLQqXow1") {
+                    <span (click)="editProfile()">Bearbeiten</span>
+                }
+            </div>
+            <span><img src="assets/img/icons/online-1.svg" />Aktiv</span>
+        </div>
+        <div class="profile-mail-section">
+            <div class="profile-mail">
+                <img
+                    src="assets/img/icons/mail-black.svg"
+                    alt=""
+                />
+                <span>E-Mail Adresse</span>
+            </div>
+            <div>
+                <a href="mailto:{{ currentUser.email }}">{{
+                    currentUser.email
+                }}</a>
+            </div>
+        </div>
+    } @else {
+        <div class="editing-container">
+            <div class="edit-name">
+                <div>
+                    <img src="assets/img/icons/account_circle.svg" />
+                    <h2>Vollständiger Name</h2>
+                </div>
+                <input
+                    [(ngModel)]="name"
+                    value="{{ this.name }}"
+                    placeholder="Dein Name hier"
+                />
+            </div>
+            <div class="edit-email">
+                <div>
+                    <img src="assets/img/icons/mail-black.svg" />
+                    <h2>E-Mail-Adresse</h2>
+                </div>
+                <input
+                    [(ngModel)]="email"
+                    value="{{ this.email }}"
+                    placeholder="Deine E-Mail hier"
+                />
+            </div>
+            @if (emailError) {
+                <span class="error">E-Mail-Adresse ist ungültig.</span>
+            } @else if (reloginError) {
+                <span class="error">Bitte nochmal einloggen.</span>
+            } @else if (nameError) {
+                <span class="error">Name ist erforderlich.</span>
+            }
+        </div>
+        <div class="button-container">
+            <button
+                mat-stroked-button
+                class="cancel"
+                (click)="cancel()"
+            >
+                Abbrechen
+            </button>
+            <button
+                mat-flat-button
+                class="submit"
+                (click)="save()"
+            >
+                Speichern
+            </button>
+        </div>
+    }
+</section>

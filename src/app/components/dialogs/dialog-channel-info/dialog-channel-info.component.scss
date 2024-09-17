@@ -1,0 +1,388 @@
+main {
+    display: flex;
+    padding: 2.5rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.25rem;
+    width: 50vw;
+
+    background: var(--white);
+    box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+::ng-deep::ng-deep
+    .custom-dialog-br
+    .mdc-dialog__container
+    .mat-mdc-dialog-surface {
+    border-radius: 1.875rem;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    > div {
+        display: flex;
+        gap: 0.9375rem;
+
+        > img {
+            width: 1.875rem;
+            height: 1.875rem;
+        }
+    }
+}
+
+.name-box,
+.description-box {
+    display: flex;
+    width: calc(100% - 1.25rem - 1.25rem);
+    padding: 1.25rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.25rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--light-purple-line);
+
+    > div:first-child {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    h6 {
+        font-size: 1.125rem;
+    }
+
+    > div {
+        > span {
+            color: var(--purple-3);
+            font-size: 1.125rem;
+            font-weight: 600;
+            transition: 150ms ease-in;
+
+            &:hover {
+                color: var(--purple-1);
+                font-weight: 700;
+                cursor: pointer;
+            }
+        }
+    }
+
+    > div:last-child {
+        display: flex;
+        width: 100%;
+        padding: 0.125rem 0.0625rem;
+        align-items: center;
+        gap: 0.625rem;
+    }
+
+    img {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    p {
+        font-size: 1.125rem;
+    }
+}
+
+.edit-name {
+    padding: 1.25rem 1.25rem 2rem 1.25rem;
+}
+
+.inputDiv {
+    position: relative;
+    width: 100%;
+
+    > input {
+        border: 0;
+        width: calc(100% - 2rem - 5.375rem);
+        padding: 1.125rem 2rem 1.125rem 5.375rem;
+        border-radius: 6.25rem;
+        background: var(--bg-color);
+        color: var(--black);
+        font-size: 1.125rem;
+        font-weight: 500;
+        line-height: 120%;
+        /* 21.6px */
+
+        &::placeholder {
+            color: var(--text-gray);
+            font-size: 1.125rem;
+            font-weight: 500;
+            line-height: 120%;
+        }
+
+        &:hover {
+            outline: 1px solid var(--light-purple-line);
+        }
+
+        &:focus {
+            outline: 1px solid var(--purple-3);
+
+            & + img {
+                filter: brightness(0%);
+            }
+        }
+    }
+
+    > img {
+        width: 1.5rem;
+        height: 1.5rem;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 2rem;
+        margin: auto 0;
+    }
+}
+
+.noIcon {
+    > input {
+        width: calc(100% - 2rem - 2rem);
+        padding: 1.125rem 2rem;
+    }
+}
+
+.description-box {
+    > div:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.875rem;
+        width: 100%;
+
+        > div {
+            width: 100%;
+            height: 1px;
+            background-color: var(--light-purple-line);
+        }
+    }
+
+    > span {
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: var(--purple-3);
+    }
+}
+
+.leave {
+    align-self: flex-end;
+    width: max-content;
+    padding: 0 1.5625rem;
+    min-height: 3.0625rem;
+    transition: 100ms ease-out;
+
+    ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+        border-radius: 1.5625rem;
+        background: var(--purple-1);
+        overflow: hidden;
+        transition: 100ms ease-out;
+    }
+
+    ::ng-deep::ng-deep .mat-mdc-button-ripple {
+        border-radius: 1.5625rem;
+        overflow: hidden;
+    }
+
+    ::ng-deep::ng-deep .mdc-button__label {
+        color: var(--white);
+        font-family: Nunito;
+        font-size: 1.125rem;
+        padding: 0;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+    }
+
+    &:hover {
+        ::ng-deep::ng-deep .mat-mdc-button-persistent-ripple {
+            background-color: var(--purple-2);
+
+            &::before {
+                opacity: 0;
+            }
+        }
+    }
+}
+
+.error {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 0.375rem);
+    animation: 100ms ease-in blendIn;
+    color: var(--error) !important;
+    font-family: Nunito;
+    font-size: 0.875rem !important;
+    font-style: normal;
+    font-weight: 400 !important;
+    line-height: normal;
+}
+
+.members-box {
+    display: none;
+    width: calc(100% - 1rem - 1rem);
+    margin: 0 1rem;
+
+    ::ng-deep::ng-deep section {
+        padding: 1.25rem 1rem;
+        width: calc(100% - 1rem - 1rem);
+        border-radius: 1.25rem;
+        border: 1px solid var(--light-purple-line);
+        background: var(--white);
+        align-items: flex-start;
+
+        .dialog-header {
+            > button {
+                display: none;
+            }
+        }
+
+        main {
+            width: 100%;
+
+            .dialog-content {
+                overflow: unset;
+                max-height: unset;
+            }
+
+            .channel-member {
+                > h4 {
+                    max-width: unset;
+                }
+            }
+
+            .dialog-add-member {
+                > button {
+                    background-color: var(--bg-color);
+                }
+            }
+        }
+    }
+}
+
+// Media Queries
+
+@media (max-width: 768px) {
+    main {
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow-y: auto;
+        justify-content: flex-start;
+    }
+
+    ::ng-deep::ng-deep
+        .custom-dialog-br
+        .mdc-dialog__container
+        .mat-mdc-dialog-surface {
+        border-radius: 0;
+    }
+
+    ::ng-deep::ng-deep section {
+        main {
+            .channel-member {
+                > h4 {
+                    max-width: 50.269vw !important;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+
+    .title {
+        padding: 2.5rem 1rem 0.625rem 1rem;
+        width: calc(100% - 1rem - 1rem);
+        box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+
+        > div {
+            > img {
+                width: 1.5625rem;
+                height: 1.5625rem;
+            }
+
+            > h1 {
+                font-size: 1.25rem;
+            }
+        }
+    }
+
+    .name-box {
+        margin: 0 1rem;
+        width: calc(100% - 1.25rem - 1.25rem - 1rem - 1rem - 2px);
+
+        > div {
+            > span {
+                content: url(../../../../assets/img/icons/edit.svg);
+                width: 1.5rem;
+                height: 1.5rem;
+                padding: 0.1875rem;
+                border-radius: 50%;
+                background: var(--bg-color);
+            }
+
+            .save {
+                content: url(../../../../assets/img/icons/check_circle.svg);
+            }
+        }
+    }
+
+    .description-box {
+        margin: 0 1rem;
+        width: calc(100% - 1.25rem - 1.25rem - 1rem - 1rem - 2px);
+
+        > span {
+            font-size: 1.25rem;
+        }
+
+        > div {
+            > span {
+                content: url(../../../../assets/img/icons/edit.svg);
+                width: 1.5rem;
+                height: 1.5rem;
+                padding: 0.1875rem;
+                border-radius: 50%;
+                background: var(--bg-color);
+            }
+
+            .save {
+                content: url(../../../../assets/img/icons/check_circle.svg);
+            }
+        }
+    }
+
+    .members-box {
+        display: flex;
+    }
+
+    .leave {
+        margin: 0 1rem 1.25rem 0;
+    }
+
+    .inputDiv {
+        > input {
+            padding: 1.125rem 1.25rem 1.125rem 3.625rem;
+            width: calc(100% - 1.25rem - 3.625rem);
+            border-radius: 2.5rem;
+        }
+
+        > img {
+            width: 1.4375rem;
+            height: 1.4375rem;
+            left: 1.25rem;
+        }
+    }
+
+    .noIcon {
+        > input {
+            padding: 1.125rem 1.25rem;
+            width: calc(100% - 1.25rem - 1.25rem);
+        }
+    }
+}
