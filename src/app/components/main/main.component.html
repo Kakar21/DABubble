@@ -18,10 +18,10 @@
         @if (showMenu) {
             <span name="Workspace-Menü schließen "
                 >Workspace-Menü schließen </span
-            ><img src="../../assets/img/icons/sidenav-close.svg" />
+            ><img src="assets/img/icons/sidenav-close.svg" />
         } @else {
             <span name="Workspace-Menü öffen ">Workspace-Menü öffen </span
-            ><img src="../../assets/img/icons/sidenav-open.svg" />
+            ><img src="assets/img/icons/sidenav-open.svg" />
         }
     </button>
     @if (!chatService.mobileOpen) {
@@ -62,7 +62,7 @@
             type="submit"
             (click)="openMobileComponent('newMessage')"
         >
-            <img src="../../assets/img/icons/edit_square-white.svg" />
+            <img src="assets/img/icons/edit_square-white.svg" />
         </button>
     }
     @case ("chat") {

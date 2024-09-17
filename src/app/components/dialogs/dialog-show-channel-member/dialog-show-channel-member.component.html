@@ -6,7 +6,7 @@
             (click)="closeDialog()"
             mat-icon-button
         >
-            <img src="../../../assets/img/icons/close.svg" />
+            <img src="assets/img/icons/close.svg" />
         </button>
     </div>
     <main>
@@ -14,22 +14,22 @@
             @for (user of chatService.currentChannel.members; track $index) {
                 <div
                     class="channel-member"
-                    (click)="openProfileCard(user)"
+                    (click)="commonFn.openProfileCardByUser(user)"
                 >
                     <div class="avatar">
                         @if (user.avatar.length > 1) {
                             <img src="{{ user.avatar }}" />
                         } @else {
                             <img
-                                src="../../assets/img/avatar/{{
+                                src="assets/img/avatar/{{
                                     user.avatar
                                 }}.svg"
                             />
                         }
-                        @if (isOnline(user.id)) {
-                            <img src="../../../assets/img/icons/online.svg" />
+                        @if (commonFn.isOnline(user.id)) {
+                            <img src="assets/img/icons/online.svg" />
                         } @else {
-                            <img src="../../../assets/img/icons/offline.svg" />
+                            <img src="assets/img/icons/offline.svg" />
                         }
                     </div>
                     <h4>{{ user.name }}</h4>
@@ -41,7 +41,7 @@
                 mat-icon-button
                 (click)="openDialogAddMembers()"
             >
-                <img src="../../../assets/img/icons/person-add.svg" />
+                <img src="assets/img/icons/person-add.svg" />
             </button>
             <p>Mitglieder hinzufügen</p>
         </div>

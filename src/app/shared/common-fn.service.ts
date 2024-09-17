@@ -45,6 +45,22 @@ export class CommonFnService {
   }
 
 
+  openProfileCardByUser(user: UsersList) {
+    user.online = this.isOnline(user.id);
+    this.dialog.open(PofileInfoCardComponent, {
+      data: user,
+    });
+  }
+
+  
+  isOnline(userId: string): boolean {
+    const user = this.chatService.usersList.find(
+      (user) => user.id === userId,
+    );
+    return user ? user.online : false;
+  }
+
+
   noReactions(message: Message): boolean {
     return !message.reactions || Object.keys(message.reactions).length === 0;
   }

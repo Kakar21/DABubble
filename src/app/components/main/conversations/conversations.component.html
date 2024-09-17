@@ -2,8 +2,8 @@
     <section class="workspace">
         <div>
             <div class="logo">
-                <img src="../../../assets/img/devspace/background.png" />
-                <img src="../../../assets/img/devspace/devspace.svg" />
+                <img src="assets/img/devspace/background.png" />
+                <img src="assets/img/devspace/devspace.svg" />
             </div>
             <h2>Devspace</h2>
         </div>
@@ -16,7 +16,7 @@
             class="new-message"
             mat-icon-button
         >
-            <img src="../../../assets/img/icons/edit_square.svg" />
+            <img src="assets/img/icons/edit_square.svg" />
         </button>
     </section>
     <div class="container">
@@ -28,7 +28,7 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <div>
-                        <img src="../../../assets/img/icons/workspaces.svg" />
+                        <img src="assets/img/icons/workspaces.svg" />
                         <h3>Channels</h3>
                     </div>
                     <button
@@ -36,7 +36,7 @@
                         class="add"
                         (click)="openDialog($event)"
                     >
-                        <img src="../../../assets/img/icons/add.svg" />
+                        <img src="assets/img/icons/add.svg" />
                     </button>
                 </mat-panel-title>
             </mat-expansion-panel-header>
@@ -60,7 +60,7 @@
                             class="channel"
                             value="{{ channel.id }}"
                         >
-                            <img src="../../../assets/img/icons/tag.svg" />
+                            <img src="assets/img/icons/tag.svg" />
                             <h3>{{ channel.channelData.name }}</h3>
                         </mat-button-toggle>
                     }
@@ -69,7 +69,7 @@
                     class="new-channel"
                     (click)="openDialog($event)"
                 >
-                    <img src="../../../assets/img/icons/add_circle.svg" />
+                    <img src="assets/img/icons/add_circle.svg" />
                     <span>Channel hinzufügen</span>
                 </div>
             </mat-button-toggle-group>
@@ -83,7 +83,7 @@
                 <mat-panel-title>
                     <div>
                         <img
-                            src="../../../assets/img/icons/account_circle.svg"
+                            src="assets/img/icons/account_circle.svg"
                         />
                         <h3>Direktnachrichten</h3>
                     </div>
@@ -112,18 +112,18 @@
                                     <img src="{{ user.avatar }}" />
                                 } @else {
                                     <img
-                                        src="../../../assets/img/avatar/{{
+                                        src="assets/img/avatar/{{
                                             user.avatar
                                         }}.svg"
                                     />
                                 }
                                 @if (user.online) {
                                     <img
-                                        src="../../../assets/img/icons/online.svg"
+                                        src="assets/img/icons/online.svg"
                                     />
                                 } @else {
                                     <img
-                                        src="../../../assets/img/icons/offline.svg"
+                                        src="assets/img/icons/offline.svg"
                                     />
                                 }
                             </div>

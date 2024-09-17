@@ -7,11 +7,11 @@
             </div>
         } @else if (this.avatar){
             <div class="profilePic">
-                <img src="../../../assets/img/avatar/{{ this.avatar }}.svg" />
+                <img src="assets/img/avatar/{{ this.avatar }}.svg" />
             </div>
         } @else  {
             <div class="noAvatar">
-                <img src="../../../assets/img/icons/person.svg" />
+                <img src="assets/img/icons/person.svg" />
             </div>
         }
 
@@ -25,14 +25,14 @@
                             <img
                                 class="selected"
                                 (click)="selectAvatar(number.toString())"
-                                src="../../../assets/img/avatar/{{
+                                src="assets/img/avatar/{{
                                     number
                                 }}.svg"
                             />
                         } @else {
                             <img
                                 (click)="selectAvatar(number.toString())"
-                                src="../../../assets/img/avatar/{{
+                                src="assets/img/avatar/{{
                                     number
                                 }}.svg"
                             />

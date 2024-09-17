@@ -6,24 +6,24 @@
             (click)="closeDialog()"
             mat-icon-button
         >
-            <img src="../../../assets/img/icons/close.svg" />
+            <img src="assets/img/icons/close.svg" />
         </button>
     </div>
     <div class="image-section">
         @if (data.avatar.length > 1) {
             <img src="{{ data.avatar }}" />
         } @else {
-            <img src="./../../assets/img/avatar/{{ data.avatar }}.svg" />
+            <img src="assets/img/avatar/{{ data.avatar }}.svg" />
         }
     </div>
     <div class="profile-active-section">
         <h1>{{ data.name }}</h1>
         <div class="status">
             @if (data.online) {
-                <img src="../../assets/img/icons/online-1.svg" />
+                <img src="assets/img/icons/online-1.svg" />
                 <span style="color: var(--online-green)">Aktiv</span>
             } @else {
-                <img src="../../assets/img/icons/offline-1.svg" />
+                <img src="assets/img/icons/offline-1.svg" />
                 <span style="color: var(--text-gray)">Abwesend</span>
             }
         </div>
@@ -31,7 +31,7 @@
     <div class="profile-mail-section">
         <div class="profile-mail">
             <img
-                src="../../assets/img/icons/mail-black.svg"
+                src="assets/img/icons/mail-black.svg"
                 alt=""
             />
             <span>E-Mail Adresse</span>
@@ -45,7 +45,7 @@
         class="submit"
         (click)="openDM(data)"
     >
-        <img src="../../assets/img/icons/mode_comment.svg" />
+        <img src="assets/img/icons/mode_comment.svg" />
         Nachricht
     </button>
 </section>
