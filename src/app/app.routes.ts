@@ -1,11 +1,11 @@
 import { Routes } from "@angular/router";
-import { MainComponent } from "./main/main.component";
-import { LoginComponent } from "./start/login/login.component";
-import { SignupComponent } from "./start/signup/signup.component";
-import { RecoveryComponent } from "./start/recovery/recovery.component";
-import { ResetPasswordComponent } from "./start/reset-password/reset-password.component";
-import { PrivacyPolicyComponent } from "./start/privacy-policy/privacy-policy.component";
-import { LegalNoticeComponent } from "./start/legal-notice/legal-notice.component";
+import { MainComponent } from "./components/main/main.component";
+import { LoginComponent } from "./components/start/login/login.component";
+import { SignupComponent } from "./components/start/signup/signup.component";
+import { RecoveryComponent } from "./components/start/recovery/recovery.component";
+import { ResetPasswordComponent } from "./components/start/reset-password/reset-password.component";
+import { PrivacyPolicyComponent } from "./components/start/privacy-policy/privacy-policy.component";
+import { LegalNoticeComponent } from "./components/start/legal-notice/legal-notice.component";
 
 export const routes: Routes = [
     { path: "", component: MainComponent },

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { ChatService } from "../main/chat/chat.service";
+import { ChatService } from "../shared/chat.service";
 
 @Pipe({
     name: "highlightMentions",
