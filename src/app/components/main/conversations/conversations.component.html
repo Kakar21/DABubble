@@ -1,0 +1,137 @@
+<main>
+    <section class="workspace">
+        <div>
+            <div class="logo">
+                <img src="assets/img/devspace/background.png" />
+                <img src="assets/img/devspace/devspace.svg" />
+            </div>
+            <h2>Devspace</h2>
+        </div>
+        <button
+            (click)="
+                chatService.setComponent('newMessage');
+                chatService.selectedChannel = '';
+                chatService.selectedDirectmessage = ''
+            "
+            class="new-message"
+            mat-icon-button
+        >
+            <img src="assets/img/icons/edit_square.svg" />
+        </button>
+    </section>
+    <div class="container">
+        <mat-expansion-panel
+            togglePosition="before"
+            expanded="true"
+            class="channels"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div>
+                        <img src="assets/img/icons/workspaces.svg" />
+                        <h3>Channels</h3>
+                    </div>
+                    <button
+                        mat-icon-button
+                        class="add"
+                        (click)="openDialog($event)"
+                    >
+                        <img src="assets/img/icons/add.svg" />
+                    </button>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-button-toggle-group
+                [value]="chatService.selectedChannel"
+                vertical="true"
+                hideSingleSelectionIndicator="true"
+                class="channel-list"
+            >
+                @for (channel of channelsList; track channel) {
+                    @if (memberOfChannel(channel)) {
+                        <mat-button-toggle
+                            (click)="
+                                chatService.openChannel(channel.id);
+                                chatService.setComponent('chat');
+                                chatService.openedComponent.next('chat');
+                                closeThread()
+                            "
+                            [value]="channel.id"
+                            class="channel"
+                            value="{{ channel.id }}"
+                        >
+                            <img src="assets/img/icons/tag.svg" />
+                            <h3>{{ channel.channelData.name }}</h3>
+                        </mat-button-toggle>
+                    }
+                }
+                <div
+                    class="new-channel"
+                    (click)="openDialog($event)"
+                >
+                    <img src="assets/img/icons/add_circle.svg" />
+                    <span>Channel hinzufügen</span>
+                </div>
+            </mat-button-toggle-group>
+        </mat-expansion-panel>
+        <mat-expansion-panel
+            togglePosition="before"
+            expanded="true"
+            class="directmessages"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div>
+                        <img
+                            src="assets/img/icons/account_circle.svg"
+                        />
+                        <h3>Direktnachrichten</h3>
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-button-toggle-group
+                class="contact-list"
+                [value]="chatService.selectedDirectmessage"
+                vertical="true"
+                hideSingleSelectionIndicator="true"
+            >
+                @for (user of chatService.usersList; track user) {
+                    @if (this.firestore.currentUserID !== this.user.id) {
+                        <mat-button-toggle
+                            class="contact"
+                            (click)="
+                                chatService.setComponent('directMessage');
+                                chatService.openedComponent.next('directMessage');
+                                DMservice.getMessages(user.id);
+                                chatService.openDirectMessage(user.id)
+                            "
+                            [value]="user.id"
+                        >
+                            <div>
+                                @if (user.avatar.length > 1) {
+                                    <img src="{{ user.avatar }}" />
+                                } @else {
+                                    <img
+                                        src="assets/img/avatar/{{
+                                            user.avatar
+                                        }}.svg"
+                                    />
+                                }
+                                @if (user.online) {
+                                    <img
+                                        src="assets/img/icons/online.svg"
+                                    />
+                                } @else {
+                                    <img
+                                        src="assets/img/icons/offline.svg"
+                                    />
+                                }
+                            </div>
+                            <span>{{ user.name }}</span>
+                        </mat-button-toggle>
+                    } @else {}
+                }
+            </mat-button-toggle-group>
+        </mat-expansion-panel>
+    </div>
+</main>

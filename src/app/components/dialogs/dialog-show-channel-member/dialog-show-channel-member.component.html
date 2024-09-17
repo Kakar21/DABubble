@@ -1,0 +1,49 @@
+<section class="dialog-wrapper">
+    <div class="dialog-header">
+        <h3>Mitglieder</h3>
+        <button
+            class="closeButton"
+            (click)="closeDialog()"
+            mat-icon-button
+        >
+            <img src="assets/img/icons/close.svg" />
+        </button>
+    </div>
+    <main>
+        <div class="dialog-content">
+            @for (user of chatService.currentChannel.members; track $index) {
+                <div
+                    class="channel-member"
+                    (click)="commonFn.openProfileCardByUser(user)"
+                >
+                    <div class="avatar">
+                        @if (user.avatar.length > 1) {
+                            <img src="{{ user.avatar }}" />
+                        } @else {
+                            <img
+                                src="assets/img/avatar/{{
+                                    user.avatar
+                                }}.svg"
+                            />
+                        }
+                        @if (commonFn.isOnline(user.id)) {
+                            <img src="assets/img/icons/online.svg" />
+                        } @else {
+                            <img src="assets/img/icons/offline.svg" />
+                        }
+                    </div>
+                    <h4>{{ user.name }}</h4>
+                </div>
+            }
+        </div>
+        <div class="dialog-add-member">
+            <button
+                mat-icon-button
+                (click)="openDialogAddMembers()"
+            >
+                <img src="assets/img/icons/person-add.svg" />
+            </button>
+            <p>Mitglieder hinzufügen</p>
+        </div>
+    </main>
+</section>

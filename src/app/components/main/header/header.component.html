@@ -1,0 +1,158 @@
+<section class="header-content">
+    @if ( isMobileOpen("chat") || isMobileOpen("thread") ||
+    isMobileOpen("directmessage") || isMobileOpen("newMessage") ) {
+    <div
+        class="mobile-header-open"
+        (click)="mobileGoBack()"
+    >
+        <img src="assets/img/icons/keyboard_arrow_left.svg" />
+        <div class="devspace">
+            <img src="assets/img/devspace/background.png" />
+            <img src="assets/img/devspace/devspace.svg" />
+        </div>
+        <img src="assets/img/devspace/name.svg" />
+    </div>
+    } @else {
+    <div
+        class="logo"
+    >
+        <img src="assets/img/logo/icon.svg" />
+        <img src="assets/img/logo/name.svg" />
+    </div>
+    }
+    <div class="searchbar-wrapper">
+        <input
+            matInput
+            placeholder="Code learning durchsuchen"
+            #searchInput
+            [formControl]="formCtrl"
+            (click)="loadSearch()"
+            [matAutocomplete]="auto"
+        />
+        <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete"  [displayWith]="displayOption" (optionSelected)="onOptionSelected($event)">
+            <mat-option class="search-no-results" *ngIf="(filteredResults | async)?.length === 0" disabled>
+                <span>Keine Ergebnisse gefunden</span>
+            </mat-option>
+            <ng-container *ngFor="let option of filteredResults | async">
+                <mat-option class="search-option" *ngIf="option.type === 'user'" [value]="option">
+                    @if (option.avatar && option.avatar.length > 1) {
+                        <img src="{{ option.avatar }}" />
+                    } @else {
+                        <img
+                            src="assets/img/avatar/{{
+                                option.avatar
+                            }}.svg"
+                        />
+                    }
+                    <div>
+                        <h3>{{ option.name }}</h3>
+                        <p>{{ option.message }}</p>
+                    </div>
+                </mat-option>
+                <mat-option class="search-option" *ngIf="option.type === 'channel'" [value]="option">
+                    @if (option.avatar && option.avatar.length > 1) {
+                        <img src="{{ option.avatar }}" />
+                    } @else {
+                        <img
+                            src="assets/img/avatar/{{
+                                option.avatar
+                            }}.svg"
+                        />
+                    }
+                    <div>
+                        <h3>{{ option.name }}</h3>
+                        <p>{{ option.message }}</p>
+                    </div>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+        
+        
+        <img src="assets/img/icons/search.svg" />
+    </div>
+    
+    <div
+        class="profile-info"
+        (click)="mobileMenu()"
+    >
+        <h1>{{ currentuser.currentUser.name }}</h1>
+        <div class="avatar-wrapper">
+            <span class="online-status">
+                <img src="assets/img/icons/is-online.svg" />
+            </span>
+            @if (currentuser.currentUser.avatar.length > 1) {
+            <img src="{{ currentuser.currentUser.avatar }}" />
+            } @else {
+            <img
+                src="assets/img/avatar/{{
+                    currentuser.currentUser.avatar
+                }}.svg"
+            />
+            }
+        </div>
+        <button
+            (click)="openDialog($event)"
+            mat-icon-button
+        >
+            <img src="assets/img/icons/keyboard_arrow_down.svg">
+        </button>
+    </div>
+</section>
+<div
+    [ngClass]="{
+        'd-none':
+            isMobileOpen('chat') ||
+            isMobileOpen('thread') ||
+            isMobileOpen('directmessage') ||
+            isMobileOpen('newMessage'),
+    }"
+    class="searchbar-wrapper mobile"
+>
+    <input 
+        matInput
+        placeholder="Gehe zu..."
+        #searchInput
+        [formControl]="formCtrl"
+        [matAutocomplete]="auto"
+        (click)="loadSearch()"/>
+        <mat-autocomplete class="search-autocomplete" #auto="matAutocomplete" [displayWith]="displayOption" (optionSelected)="onOptionSelected($event)">
+            <mat-option class="search-no-results" *ngIf="(filteredResults | async)?.length === 0" disabled>
+                <span>Keine Ergebnisse gefunden</span>
+            </mat-option>
+            <ng-container *ngFor="let option of filteredResults | async">
+                <mat-option class="search-option" *ngIf="option.type === 'user'" [value]="option">
+                    @if (option.avatar && option.avatar.length > 1) {
+                        <img src="{{ option.avatar }}" />
+                    } @else {
+                        <img
+                            src="assets/img/avatar/{{
+                                option.avatar
+                            }}.svg"
+                        />
+                    }
+                    <div>
+                        <h3>{{ option.name }}</h3>
+                        <p>{{ option.message }}</p>
+                    </div>
+                </mat-option>
+                <mat-option class="search-option" *ngIf="option.type === 'channel'" [value]="option">
+                    @if (option.avatar && option.avatar.length > 1) {
+                        <img src="{{ option.avatar }}" />
+                    } @else {
+                        <img
+                            src="assets/img/avatar/{{
+                                option.avatar
+                            }}.svg"
+                        />
+                    }
+                    <div>
+                        <h3>{{ option.name }}</h3>
+                        <p>{{ option.message }}</p>
+                    </div>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+    <img src="assets/img/icons/search.svg" />
+
+    
+</div>

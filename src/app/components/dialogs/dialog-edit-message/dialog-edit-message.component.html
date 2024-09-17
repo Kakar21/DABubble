@@ -1,0 +1,19 @@
+<div class="chat-input" (click)="closePicker($event)">
+  <textarea matInput [formControl]="messageControl"></textarea>
+  <div class="action-buttons">
+    <div class="button-wrapper">
+      <button class="input-emoji" mat-icon-button (click)="togglePicker($event); $event.stopPropagation()">
+        <img src="assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
+      </button>
+
+      <div class="emoji-picker" *ngIf="isPickerVisible">
+        <emoji-mart [perLine]="perLineCount" (emojiClick)="addEmoji($event)"></emoji-mart>
+      </div>
+
+      <div class="save-cancel">
+        <button mat-stroked-button class="cancel" (click)="onCancel()">Abbrechen</button>
+        <button mat-flat-button class="save" color="primary" (click)="onSave()">Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>

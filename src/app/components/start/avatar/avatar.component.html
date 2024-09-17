@@ -1,0 +1,70 @@
+<main>
+    <h1>Wähle deinen Avatar</h1>
+    <div class="content-container">
+        @if (avatarPreviewUrl) {
+            <div class="profilePic">
+                <img [src]="avatarPreviewUrl" alt="User Avatar" />
+            </div>
+        } @else if (this.avatar){
+            <div class="profilePic">
+                <img src="assets/img/avatar/{{ this.avatar }}.svg" />
+            </div>
+        } @else  {
+            <div class="noAvatar">
+                <img src="assets/img/icons/person.svg" />
+            </div>
+        }
+
+        <div>
+            <h2>Frederik Beck</h2>
+            <p>Aus der Liste wählen</p>
+            <div>
+                <div class="defaultPics">
+                    @for (number of [1, 2, 3, 4, 5, 6]; track number) {
+                        @if (number.toString() === this.avatar) {
+                            <img
+                                class="selected"
+                                (click)="selectAvatar(number.toString())"
+                                src="assets/img/avatar/{{
+                                    number
+                                }}.svg"
+                            />
+                        } @else {
+                            <img
+                                (click)="selectAvatar(number.toString())"
+                                src="assets/img/avatar/{{
+                                    number
+                                }}.svg"
+                            />
+                        }
+                    }
+                </div>
+                @if (!this.avatar && this.error) {
+                    <span class="error"
+                        >Bitte wählen Sie einen Avatar aus.</span
+                    >
+                }
+            </div>
+        </div>
+        <div>
+            <p>eigenes Bild verwenden</p>
+            <button mat-stroked-button class="uploadPic" (click)="fileInput.click()">Datei hochladen</button>
+            <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept="image/*" />
+        </div>
+    </div>
+    <div class="submit-wrapper">
+        <button
+            (click)="submit()"
+            mat-flat-button
+            class="submit"
+        >
+            Weiter
+        </button>
+    </div>
+</main>
+
+@if (accountCreated) {
+    <div class="account-created-slider">
+        <h2>Konto erfolgreich erstellt!</h2>
+    </div>
+}

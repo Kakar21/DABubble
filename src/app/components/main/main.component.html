@@ -1,0 +1,84 @@
+<app-header (threadClose)="closeThread()"></app-header>
+<main>
+    <mat-drawer-container autosize>
+        <mat-drawer
+            #conversationsDrawer
+            opened="true"
+            mode="side"
+        >
+            <app-conversations (threadClose)="closeThread()"></app-conversations>
+        </mat-drawer>
+    </mat-drawer-container>
+    <button
+        class="menu-button"
+        type="button"
+        [ngClass]="{ closed: !showMenu }"
+        (click)="conversationsDrawer.toggle(); showMenu = !showMenu"
+    >
+        @if (showMenu) {
+            <span name="Workspace-Menü schließen "
+                >Workspace-Menü schließen </span
+            ><img src="assets/img/icons/sidenav-close.svg" />
+        } @else {
+            <span name="Workspace-Menü öffen ">Workspace-Menü öffen </span
+            ><img src="assets/img/icons/sidenav-open.svg" />
+        }
+    </button>
+    @if (!chatService.mobileOpen) {
+        @switch (chatService.openComponent) {
+            @default {
+                <app-welcome-screen></app-welcome-screen>
+            }
+            @case ("chat") {
+                <app-chat (threadOpen)="openThread($event)"></app-chat>
+                <mat-drawer-container autosize>
+                    <mat-drawer
+                        #threadDrawer
+                        mode="side"
+                    >
+                        <app-thread
+                            [channelId]="chatService.currentChannelID"
+                            [messageId]="selectedMessageId"
+                            (threadClose)="closeThread()" [initialMessage]="initialMessage"
+                        ></app-thread>
+                    </mat-drawer>
+                </mat-drawer-container>
+            }
+            @case ("directMessage") {
+                <app-direct-message></app-direct-message>
+            }
+            @case ("newMessage") {
+                <app-new-message></app-new-message>
+            }
+        }
+    }
+</main>
+@switch (chatService.mobileOpen) {
+    @default {
+        <app-conversations class="mobile"></app-conversations>
+        <button
+            mat-flat-button
+            class="new-dm mobile"
+            type="submit"
+            (click)="openMobileComponent('newMessage')"
+        >
+            <img src="assets/img/icons/edit_square-white.svg" />
+        </button>
+    }
+    @case ("chat") {
+        <app-chat (threadOpen)="openThread($event)"></app-chat>
+    }
+    @case ("thread") {
+        <app-thread
+            [channelId]="chatService.currentChannelID"
+            [messageId]="selectedMessageId"
+            [initialMessage]="initialMessage"
+        ></app-thread>
+    }
+    @case ("directmessage") {
+        <app-direct-message></app-direct-message>
+    }
+    @case ("newMessage") {
+        <app-new-message></app-new-message>
+    }
+}

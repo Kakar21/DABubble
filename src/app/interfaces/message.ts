@@ -3,6 +3,7 @@ export interface Reaction {
     users: string[];
 }
 
+
 export interface Message {
     id: string;
     avatar: string;
@@ -15,6 +16,7 @@ export interface Message {
     btnReactions: string[],
     imageUrl: string;
 }
+
 
 export const EMPTY_MESSAGE: Message = {
     id: '',
