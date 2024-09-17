@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { trigger, style, animate, transition } from "@angular/animations";
+import { FirestoreService } from "./shared/firestore.service";
 
 @Component({
     selector: "app-root",
@@ -12,4 +13,8 @@ import { trigger, style, animate, transition } from "@angular/animations";
 })
 export class AppComponent {
     title = "DABubble";
+
+    constructor(private firestore: FirestoreService) {
+        this.firestore.currentUser$.subscribe();
+    }
 }

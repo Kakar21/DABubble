@@ -11,7 +11,7 @@
             (click)="closeDialog()"
             mat-icon-button
         >
-            <img src="../../../assets/img/icons/close.svg" />
+            <img src="assets/img/icons/close.svg" />
         </button>
     </div>
     <div class="image-section" [ngClass]="{'not-guest': currentUserUid !== 'mMqjWie0OWa6lWCnq5hStLQqXow1'}" (click)="onAvatarClick()">
@@ -19,7 +19,7 @@
         @if (currentUser.avatar.length > 1) {
             <img src="{{ currentUser.avatar }}" />
         } @else {
-            <img src="./../../assets/img/avatar/{{ currentUser.avatar }}.svg" />
+            <img src="assets/img/avatar/{{ currentUser.avatar }}.svg" />
         }
     </div>    
     @if (!editing) {
@@ -30,12 +30,12 @@
                     <span (click)="editProfile()">Bearbeiten</span>
                 }
             </div>
-            <span><img src="../../assets/img/icons/online-1.svg" />Aktiv</span>
+            <span><img src="assets/img/icons/online-1.svg" />Aktiv</span>
         </div>
         <div class="profile-mail-section">
             <div class="profile-mail">
                 <img
-                    src="../../assets/img/icons/mail-black.svg"
+                    src="assets/img/icons/mail-black.svg"
                     alt=""
                 />
                 <span>E-Mail Adresse</span>
@@ -50,7 +50,7 @@
         <div class="editing-container">
             <div class="edit-name">
                 <div>
-                    <img src="../../assets/img/icons/account_circle.svg" />
+                    <img src="assets/img/icons/account_circle.svg" />
                     <h2>Vollständiger Name</h2>
                 </div>
                 <input
@@ -61,7 +61,7 @@
             </div>
             <div class="edit-email">
                 <div>
-                    <img src="../../assets/img/icons/mail-black.svg" />
+                    <img src="assets/img/icons/mail-black.svg" />
                     <h2>E-Mail-Adresse</h2>
                 </div>
                 <input

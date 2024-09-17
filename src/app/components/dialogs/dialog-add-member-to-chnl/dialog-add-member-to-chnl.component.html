@@ -7,11 +7,11 @@
                 (click)="closeDialog()"
                 mat-icon-button
             >
-                <img src="../../../assets/img/icons/close.svg" />
+                <img src="assets/img/icons/close.svg" />
             </button>
         </div>
         <span
-            ><img src="../../assets/img/icons/tag-purple-2.svg" />{{
+            ><img src="assets/img/icons/tag-purple-2.svg" />{{
                 chatService.currentChannel.name
             }}</span
         >
@@ -24,7 +24,7 @@
                         <img src="{{ user.avatar }}" />
                     } @else {
                         <img
-                            src="../../assets/img/avatar/{{ user.avatar }}.svg"
+                            src="assets/img/avatar/{{ user.avatar }}.svg"
                         />
                     }
                     <h6>{{ user.name }}</h6>
@@ -33,7 +33,7 @@
                         matChipRemove
                         mat-icon-button
                     >
-                        <img src="../../assets/img/icons/close.svg" />
+                        <img src="assets/img/icons/close.svg" />
                     </button>
                 </mat-chip-row>
             }
@@ -58,7 +58,7 @@
                             <img src="{{ user.avatar }}" />
                         } @else {
                             <img
-                                src="../../assets/img/avatar/{{
+                                src="assets/img/avatar/{{
                                     user.avatar
                                 }}.svg"
                             />

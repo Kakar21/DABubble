@@ -3,12 +3,12 @@
         <div>
             <h1>Thread</h1>
             <div>
-                <img src="../../../assets/img/icons/tag-purple.svg" />
+                <img src="assets/img/icons/tag-purple.svg" />
                 <span>{{ chatService.currentChannel.name }}</span>
             </div>
         </div>
         <button class="closeButton" (click)="closeThread()" mat-icon-button>
-            <img src="../../../assets/img/icons/close.svg" />
+            <img src="assets/img/icons/close.svg" />
         </button>
     </header>
     <div class="chat-body">
@@ -16,11 +16,11 @@
             <div class="message initialMessage" [ngClass]="{ 'my-message': initialMessage.id === currentUser.currentUser.id }">
                 <div class="hoverMenu">
                     <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', initialMessage.padNumber, $event, true); $event.stopPropagation()">
-                        <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
+                        <img src="assets/img/icons/add_reaction.svg" alt="Add reaction" />
                     </button>
                     <ng-container *ngIf="initialMessage.id === currentUser.currentUser.id">
                         <button mat-icon-button class="moreButton" [matMenuTriggerFor]="menu">
-                            <img src="../../../assets/img/icons/3-dots.svg" alt="More" />
+                            <img src="assets/img/icons/3-dots.svg" alt="More" />
                         </button>
                         <mat-menu class="moreMenu" #menu="matMenu">
                             <button mat-menu-item
@@ -32,7 +32,7 @@
                 </div>
                 <img *ngIf="initialMessage.avatar.length > 1; else defaultAvatar" [src]="initialMessage.avatar" />
                 <ng-template #defaultAvatar>
-                    <img src="../../../assets/img/avatar/{{ initialMessage.avatar }}.svg"/>
+                    <img src="assets/img/avatar/{{ initialMessage.avatar }}.svg"/>
                 </ng-template>
                 <div>
                     <div class="message-info">
@@ -83,7 +83,7 @@
                             <button class="emoji-button" mat-icon-button (click)="
                             togglePicker('reaction', initialMessage.padNumber, $event, true);
                             $event.stopPropagation()">
-                                <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
+                                <img src="assets/img/icons/add_reaction.svg" alt="Add reaction"  />
                             </button>
                         </div>
                     </div>
@@ -97,11 +97,11 @@
                 <div class="message" [ngClass]="{ 'my-message': message.id === currentUser.currentUser.id }">
                     <div class="hoverMenu">
                         <button class="emoji-button" mat-icon-button (click)="togglePicker('reaction', message.padNumber, $event, false); $event.stopPropagation()">
-                            <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction" />
+                            <img src="assets/img/icons/add_reaction.svg" alt="Add reaction" />
                         </button>
                         <ng-container *ngIf="message.id === currentUser.currentUser.id">
                             <button mat-icon-button class="moreButton" [matMenuTriggerFor]="menu">
-                                <img src="../../../assets/img/icons/3-dots.svg" alt="More" />
+                                <img src="assets/img/icons/3-dots.svg" alt="More" />
                             </button>
                             <mat-menu class="moreMenu" #menu="matMenu">
                                 <button mat-menu-item
@@ -113,7 +113,7 @@
                     </div>
                     <img *ngIf="message.avatar.length > 1; else defaultAvatar" [src]="message.avatar" />
                     <ng-template #defaultAvatar>
-                        <img src="../../../assets/img/avatar/{{
+                        <img src="assets/img/avatar/{{
                                 message.avatar
                             }}.svg" />
                     </ng-template>
@@ -165,7 +165,7 @@
                             <button class="emoji-button" mat-icon-button (click)="
                             togglePicker('reaction', message.padNumber, $event, false);
                             $event.stopPropagation()">
-                                <img src="../../../assets/img/icons/add_reaction.svg" alt="Add reaction"  />
+                                <img src="assets/img/icons/add_reaction.svg" alt="Add reaction"  />
                             </button>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                 placeholder="Antworten..."></textarea>
                 <div *ngIf="previewUrl" class="preview-image" (click)="openDialogImage(previewUrl)">
                     <button class="closeButton" (click)="clearPreview()" mat-icon-button>
-                        <img src="../../../assets/img/icons/close.svg"/>
+                        <img src="assets/img/icons/close.svg"/>
                     </button>
                     <img [src]="previewUrl" alt="Image Preview" />
                 </div>
@@ -192,22 +192,22 @@
                     <button class="upload-image input-image" mat-icon-button (click)="upload.click()">
                         <input id="fileUploadThread" type="file" #upload (change)="onFileSelected($event)"
                             accept=".png,.jpg">
-                        <img src="../../../assets/img/icons/add-gray.svg" alt="Add image" />
+                        <img src="assets/img/icons/add-gray.svg" alt="Add image" />
                     </button>
                     <div class="vector"></div>
                     <button class="input-emoji" mat-icon-button (click)="togglePicker('input', '',$event, false);$event.stopPropagation()">
-                        <img src="../../../assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
+                        <img src="assets/img/icons/sentiment_satisfied.svg" alt="Add emoji" />
                     </button>
                     <div class="emoji-picker input-picker" *ngIf="isPickerVisible && pickerContext === 'input'"
                         style="bottom: 1rem; left: 3.5rem;">
                         <emoji-mart [perLine]="perLineCount" (emojiClick)="addEmoji($event)"></emoji-mart>
                     </div>
                     <button class="input-at" mat-icon-button (click)="addAtSymbol()">
-                        <img src="../../../assets/img/icons/alternate_email.svg" alt="Tag someone" />
+                        <img src="assets/img/icons/alternate_email.svg" alt="Tag someone" />
                     </button>
                 </div>
                 <button class="input-send" mat-icon-button (click)="send()">
-                    <img src="../../../assets/img/icons/send-button.svg" alt="Send message" />
+                    <img src="assets/img/icons/send-button.svg" alt="Send message" />
                 </button>
             </div>
         </div>
@@ -216,7 +216,7 @@
                 @if (option.avatar && option.avatar.length > 1) {
                 <img src="{{ option.avatar }}" />
                 } @else {
-                <img src="../../assets/img/avatar/{{
+                <img src="assets/img/avatar/{{
                                 option.avatar
                             }}.svg" />
                 }

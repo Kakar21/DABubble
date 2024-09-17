@@ -29,14 +29,7 @@ export class FirestoreService {
   constructor(private router: Router) {
     this.usersRef = collection(this.firestore, "users");
     this.channelsRef = collection(this.firestore, "channels");
-    this.initializeReferences();
     this.currentUser$ = new Observable(this.observeAuthState);
-  }
-
-
-  private initializeReferences() {
-    this.usersRef = collection(this.firestore, "users");
-    this.channelsRef = collection(this.firestore, "channels");
   }
 
 

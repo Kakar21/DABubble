@@ -21,7 +21,7 @@
                                 <img src="{{ option.avatar }}" />
                             } @else {
                                 <img
-                                    src="../../assets/img/avatar/{{
+                                    src="assets/img/avatar/{{
                                         option.avatar
                                     }}.svg"
                                 />
@@ -30,7 +30,7 @@
                         </mat-option>
                     } @else {
                         <mat-option [value]="option.id">
-                            <img src="../../../assets/img/icons/tag.svg" />
+                            <img src="assets/img/icons/tag.svg" />
                             <h3>{{ option.name }}</h3>
                         </mat-option>
                     }
@@ -52,7 +52,7 @@
                     <div class="button-wrapper">
                         <button mat-icon-button>
                             <img
-                                src="../../../assets/img/icons/add-gray.svg"
+                                src="assets/img/icons/add-gray.svg"
                                 alt="Add image"
                             />
                         </button>
@@ -62,7 +62,7 @@
                             (click)="togglePicker()"
                         >
                             <img
-                                src="../../../assets/img/icons/sentiment_satisfied.svg"
+                                src="assets/img/icons/sentiment_satisfied.svg"
                                 alt="Add emoji"
                             />
                         </button>
@@ -73,14 +73,14 @@
                         </div>
                         <button mat-icon-button>
                             <img
-                                src="../../../assets/img/icons/alternate_email.svg"
+                                src="assets/img/icons/alternate_email.svg"
                                 alt="Tag someone"
                             />
                         </button>
                     </div>
                     <button mat-icon-button>
                         <img
-                            src="../../../assets/img/icons/send-button.svg"
+                            src="assets/img/icons/send-button.svg"
                             alt="Send message"
                         />
                     </button>

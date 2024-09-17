@@ -6,6 +6,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { DialogAddMemberToChnlComponent } from "../dialog-add-member-to-chnl/dialog-add-member-to-chnl.component";
 import { PofileInfoCardComponent } from "../pofile-info-card/pofile-info-card.component";
 import { UsersList } from "../../../interfaces/users-list";
+import { CommonFnService } from "../../../shared/common-fn.service";
 @Component({
     selector: "app-dialog-show-channel-member",
     standalone: true,
@@ -20,6 +21,7 @@ export class DialogShowChannelMemberComponent {
         public dialogRef: MatDialogRef<DialogShowChannelMemberComponent>,
         public chatService: ChatService,
         public dialog: MatDialog,
+        public commonFn: CommonFnService
     ) { }
 
 
@@ -32,21 +34,5 @@ export class DialogShowChannelMemberComponent {
         this.dialog.open(DialogAddMemberToChnlComponent, {
             panelClass: "custom-dialog-mid",
         });
-    }
-
-
-    openProfileCard(user: UsersList) {
-        user.online = this.isOnline(user.id);
-        this.dialog.open(PofileInfoCardComponent, {
-            data: user,
-        });
-    }
-
-
-    isOnline(userId: string): boolean {
-        const user = this.chatService.usersList.find(
-            (user) => user.id === userId,
-        );
-        return user ? user.online : false;
     }
 }

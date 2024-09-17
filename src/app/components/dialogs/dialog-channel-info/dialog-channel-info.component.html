@@ -1,7 +1,7 @@
 <main>
     <section class="title">
         <div>
-            <img src="../../assets/img/icons/tag-black.svg" />
+            <img src="assets/img/icons/tag-black.svg" />
             <h1>{{ chatService.currentChannel.name }}</h1>
         </div>
         <button
@@ -9,7 +9,7 @@
             (click)="closeDialog()"
             mat-icon-button
         >
-            <img src="../../../assets/img/icons/close.svg" />
+            <img src="assets/img/icons/close.svg" />
         </button>
     </section>
     @if (!editingName) {
@@ -19,7 +19,7 @@
                 <span (click)="editName()">Bearbeiten</span>
             </div>
             <div>
-                <img src="../../assets/img/icons/tag-black.svg" />
+                <img src="assets/img/icons/tag-black.svg" />
                 <p>{{ chatService.currentChannel.name }}</p>
             </div>
         </section>
@@ -39,7 +39,7 @@
                     value="{{ this.name }}"
                     placeholder="z.B. Kooperationsprojekte"
                 />
-                <img src="../../assets/img/icons/tag-black.svg" />
+                <img src="assets/img/icons/tag-black.svg" />
                 @if (invalidName) {
                     <span class="error">Bitte keine Leerzeichen.</span>
                 }

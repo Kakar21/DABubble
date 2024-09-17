@@ -5,7 +5,7 @@
         (click)="this.location.back()"
     >
         <img
-            src="../../../assets/img/icons/arrow_back.svg"
+            src="assets/img/icons/arrow_back.svg"
             alt="Go back"
         />
     </button>
@@ -34,7 +34,7 @@
                     required
                     pattern="^[A-ZÄÖÜ][a-zäöüß]+ [A-ZÄÖÜ][a-zäöüß]+$"
                 />
-                <img src="../../../assets/img/icons/person-gray.svg" />
+                <img src="assets/img/icons/person-gray.svg" />
 
                 @if (!name.valid && (accountForm.submitted || name.touched)) {
                     <span class="error"
@@ -53,7 +53,7 @@
                     required
                     pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                 />
-                <img src="../../../assets/img/icons/mail-gray.svg" />
+                <img src="assets/img/icons/mail-gray.svg" />
 
                 @if (!email.valid && (accountForm.submitted || email.touched)) {
                     <span class="error"
@@ -73,7 +73,7 @@
                     pattern="^\S{6,}$"
                     required
                 />
-                <img src="../../../assets/img/icons/lock-gray.svg" />
+                <img src="assets/img/icons/lock-gray.svg" />
 
                 @if (
                     !password.valid &&
