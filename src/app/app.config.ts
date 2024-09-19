@@ -9,13 +9,14 @@ import { getDatabase, provideDatabase } from "@angular/fire/database";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 
 export const firebaseConfig = {
-    apiKey: "AIzaSyD7uqij9obVTjDRwVKQzXxmXq2UJvD4S8c",
-    authDomain: "dabubble-2a68b.firebaseapp.com",
-    projectId: "dabubble-2a68b",
-    storageBucket: "dabubble-2a68b.appspot.com",
-    messagingSenderId: "274484134544",
-    appId: "1:274484134544:web:330557e6aa3cbe735a0e15"
-};
+    apiKey: "AIzaSyB5LI6OKON58XLPG2G-N6dWAR9ROcDkq8Q",
+    authDomain: "dabubble-aaa9e.firebaseapp.com",
+    databaseURL: "https://dabubble-aaa9e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "dabubble-aaa9e",
+    storageBucket: "dabubble-aaa9e.appspot.com",
+    messagingSenderId: "564819078942",
+    appId: "1:564819078942:web:4c389300cb1264f959e30f"
+  };
 
 export const appConfig: ApplicationConfig = {
     providers: [

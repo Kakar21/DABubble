@@ -46,7 +46,7 @@ export class DialogEditProfileEditProfileComponent {
     constructor(
         public dialogRef: MatDialogRef<DialogEditProfileEditProfileComponent>,
         public dialog: MatDialog,
-        private firestore: FirestoreService,
+        public firestore: FirestoreService,
         private imageService: ImageService
     ) {
         this.firestore.currentUser$.subscribe((uid) => {
@@ -171,7 +171,7 @@ export class DialogEditProfileEditProfileComponent {
 
 
     onAvatarClick() {
-        if (this.currentUserUid !== "mMqjWie0OWa6lWCnq5hStLQqXow1") {
+        if (!this.firestore.isUserGuest(this.currentUserUid)) {
             this.avatarInput.nativeElement.click();
         }
     }
