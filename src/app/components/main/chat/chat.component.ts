@@ -143,7 +143,6 @@ export class ChatComponent implements AfterViewInit, OnInit {
   openProfileById(userId: string) {
     const user = this.chatService.usersList.find((u) => u.id === userId);
     if (user) {
-      console.log(user);
       this.dialog.open(PofileInfoCardComponent, { data: user });
     }
   }

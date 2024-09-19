@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Firestore, collection, doc, setDoc, getDocs, query, orderBy, serverTimestamp, onSnapshot, DocumentReference, updateDoc } from "@angular/fire/firestore";
-import { Message } from "../interfaces/message";
-import { Observable } from "rxjs";
+import { EMPTY_MESSAGE, Message } from "../interfaces/message";
+import { Observable, Subject } from "rxjs";
 import { FirestoreService } from "./firestore.service";
 import { CurrentuserService } from "./currentuser.service";
 
@@ -10,7 +10,10 @@ import { CurrentuserService } from "./currentuser.service";
 })
 export class ThreadService {
     selectedPadnumber: string = "";
-
+    selectedMessageId = '';
+    initialMessage: Message = EMPTY_MESSAGE;
+    private _threadOpened = new Subject<void>();
+    threadOpened$ = this._threadOpened.asObservable(); // Observable für Abonnenten
 
 
     constructor(
@@ -18,6 +21,11 @@ export class ThreadService {
         private firestoreService: FirestoreService,
         private currentUser: CurrentuserService
     ) { }
+
+
+    openThread() {
+        this._threadOpened.next(); // Sende das Signal an alle Abonnenten
+    }
 
 
     async sendThreadMessage(channelId: string, messageId: string, message: Message) {

@@ -11,7 +11,8 @@
             (click)="
                 chatService.setComponent('newMessage');
                 chatService.selectedChannel = '';
-                chatService.selectedDirectmessage = ''
+                chatService.selectedDirectmessage = '';
+                closeThread();
             "
             class="new-message"
             mat-icon-button
@@ -34,7 +35,7 @@
                     <button
                         mat-icon-button
                         class="add"
-                        (click)="openDialog($event)"
+                        (click)="openDialog($event); closeThread()"
                     >
                         <img src="assets/img/icons/add.svg" />
                     </button>
@@ -67,7 +68,7 @@
                 }
                 <div
                     class="new-channel"
-                    (click)="openDialog($event)"
+                    (click)="openDialog($event); closeThread();"
                 >
                     <img src="assets/img/icons/add_circle.svg" />
                     <span>Channel hinzufügen</span>
@@ -100,10 +101,11 @@
                         <mat-button-toggle
                             class="contact"
                             (click)="
+                                DMservice.getMessages(user.id);
+                                chatService.openDirectMessage(user.id);
                                 chatService.setComponent('directMessage');
                                 chatService.openedComponent.next('directMessage');
-                                DMservice.getMessages(user.id);
-                                chatService.openDirectMessage(user.id)
+                                closeThread();
                             "
                             [value]="user.id"
                         >
