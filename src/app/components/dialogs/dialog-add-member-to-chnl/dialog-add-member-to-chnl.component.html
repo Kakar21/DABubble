@@ -1,0 +1,86 @@
+<section class="dialog-section">
+    <header>
+        <div>
+            <h2 mat-dialog-title>Leute hinzufügen</h2>
+            <button
+                class="closeButton"
+                (click)="closeDialog()"
+                mat-icon-button
+            >
+                <img src="assets/img/icons/close.svg" />
+            </button>
+        </div>
+        <span
+            ><img src="assets/img/icons/tag-purple-2.svg" />{{
+                chatService.currentChannel.name
+            }}</span
+        >
+    </header>
+    <mat-form-field>
+        <mat-chip-grid #chipGrid>
+            @for (user of addedMembers; track user) {
+                <mat-chip-row (removed)="remove(user)">
+                    @if (user.avatar.length > 1) {
+                        <img src="{{ user.avatar }}" />
+                    } @else {
+                        <img
+                            src="assets/img/avatar/{{ user.avatar }}.svg"
+                        />
+                    }
+                    <h6>{{ user.name }}</h6>
+                    <button
+                        class="closeButton"
+                        matChipRemove
+                        mat-icon-button
+                    >
+                        <img src="assets/img/icons/close.svg" />
+                    </button>
+                </mat-chip-row>
+            }
+        </mat-chip-grid>
+        <input
+            placeholder="Name eingeben"
+            #nameInput
+            [formControl]="userCtrl"
+            [matChipInputFor]="chipGrid"
+            [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        />
+        <!-- (matChipInputTokenEnd)="add($event)" -->
+        <mat-autocomplete
+            #auto="matAutocomplete"
+            (optionSelected)="selected($event)"
+        >
+            @for (user of filteredMembers | async; track user) {
+                @if (addedMembers.indexOf(user) == -1) {
+                    <mat-option [value]="user.id">
+                        @if (user.avatar.length > 1) {
+                            <img src="{{ user.avatar }}" />
+                        } @else {
+                            <img
+                                src="assets/img/avatar/{{
+                                    user.avatar
+                                }}.svg"
+                            />
+                        }
+                        <h3>{{ user.name }}</h3>
+                    </mat-option>
+                }
+            }
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <button
+        mat-flat-button
+        class="submit"
+        (click)="addSelectedUsers()"
+    >
+        Hinzufügen
+    </button>
+    <!-- <mat-dialog-actions>
+    <button
+      [ngStyle]=" inputValue.value? { 'background-color': 'var(--Purple-1, #444df2)' } : { 'background-color': 'gray', cursor: 'not-allowed' } "
+      [disabled]="!inputValue.value" mat-flat-button color="primary"> Hinzufügen
+    </button>
+  </mat-dialog-actions> -->
+</section>

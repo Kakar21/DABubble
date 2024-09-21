@@ -1,0 +1,117 @@
+<app-start>
+    <button
+        class="goBack"
+        mat-icon-button
+        (click)="this.location.back()"
+    >
+        <img
+            src="assets/img/icons/arrow_back.svg"
+            alt="Go back"
+        />
+    </button>
+    @if (forwardToAvatar) {
+        <app-avatar (submitAvatar)="createAccount($event)"></app-avatar>
+    } @else {
+        <div class="description">
+            <h1>Konto erstellen</h1>
+            <p>
+                Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues
+                DABubble-Konto.
+            </p>
+        </div>
+        <form
+            (ngSubmit)="onSubmit(accountForm)"
+            #accountForm="ngForm"
+        >
+            <div>
+                <input
+                    #name="ngModel"
+                    [(ngModel)]="accountData.name"
+                    type="text"
+                    placeholder="Vor- und Nachname"
+                    name="name"
+                    id="name"
+                    required
+                    pattern="^[A-ZÄÖÜ][a-zäöüß]+ [A-ZÄÖÜ][a-zäöüß]+$"
+                />
+                <img src="assets/img/icons/person-gray.svg" />
+
+                @if (!name.valid && (accountForm.submitted || name.touched)) {
+                    <span class="error"
+                        >Bitte geben Sie Ihren Vor- und Nachnamen ein.</span
+                    >
+                }
+            </div>
+            <div>
+                <input
+                    #email="ngModel"
+                    [(ngModel)]="accountData.email"
+                    type="email"
+                    placeholder="beispielname@email.com"
+                    name="email"
+                    id="email"
+                    required
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                />
+                <img src="assets/img/icons/mail-gray.svg" />
+
+                @if (!email.valid && (accountForm.submitted || email.touched)) {
+                    <span class="error"
+                        >Diese E-Mail-Adresse ist leider ungültig.</span
+                    >
+                }
+                <!-- TODO: Error if email already exists -->
+            </div>
+            <div>
+                <input
+                    #password="ngModel"
+                    [(ngModel)]="accountData.password"
+                    type="password"
+                    placeholder="Passwort"
+                    name="password"
+                    id="password"
+                    pattern="^\S{6,}$"
+                    required
+                />
+                <img src="assets/img/icons/lock-gray.svg" />
+
+                @if (
+                    !password.valid &&
+                    (accountForm.submitted || password.touched)
+                ) {
+                    <span class="error"
+                        >Bitte geben Sie ein Passwort mit mindestens 6 Zeichen
+                        ein.</span
+                    >
+                }
+            </div>
+            <div>
+                <mat-checkbox
+                    #privacyPolicy="ngModel"
+                    [(ngModel)]="accountData.privacyPolicy"
+                    class="checkbox"
+                    name="privacyPolicy"
+                    [required]="true"
+                    >Ich stimme der
+                    <a href="./privacy-policy">Datenschutzerklärung</a>
+                    zu.</mat-checkbox
+                >
+
+                @if (
+                    !privacyPolicy.valid &&
+                    (accountForm.submitted || privacyPolicy.touched)
+                ) {
+                    <span class="error"
+                        >Bitte akzeptieren Sie die Datenschutzerklärung.</span
+                    >
+                }
+            </div>
+            <button
+                mat-flat-button
+                class="submit"
+            >
+                Weiter
+            </button>
+        </form>
+    }
+</app-start>

@@ -1,0 +1,83 @@
+<section class="dialog-container">
+    <div class="dialog-title-container">
+        <h2 mat-dialog-title>Leute hinzufügen</h2>
+        <button
+            class="closeButton"
+            (click)="closeDialog()"
+            mat-icon-button
+        >
+            <img src="assets/img/icons/close.svg" />
+        </button>
+    </div>
+    <div class="dialog-content-container">
+        <mat-radio-group [(ngModel)]="selectedOption">
+            <mat-radio-button value="1"
+                >Alle Mitglieder hinzufügen</mat-radio-button
+            >
+            <mat-radio-button value="2"
+                >Bestimmte Leute hinzufügen</mat-radio-button
+            >
+            <mat-form-field *ngIf="selectedOption === '2'">
+                <mat-chip-grid #chipGrid>
+                    @for (user of addedMembers; track user) {
+                        <mat-chip-row (removed)="remove(user)">
+                            @if (user.avatar.length > 1) {
+                                <img src="{{ user.avatar }}" />
+                            } @else {
+                                <img
+                                    src="assets/img/avatar/{{
+                                        user.avatar
+                                    }}.svg"
+                                />
+                            }
+                            <h6>{{ user.name }}</h6>
+                            <button
+                                class="closeButton"
+                                matChipRemove
+                                mat-icon-button
+                            >
+                                <img src="assets/img/icons/close.svg" />
+                            </button>
+                        </mat-chip-row>
+                    }
+                </mat-chip-grid>
+                <input
+                    placeholder="Name eingeben"
+                    #nameInput
+                    [formControl]="userCtrl"
+                    [matChipInputFor]="chipGrid"
+                    [matAutocomplete]="auto"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                />
+                <mat-autocomplete
+                    #auto="matAutocomplete"
+                    (optionSelected)="selected($event)"
+                >
+                    @for (user of filteredMembers | async; track user) {
+                        @if (addedMembers.indexOf(user) == -1) {
+                            <mat-option [value]="user.name">
+                                @if (user.avatar.length > 1) {
+                                    <img src="{{ user.avatar }}" />
+                                } @else {
+                                    <img
+                                        src="assets/img/avatar/{{
+                                            user.avatar
+                                        }}.svg"
+                                    />
+                                }
+                                <h3>{{ user.name }}</h3>
+                            </mat-option>
+                        }
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+        </mat-radio-group>
+    </div>
+    <button
+        mat-flat-button
+        class="submit"
+        (click)="createChannel()"
+    >
+        Erstellen
+    </button>
+</section>

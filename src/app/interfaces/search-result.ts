@@ -4,6 +4,7 @@ export interface SearchResult {
     name: string;
     avatar: string;
     message: string;
+    padNumber: string;
     userID?: string;
     channelName?: string;
     channelID?: string;

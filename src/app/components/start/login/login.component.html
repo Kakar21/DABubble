@@ -1,0 +1,84 @@
+<app-start>
+    <div class="description">
+        <h1>Anmeldung</h1>
+        <p>
+            Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der
+            Arbeit verwendest.
+        </p>
+    </div>
+    <form>
+        <div class="upper-container">
+            <div>
+                <input
+                    [(ngModel)]="email"
+                    name="email"
+                    type="email"
+                    placeholder="beispielname@email.com"
+                    id="email"
+                />
+                <img src="assets/img/icons/mail-gray.svg" />
+                @if (invalidEmail) {
+                    <span class="error"
+                        >Diese E-Mail-Adresse ist leider ungültig.</span
+                    >
+                }
+            </div>
+            <div>
+                <input
+                    [(ngModel)]="password"
+                    name="password"
+                    type="password"
+                    placeholder="Passwort"
+                    id="password"
+                />
+                <img src="assets/img/icons/lock-gray.svg" />
+                @if (invalidPasswordOrEmail) {
+                    <span class="error"
+                        >Falsches Passwort oder E-Mail. Bitte noch einmal
+                        versuchen.</span
+                    >
+                }
+            </div>
+            <button
+                mat-flat-button
+                type="button"
+                (click)="this.router.navigate(['/recovery'])"
+                class="forgot-pw"
+            >
+                Passwort vergessen?
+            </button>
+        </div>
+        <div class="middle-container">
+            <span>ODER</span>
+            <div class="vector"></div>
+        </div>
+        <div class="lower-container">
+            <button
+                mat-flat-button
+                class="google"
+                type="button"
+                (click)="loginWithGoogle()"
+            >
+                <img src="assets/img/icons/google.svg" />
+                Anmelden mit Google
+            </button>
+            <div>
+                <button
+                    mat-flat-button
+                    class="submit"
+                    type="submit"
+                    (click)="loginWithEmailAndPassword()"
+                >
+                    Anmelden
+                </button>
+                <button
+                    mat-stroked-button
+                    class="gast-login"
+                    (click)="loginAsGuest()"
+                >
+                    Gäste-Login
+                </button>
+            </div>
+        </div>
+    </form>
+</app-start>
