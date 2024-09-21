@@ -12,7 +12,7 @@ import { DirectMessageComponent } from "./direct-message/direct-message.componen
 import { NewMessageComponent } from "./new-message/new-message.component";
 import { ChatService } from "../../shared/chat.service";
 import { MatButtonModule } from "@angular/material/button";
-import { EMPTY_MESSAGE, Message } from "../../interfaces/message";
+import { ThreadService } from "../../shared/thread.service";
 
 @Component({
     selector: "app-main",
@@ -37,13 +37,11 @@ import { EMPTY_MESSAGE, Message } from "../../interfaces/message";
 })
 export class MainComponent {
     @ViewChild("threadDrawer") public threadDrawer!: MatDrawer;
-    initialMessage: Message = EMPTY_MESSAGE;
     threadOpen = false;
     showMenu = false;
-    selectedMessageId!: string;
 
 
-    constructor(public chatService: ChatService) { }
+    constructor(public chatService: ChatService, private threadService: ThreadService) { }
 
 
     mobileGoBack() {
@@ -62,9 +60,10 @@ export class MainComponent {
 
 
     openThread(event: { channelId: string; messageId: string; }) {
-        this.selectedMessageId = event.messageId;
+        this.threadService.selectedMessageId = event.messageId;
         if (!window.matchMedia("(max-width: 768px)").matches) {
             this.threadDrawer.open();
+            this.threadService.openThread();
         }
 
         this.loadInitialMessage(event.channelId, event.messageId);
@@ -74,7 +73,7 @@ export class MainComponent {
     loadInitialMessage(channelId: string, messageId: string) {
         this.chatService.observeMessage(channelId, messageId).subscribe((message) => {
             if (message) {
-                this.initialMessage = message;
+                this.threadService.initialMessage = message;
             }
         });
     }

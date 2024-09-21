@@ -23,7 +23,7 @@ export class FirestoreService {
   private userStatusDatabaseRef: any;
   private heartbeatInterval: any;
   app = initializeApp(firebaseConfig);
-  db = getDatabase(this.app, "https://dabubble-2a68b-default-rtdb.europe-west1.firebasedatabase.app");
+  db = getDatabase(this.app, firebaseConfig.databaseURL);
 
 
   constructor(private router: Router) {
@@ -167,7 +167,7 @@ export class FirestoreService {
     return signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        this.router.navigate(["/"]);
+        location.reload();
         return null;
       })
       .catch((error) => {
@@ -285,5 +285,10 @@ export class FirestoreService {
     const guestEmail = "guest@guest.guest";
     const guestPassword = "guest1";
     return this.loginWithEmailAndPassword(guestEmail, guestPassword);
+  }
+
+  
+  isUserGuest(userId: string | null) {
+    return userId === "BAOo731wv0SBK2X40vdmrUCuJVj1";
   }
 }
