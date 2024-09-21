@@ -14,7 +14,7 @@
             <img src="assets/img/icons/close.svg" />
         </button>
     </div>
-    <div class="image-section" [ngClass]="{'not-guest': currentUserUid !== 'mMqjWie0OWa6lWCnq5hStLQqXow1'}" (click)="onAvatarClick()">
+    <div class="image-section" [ngClass]="{'not-guest': !firestore.isUserGuest(currentUserUid)}" (click)="onAvatarClick()">
         <input type="file" #avatarInput style="display: none;" (change)="onFileSelected($event)" accept="image/*" />
         @if (currentUser.avatar.length > 1) {
             <img src="{{ currentUser.avatar }}" />
@@ -26,7 +26,7 @@
         <div class="profile-name-container">
             <div class="profile-name-section">
                 <h1>{{ currentUser.name }}</h1>
-                @if (currentUserUid !== "mMqjWie0OWa6lWCnq5hStLQqXow1") {
+                @if (!firestore.isUserGuest(currentUserUid)) {
                     <span (click)="editProfile()">Bearbeiten</span>
                 }
             </div>

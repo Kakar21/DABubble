@@ -32,6 +32,7 @@ export class PofileInfoCardComponent {
     openDM(user: UsersList) {
         this.dialogRef.close();
         this.chatService.setComponent("directMessage");
+        this.chatService.openedComponent.next('directMessage');
         this.DMservice.getMessages(user.id);
         this.chatService.openDirectMessage(user.id);
     }

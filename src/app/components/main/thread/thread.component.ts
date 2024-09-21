@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Output, Input, OnChanges, SimpleChanges, HostListener, ViewChild, ElementRef } from "@angular/core";
+import { Component, EventEmitter, Output, HostListener, ViewChild, ElementRef } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { RouterModule } from "@angular/router";
 import { ChatService } from "../../../shared/chat.service";
@@ -39,10 +39,7 @@ import { CommonFnService } from "../../../shared/common-fn.service";
     templateUrl: "./thread.component.html",
     styleUrls: ["./thread.component.scss"],
 })
-export class ThreadComponent implements OnChanges {
-    @Input() channelId!: string;
-    @Input() messageId!: string;
-    @Input() initialMessage!: Message;
+export class ThreadComponent {
     @Output() threadClose = new EventEmitter<boolean>();
     @ViewChild("messageInput") messageInput!: ElementRef<HTMLInputElement>;
     messages: Message[] = [];
@@ -62,7 +59,7 @@ export class ThreadComponent implements OnChanges {
         public chatService: ChatService,
         public currentUser: CurrentuserService,
         public dialog: MatDialog,  // MatDialog injizieren
-        private threadService: ThreadService,
+        public threadService: ThreadService,
         private imageService: ImageService,
         public commonFnService: CommonFnService
     ) {
@@ -74,27 +71,21 @@ export class ThreadComponent implements OnChanges {
 
 
     ngOnInit() {
-        if (this.channelId && this.messageId) {
+        this.threadService.threadOpened$.subscribe(() => {
             this.loadMessages();
-        }
+        });
+
         this.chatService.openedComponent.subscribe((component) => {
             if (component === 'thread') {
+
                 setTimeout(() => {
                     this.messageInput.nativeElement.value = '';
                     this.messageInput.nativeElement.focus();
                 }, 100);
             }
         });
+
         this.commonFnService.loadRecentEmojis();
-    }
-
-
-    ngOnChanges(changes: SimpleChanges) {
-        if ((changes["channelId"] && changes["channelId"].currentValue) || (changes["messageId"] && changes["messageId"].currentValue)) {
-            if (this.channelId && this.messageId) {
-                this.loadMessages();
-            }
-        }
     }
 
 
@@ -121,11 +112,11 @@ export class ThreadComponent implements OnChanges {
 
 
     loadMessages() {
-        this.threadService.loadThreadMessages(this.channelId, this.messageId)
+        this.threadService.loadThreadMessages(this.chatService.currentChannelID, this.threadService.selectedMessageId)
             .subscribe((messages) => {
                 this.messages = messages;
             });
-        this.chatService.loadChannel(this.channelId);
+        this.chatService.loadChannel(this.chatService.currentChannelID);
     }
 
 
@@ -169,7 +160,7 @@ export class ThreadComponent implements OnChanges {
             imageUrl: imageUrl
         };
 
-        await this.threadService.sendThreadMessage(this.channelId, this.messageId, message);
+        await this.threadService.sendThreadMessage(this.chatService.currentChannelID, this.threadService.selectedMessageId, message);
     }
 
 
@@ -266,19 +257,19 @@ export class ThreadComponent implements OnChanges {
             this.chatService.addReaction(messagePadnr, emoji, 'chat', '')
                 .catch((error) => console.error("Error adding reaction: ", error));
         } else {
-            this.chatService.addReaction(this.messageId, emoji, 'thread', messagePadnr)
+            this.chatService.addReaction(this.threadService.selectedMessageId, emoji, 'thread', messagePadnr)
                 .catch((error) => console.error("Error adding reaction: ", error));
         }
     }
 
 
     addOrSubReaction(message: any, reaction: any,) {
-        this.chatService.addOrSubReaction(message, reaction, 'thread', this.messageId);
+        this.chatService.addOrSubReaction(message, reaction, 'thread', this.threadService.selectedMessageId);
     }
 
 
     addOrSubReactionInitial(message: any, reaction: any) {
-        this.chatService.addOrSubReaction(message, reaction, 'chat', this.messageId);
+        this.chatService.addOrSubReaction(message, reaction, 'chat', this.threadService.selectedMessageId);
     }
 
 
@@ -300,7 +291,7 @@ export class ThreadComponent implements OnChanges {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 const newContent = result;
-                this.threadService.updateThreadMessage(this.channelId, this.messageId, threadId, newContent)
+                this.threadService.updateThreadMessage(this.chatService.currentChannelID, this.threadService.selectedMessageId, threadId, newContent)
                     .catch(error => console.error('Error updating thread message:', error));
             }
         });
