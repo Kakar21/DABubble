@@ -16,6 +16,7 @@ export class CurrentuserService {
         avatar: "",
         online: false,
     };
+    signUpName = '';
 
 
     constructor(private firestore: FirestoreService) {

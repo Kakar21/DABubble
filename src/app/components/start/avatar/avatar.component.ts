@@ -3,6 +3,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { SignupComponent } from "../signup/signup.component";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { ImageService } from "../../../shared/image.service"; // Importiere den ImageService
+import { CurrentuserService } from "../../../shared/currentuser.service";
 
 @Component({
     selector: "app-avatar",
@@ -19,7 +20,10 @@ export class AvatarComponent {
     accountCreated = false;
 
 
-    constructor(private imageService: ImageService) { }
+    constructor(
+        private imageService: ImageService,
+        public currentUser: CurrentuserService
+    ) { }
 
 
     selectAvatar(number: string) {

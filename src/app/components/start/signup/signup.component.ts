@@ -8,6 +8,7 @@ import { FormsModule, NgForm } from "@angular/forms";
 import { StartComponent } from "../start.component";
 import { Location } from "@angular/common";
 import { FirestoreService } from "../../../shared/firestore.service";
+import { CurrentuserService } from "../../../shared/currentuser.service";
 
 @Component({
     selector: "app-signup",
@@ -40,6 +41,7 @@ export class SignupComponent {
     constructor(
         public location: Location,
         private firestore: FirestoreService,
+        private currentUser: CurrentuserService
     ) { }
 
 
@@ -57,6 +59,7 @@ export class SignupComponent {
 
 
     onSubmit(ngForm: NgForm) {
+        this.currentUser.signUpName = this.accountData.name;
         if (ngForm.submitted && ngForm.form.valid) {
             this.forwardToAvatar = true;
         }
